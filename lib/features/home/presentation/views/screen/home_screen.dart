@@ -14,10 +14,11 @@ class HomeScreen extends GetView<HomeController> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Top Headlines'),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        title: Text('Top Headlines', style: TextStyle(color: Theme.of(context).colorScheme.secondary),),
         actions: [
           IconButton(
-            icon: const Icon(Icons.refresh),
+            icon: Icon(Icons.refresh, color: Theme.of(context).colorScheme.secondary,),
             onPressed: controller.refreshTopHeadlines,
           ),
         ],

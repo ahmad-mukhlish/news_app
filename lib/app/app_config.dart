@@ -5,20 +5,17 @@ class AppConfig {
     defaultValue: 'News App',
   );
 
+  // Light Mode Colors
   static const String primaryColor = String.fromEnvironment(
     'PRIMARY_COLOR',
     defaultValue: '0xFF009688', // Teal
   );
 
-  static const String shimmerBaseColor = String.fromEnvironment(
-    'SHIMMER_BASE_COLOR',
-    defaultValue: '0xFFE0E0E0', // Grey 300
-  );
-
-  static const String shimmerHighlightColor = String.fromEnvironment(
-    'SHIMMER_HIGHLIGHT_COLOR',
+  static const String secondaryColor = String.fromEnvironment(
+    'SECONDARY_COLOR',
     defaultValue: '0xFFF5F5F5', // Grey 100
   );
+
 
   // API Configuration
   static const String newsApiKey = String.fromEnvironment(
