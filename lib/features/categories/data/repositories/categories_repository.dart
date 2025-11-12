@@ -9,7 +9,7 @@ class CategoriesRepository {
   CategoriesRepository({required this.remoteDataSource});
 
   Future<List<NewsArticle>> fetchCategoryNews({
-    required NewsCategory category,
+    required NewsCategoryEnum category,
     int? pageSize,
     int? page,
   }) async {

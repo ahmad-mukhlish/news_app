@@ -12,7 +12,7 @@ class CategoriesRemoteDataSource {
   static const int defaultPage = 1;
 
   Future<NewsResponseDto> fetchCategoryNews({
-    required NewsCategory category,
+    required NewsCategoryEnum category,
     int? pageSize,
     int? page,
   }) async {
