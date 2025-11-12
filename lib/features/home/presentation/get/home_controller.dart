@@ -25,11 +25,7 @@ class HomeController extends GetxController {
       hasError.value = false;
       errorMessage.value = '';
 
-      final result = await repository.fetchTopHeadlines(
-        country: 'us',
-        pageSize: 20,
-      );
-
+      final result = await repository.fetchTopHeadlines();
       articles.value = result;
     } catch (e) {
       hasError.value = true;

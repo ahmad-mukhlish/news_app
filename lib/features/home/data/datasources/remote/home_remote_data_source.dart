@@ -13,65 +13,19 @@ class HomeRemoteDataSource {
   static const String defaultCountry = 'us';
 
   Future<NewsResponseDto> fetchTopHeadlines({
-    String country = defaultCountry,
-    int pageSize = defaultPageSize,
-    int page = defaultPage,
+    String? country,
+    int? pageSize,
+    int? page,
   }) async {
     try {
       final response = await apiService.get(
         path: topHeadlines,
         queryParameters: {
-          'country': country,
-          'pageSize': pageSize,
-          'page': page,
+          'country': country ?? defaultCountry,
+          'pageSize': pageSize ?? defaultPageSize,
+          'page': page ?? defaultPage,
         },
       );
-      return NewsResponseDto.fromJson(response.data);
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  Future<NewsResponseDto> fetchByCategory({
-    required String category,
-    String country = defaultCountry,
-    int pageSize = defaultPageSize,
-    int page = defaultPage,
-  }) async {
-    try {
-      final response = await apiService.get(
-        path: topHeadlines,
-        queryParameters: {
-          'country': country,
-          'category': category,
-          'pageSize': pageSize,
-          'page': page,
-        },
-      );
-
-      return NewsResponseDto.fromJson(response.data);
-    } catch (e) {
-      rethrow;
-    }
-  }
-
-  Future<NewsResponseDto> searchNews({
-    required String query,
-    List<String> searchIn = const ['title', 'description'],
-    int pageSize = defaultPageSize,
-    int page = defaultPage,
-  }) async {
-    try {
-      final response = await apiService.get(
-        path: everything,
-        queryParameters: {
-          'q': query,
-          'searchIn': searchIn.join(','),
-          'pageSize': pageSize,
-          'page': page,
-        },
-      );
-
       return NewsResponseDto.fromJson(response.data);
     } catch (e) {
       rethrow;
