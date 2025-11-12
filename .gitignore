@@ -47,3 +47,4 @@ app.*.map.json
 # Environment and sensitive files
 .env
 settings.local.json
+devtools_options.yaml
