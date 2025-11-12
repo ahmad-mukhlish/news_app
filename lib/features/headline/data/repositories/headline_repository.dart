@@ -1,11 +1,11 @@
 import '../../domain/entities/news_article.dart';
-import '../datasources/remote/home_remote_data_source.dart';
+import '../datasources/remote/headline_remote_data_source.dart';
 import '../mappers/news_article_mapper.dart';
 
-class HomeRepository {
-  final HomeRemoteDataSource remoteDataSource;
+class HeadlineRepository {
+  final HeadlineRemoteDataSource remoteDataSource;
 
-  HomeRepository({required this.remoteDataSource});
+  HeadlineRepository({required this.remoteDataSource});
 
   Future<List<NewsArticle>> fetchTopHeadlines({
     String? country,

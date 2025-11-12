@@ -7,11 +7,11 @@ import '../../../../../helper/common_widgets/empty_state_widget.dart';
 import '../../../../../helper/common_widgets/error_widget.dart';
 import '../../../../../helper/common_widgets/loading_widget.dart';
 import '../../../domain/entities/news_article.dart';
-import '../../get/home_controller.dart';
+import '../../get/headline_controller.dart';
 import '../widgets/news_article_card.dart';
 
-class HomeScreen extends GetView<HomeController> {
-  const HomeScreen({super.key});
+class HeadlineScreen extends GetView<HeadlineController> {
+  const HeadlineScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -1,10 +1,10 @@
 import '../../../../../services/network/api_service.dart';
 import '../../dto/news_response_dto.dart';
 
-class HomeRemoteDataSource {
+class HeadlineRemoteDataSource {
   final ApiService apiService;
 
-  HomeRemoteDataSource({required this.apiService});
+  HeadlineRemoteDataSource({required this.apiService});
 
   static const String topHeadlines = '/top-headlines';
   static const int defaultPageSize = 20;
