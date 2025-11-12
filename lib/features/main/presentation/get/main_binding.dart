@@ -16,7 +16,6 @@ class MainBinding extends Bindings {
       );
     }
 
-    // Register all feature bindings
     HeadlineBinding().dependencies();
     SearchBinding().dependencies();
     CategoriesBinding().dependencies();

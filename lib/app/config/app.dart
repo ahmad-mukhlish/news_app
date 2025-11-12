@@ -1,8 +1,9 @@
 import 'package:chucker_flutter/chucker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
+import '../../features/main/presentation/get/main_binding.dart';
+import '../../features/main/presentation/views/screen/main_screen.dart';
 import '../helper/extensions/color_extension.dart';
-import '../routes/app_pages.dart';
 import 'app_config.dart';
 import 'flavors.dart';
 
@@ -22,8 +23,8 @@ class App extends StatelessWidget {
         ),
         useMaterial3: true,
       ),
-      initialRoute: AppPages.initial,
-      getPages: AppPages.routes,
+      home: const MainScreen(),
+      initialBinding: MainBinding(),
       navigatorObservers: [ChuckerFlutter.navigatorObserver],
     );
   }
