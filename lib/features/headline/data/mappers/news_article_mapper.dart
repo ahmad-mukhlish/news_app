@@ -5,7 +5,7 @@ class NewsArticleMapper {
   static NewsArticle toEntity(NewsArticleDto dto) {
     return NewsArticle(
       author: dto.author ?? '',
-      title: dto.title ?? 'No Title',
+      title: dto.title ?? '',
       description: dto.description ?? '',
       url: dto.url ?? '',
       urlToImage: dto.urlToImage ?? '',
