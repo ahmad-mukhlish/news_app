@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
+import '../../../../app/domain/entities/news_article.dart';
 import '../../data/repositories/categories_repository.dart';
 import '../../domain/enums/news_category.dart';
 
@@ -12,20 +14,29 @@ class CategoriesController extends GetxController {
   static const double categoryListStartPadding = 24.0;
   static const double categoryListEndPadding = 8.0;
 
-  final Rx<NewsCategoryEnum?> selectedCategory = Rx<NewsCategoryEnum?>(null);
+  final selectedCategory = NewsCategoryEnum.business.obs;
 
-  @override
-  void onInit() {
-    super.onInit();
-    // Select first category by default
-    if (NewsCategoryEnum.values.isNotEmpty) {
-      selectedCategory.value = NewsCategoryEnum.values.first;
-    }
+  late final PagingController<int, NewsArticle> pagingController = PagingController(
+    getNextPageKey: (state) {
+      if (state.lastPageIsEmpty) return null;
+      return state.nextIntPageKey;
+    },
+    fetchPage: _fetchPage,
+  );
+
+
+  Future<List<NewsArticle>> _fetchPage(int pageKey) async {
+    final category = selectedCategory.value;
+    final newArticles = await repository.fetchCategoryNews(
+      category: category,
+      page: pageKey,
+    );
+    return newArticles;
   }
 
   void selectCategory(NewsCategoryEnum category) {
     selectedCategory.value = category;
-    // TODO: Fetch news for this category
+    pagingController.refresh();
   }
 
   EdgeInsets getCategoryPadding(int index) {
@@ -34,5 +45,11 @@ class CategoriesController extends GetxController {
       return const EdgeInsets.only(right: categoryListEndPadding);
     }
     return EdgeInsets.zero;
+  }
+
+  @override
+  void onClose() {
+    pagingController.dispose();
+    super.onClose();
   }
 }

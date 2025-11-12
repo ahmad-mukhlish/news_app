@@ -2,7 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:shimmer/shimmer.dart';
 
-import '../../../../../app/domain/entities/news_article.dart';
+import '../../domain/entities/news_article.dart';
 
 class NewsArticleCard extends StatelessWidget {
   final NewsArticle article;

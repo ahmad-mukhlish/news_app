@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../../app/helper/common_widgets/paged_news_list.dart';
 import '../../../domain/enums/news_category.dart';
 import '../../get/categories_controller.dart';
 import '../widgets/category_chip.dart';
@@ -15,28 +16,23 @@ class CategoriesScreen extends GetView<CategoriesController> {
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: Text(
           'Categories',
-          style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+          style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold),
         ),
       ),
-      body: buildBody(),
+      body: buildBody(context),
     );
   }
 
-  Widget buildBody() {
+  Widget buildBody(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         const SizedBox(height: 24),
         buildCategorySlider(),
-        const SizedBox(height: 16),
         Expanded(
-          child: Center(
-            child: Obx(
-              () => Text(
-                'Selected: ${controller.selectedCategory.value?.displayName ?? "None"}',
-                style: const TextStyle(fontSize: 18),
-              ),
-            ),
+          child: PagedNewsList(
+            pagingController: controller.pagingController,
+            padding: const EdgeInsets.symmetric(horizontal: 16),
           ),
         ),
       ],
@@ -45,7 +41,7 @@ class CategoriesScreen extends GetView<CategoriesController> {
 
   Widget buildCategorySlider() {
     return SizedBox(
-      height: 130,
+      height: 116,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: NewsCategoryEnum.values.length,
