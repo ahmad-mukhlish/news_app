@@ -17,23 +17,18 @@ void main() {
 
   group('HeadlineController', () {
     test('should initialize with repository', () {
-      // Assert
       expect(controller.repository, equals(mockRepository));
 
-      // Cleanup
       controller.onClose();
     });
 
     test('should initialize with PagingController', () {
-      // Assert
       expect(controller.pagingController, isNotNull);
 
-      // Cleanup
       controller.onClose();
     });
 
     test('should properly dispose pagingController on close', () {
-      // Act & Assert - should not throw exception
       expect(() => controller.onClose(), returnsNormally);
     });
   });

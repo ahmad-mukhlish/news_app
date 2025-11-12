@@ -58,72 +58,57 @@ void main() {
       });
 
       test('should handle invalid date string by using current date', () {
-        // Arrange
         final dto = NewsArticleDto(
           publishedAt: 'invalid-date',
         );
 
-        // Act
         final result = NewsArticleMapper.toEntity(dto);
 
-        // Assert
         expect(result.publishedAt, isA<DateTime>());
         final now = DateTime.now();
         expect(result.publishedAt.year, now.year);
       });
 
       test('should use "Unknown Source" when source is null', () {
-        // Arrange
         final dto = NewsArticleDto(
           source: null,
         );
 
-        // Act
         final result = NewsArticleMapper.toEntity(dto);
 
-        // Assert
         expect(result.sourceName, 'Unknown Source');
       });
 
       test('should use "Unknown Source" when source name is null', () {
-        // Arrange
         final source = SourceDto(name: null);
         final dto = NewsArticleDto(
           source: source,
         );
 
-        // Act
         final result = NewsArticleMapper.toEntity(dto);
 
-        // Assert
         expect(result.sourceName, 'Unknown Source');
       });
     });
 
     group('toEntityList', () {
       test('should return empty list for empty input', () {
-        // Arrange
         final dtoList = <NewsArticleDto>[];
 
-        // Act
         final result = NewsArticleMapper.toEntityList(dtoList);
 
-        // Assert
         expect(result, isEmpty);
       });
 
       test('should map multiple DTOs to entities correctly', () {
-        // Arrange
         final dtoList = [
           NewsArticleDto(title: 'Article 1', author: 'Author 1'),
           NewsArticleDto(title: 'Article 2', author: 'Author 2'),
           NewsArticleDto(title: 'Article 3', author: 'Author 3'),
         ];
 
-        // Act
         final result = NewsArticleMapper.toEntityList(dtoList);
 
-        // Assert
         expect(result.length, 3);
         expect(result[0].title, 'Article 1');
         expect(result[0].author, 'Author 1');

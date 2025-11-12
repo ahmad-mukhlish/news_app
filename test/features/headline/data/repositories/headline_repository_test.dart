@@ -125,7 +125,6 @@ void main() {
           page: 2,
         );
 
-        // Assert
         verify(mockRemoteDataSource.fetchTopHeadlines(
           country: 'uk',
           pageSize: 10,
