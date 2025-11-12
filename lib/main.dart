@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:news_app/routes/app_pages.dart';
 
-import 'app/flavors.dart';
+import 'config/flavors.dart';
 import 'bindings/app_binding.dart';
 import 'config/app_config.dart';
 

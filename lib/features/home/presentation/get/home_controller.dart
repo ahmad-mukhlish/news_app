@@ -19,7 +19,6 @@ class HomeController extends GetxController {
     fetchTopHeadlines();
   }
 
-  // Fetch US Top Headlines
   Future<void> fetchTopHeadlines() async {
     try {
       isLoading.value = true;
@@ -40,7 +39,6 @@ class HomeController extends GetxController {
     }
   }
 
-  // Refresh
   Future<void> refreshTopHeadlines() async {
     await fetchTopHeadlines();
   }
