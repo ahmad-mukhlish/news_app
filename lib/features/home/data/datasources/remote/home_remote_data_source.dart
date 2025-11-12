@@ -7,7 +7,6 @@ class HomeRemoteDataSource {
   HomeRemoteDataSource({required this.apiService});
 
   static const String topHeadlines = '/top-headlines';
-  static const String everything = '/everything';
   static const int defaultPageSize = 20;
   static const int defaultPage = 1;
   static const String defaultCountry = 'us';

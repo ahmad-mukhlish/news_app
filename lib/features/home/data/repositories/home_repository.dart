@@ -8,8 +8,8 @@ class HomeRepository {
   HomeRepository({required this.remoteDataSource});
 
   Future<List<NewsArticle>> fetchTopHeadlines({
-    String? country = 'us',
-    int? pageSize = 20,
+    String? country,
+    int? pageSize,
     int? page,
   }) async {
     try {

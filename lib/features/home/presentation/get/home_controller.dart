@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../data/repositories/home_repository.dart';
@@ -9,39 +10,28 @@ class HomeController extends GetxController {
 
   HomeController({required this.repository});
 
-  final RxList<NewsArticle> articles = <NewsArticle>[].obs;
-  final RxBool isLoading = false.obs;
-  final RxString errorMessage = ''.obs;
-  final RxBool hasError = false.obs;
-
-  @override
-  void onInit() {
-    super.onInit();
-    fetchTopHeadlines();
-  }
-
-  Future<void> fetchTopHeadlines() async {
-    try {
-      isLoading.value = true;
-      hasError.value = false;
-      errorMessage.value = '';
-
-      final result = await repository.fetchTopHeadlines();
-      articles.value = result;
-    } catch (e) {
-      hasError.value = true;
-      errorMessage.value = e.toString();
-    } finally {
-      isLoading.value = false;
-    }
-  }
-
-  Future<void> refreshTopHeadlines() async {
-    await fetchTopHeadlines();
-  }
+  late final PagingController<int, NewsArticle> pagingController =
+      PagingController(
+        getNextPageKey: (state) {
+          if (state.lastPageIsEmpty) return null;
+          return state.nextIntPageKey;
+        },
+        fetchPage: (pageKey) async {
+          final newArticles = await repository.fetchTopHeadlines(
+            page: pageKey,
+          );
+          return newArticles;
+        },
+      );
 
   Future<void> openArticle(String url) async {
     final uri = Uri.parse(url);
     await launchUrl(uri, mode: LaunchMode.inAppBrowserView);
+  }
+
+  @override
+  void onClose() {
+    pagingController.dispose();
+    super.onClose();
   }
 }
