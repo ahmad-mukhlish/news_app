@@ -6,83 +6,121 @@ import '../../../domain/entities/news_article.dart';
 
 class NewsArticleCard extends StatelessWidget {
   final NewsArticle article;
+  final VoidCallback onTap;
 
-  const NewsArticleCard({super.key, required this.article});
+  const NewsArticleCard({
+    super.key,
+    required this.article,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.only(bottom: 16),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          if (article.urlToImage.isNotEmpty) buildImage(context),
-          buildContent(context),
-        ],
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(12),
+        child: Stack(
+          children: [buildContent(context), buildOpenLinkIcon(context)],
+        ),
       ),
     );
   }
 
   Widget buildContent(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        if (article.urlToImage.isNotEmpty) buildImage(context),
+        buildArticleText(context),
+      ],
+    );
+  }
+
+  Widget buildOpenLinkIcon(BuildContext context) {
+    return Positioned(
+      top: 8,
+      right: 8,
+      child: Container(
+        padding: const EdgeInsets.all(8),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.9),
+          shape: BoxShape.circle,
+        ),
+        child: Icon(
+          Icons.open_in_new,
+          size: 20,
+          color: Theme.of(context).primaryColor,
+        ),
+      ),
+    );
+  }
+
+  Widget buildArticleText(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Source
-          Text(
-            article.sourceName,
-            style: Theme.of(context).textTheme.labelSmall?.copyWith(
-              color: Theme.of(context).primaryColor,
-            ),
-          ),
+          buildSource(context),
           const SizedBox(height: 8),
 
           // Title
           Text(
             article.title,
             style: Theme.of(context).textTheme.titleMedium,
-            maxLines: 2,
+            maxLines: 3,
             overflow: TextOverflow.ellipsis,
           ),
+
           const SizedBox(height: 8),
 
-          // Description
-          if (article.description.isNotEmpty)
+          // Description (only if present)
+          if (article.description.isNotEmpty) ...[
+            const SizedBox(height: 8),
             Text(
               article.description,
               style: Theme.of(context).textTheme.bodyMedium,
-              maxLines: 3,
+              maxLines: 5,
               overflow: TextOverflow.ellipsis,
             ),
-          const SizedBox(height: 8),
-
-          // Author
-          if (article.author.isNotEmpty) buildAuthor(context),
+          ],
         ],
       ),
     );
   }
 
-  Row buildAuthor(BuildContext context) {
+  Widget buildSource(BuildContext context) {
     return Row(
       children: [
-        const Icon(Icons.person, size: 14),
-        const SizedBox(width: 4),
-        Expanded(
-          child: Text(
-            article.author,
-            style: Theme.of(context).textTheme.labelSmall,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
+        Text(
+          article.sourceName,
+          style: Theme.of(context).textTheme.labelSmall?.copyWith(
+            color: Theme.of(context).primaryColor,
           ),
         ),
+        const SizedBox(width: 8),
+        if (article.author.isNotEmpty) ...[
+          Icon(Icons.person, size: 14, color: Theme.of(context).primaryColor),
+          const SizedBox(width: 4),
+          Expanded(
+            child: Text(
+              article.author,
+              style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                color: Theme.of(context).primaryColor,
+              ),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+        ],
       ],
     );
   }
 
   Widget buildImage(BuildContext context) {
-    ThemeData theme = Theme.of(context);
     return ClipRRect(
       borderRadius: const BorderRadius.vertical(top: Radius.circular(12)),
       child: CachedNetworkImage(
@@ -91,17 +129,17 @@ class NewsArticleCard extends StatelessWidget {
         width: double.infinity,
         fit: BoxFit.cover,
         placeholder: (context, url) => Shimmer.fromColors(
-          baseColor: theme.primaryColor,
-          highlightColor: theme.colorScheme.secondary,
+          baseColor: Theme.of(context).primaryColor,
+          highlightColor: Theme.of(context).colorScheme.secondary,
           child: Container(
             height: 200,
             width: double.infinity,
-            color: theme.primaryColor,
+            color: Theme.of(context).primaryColor,
           ),
         ),
         errorWidget: (context, url, error) => Container(
           height: 200,
-          color: theme.primaryColor,
+          color: Theme.of(context).primaryColor,
           child: const Icon(Icons.broken_image, size: 64),
         ),
       ),

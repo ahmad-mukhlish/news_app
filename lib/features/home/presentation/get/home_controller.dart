@@ -1,4 +1,5 @@
 import 'package:get/get.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../data/repositories/home_repository.dart';
 import '../../domain/entities/news_article.dart';
@@ -37,5 +38,10 @@ class HomeController extends GetxController {
 
   Future<void> refreshTopHeadlines() async {
     await fetchTopHeadlines();
+  }
+
+  Future<void> openArticle(String url) async {
+    final uri = Uri.parse(url);
+    await launchUrl(uri, mode: LaunchMode.inAppBrowserView);
   }
 }

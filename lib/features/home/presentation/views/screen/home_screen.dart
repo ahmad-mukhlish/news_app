@@ -58,7 +58,10 @@ class HomeScreen extends GetView<HomeController> {
           padding: const EdgeInsets.all(16),
           itemBuilder: (context, index) {
             final article = controller.articles[index];
-            return NewsArticleCard(article: article);
+            return NewsArticleCard(
+              article: article,
+              onTap: () => controller.openArticle(article.url),
+            );
           },
         ),
       );
