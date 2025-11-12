@@ -1,5 +1,5 @@
-import '../../../../../services/network/api_service.dart';
-import '../../dto/news_response_dto.dart';
+import '../../../../../app/services/network/api_service.dart';
+import '../../../../../app/data/dto/news_response_dto.dart';
 
 class HeadlineRemoteDataSource {
   final ApiService apiService;

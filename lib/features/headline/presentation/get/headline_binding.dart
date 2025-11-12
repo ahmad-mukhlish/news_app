@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
 
-import '../../../../services/network/api_service.dart';
+import '../../../../app/services/network/api_service.dart';
 import '../../data/datasources/remote/headline_remote_data_source.dart';
 import '../../data/repositories/headline_repository.dart';
 import 'headline_controller.dart';

@@ -1,6 +1,6 @@
-import '../../domain/entities/news_article.dart';
+import '../../../../app/domain/entities/news_article.dart';
+import '../../../../app/data/mappers/news_article_mapper.dart';
 import '../datasources/remote/headline_remote_data_source.dart';
-import '../mappers/news_article_mapper.dart';
 
 class HeadlineRepository {
   final HeadlineRemoteDataSource remoteDataSource;

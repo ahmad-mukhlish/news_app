@@ -2,8 +2,8 @@ import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../app/domain/entities/news_article.dart';
 import '../../data/repositories/headline_repository.dart';
-import '../../domain/entities/news_article.dart';
 
 class HeadlineController extends GetxController {
   final HeadlineRepository repository;

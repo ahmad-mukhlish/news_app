@@ -1,7 +1,6 @@
 import 'package:chucker_flutter/chucker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
-
 import '../helper/extensions/color_extension.dart';
 import '../routes/app_pages.dart';
 import 'app_config.dart';

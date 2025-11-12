@@ -1,7 +1,7 @@
 import 'package:get/get_navigation/src/routes/get_route.dart';
 
-import '../features/headline/presentation/get/headline_binding.dart';
-import '../features/headline/presentation/views/screen/headline_screen.dart';
+import '../../features/headline/presentation/get/headline_binding.dart';
+import '../../features/headline/presentation/views/screen/headline_screen.dart';
 import 'app_routes.dart';
 
 class AppPages {

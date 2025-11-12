@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:news_app/services/network/api_service.dart';
-
-import 'app/app.dart';
-import 'app/flavors.dart';
+import 'app/config/app.dart';
+import 'app/config/flavors.dart';
+import 'app/services/network/api_service.dart';
 
 
 void main() {

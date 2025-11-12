@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
-import 'package:news_app/app/app_config.dart';
+import 'package:news_app/app/config/app_config.dart';
 
-import '../../../../../helper/common_widgets/empty_state_widget.dart';
-import '../../../../../helper/common_widgets/error_widget.dart';
-import '../../../../../helper/common_widgets/loading_widget.dart';
-import '../../../domain/entities/news_article.dart';
+import '../../../../../app/domain/entities/news_article.dart';
+import '../../../../../app/helper/common_widgets/empty_state_widget.dart';
+import '../../../../../app/helper/common_widgets/error_widget.dart';
+import '../../../../../app/helper/common_widgets/loading_widget.dart';
 import '../../get/headline_controller.dart';
 import '../widgets/news_article_card.dart';
 

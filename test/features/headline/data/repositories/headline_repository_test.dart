@@ -1,10 +1,10 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:news_app/app/data/dto/news_article_dto.dart';
+import 'package:news_app/app/data/dto/news_response_dto.dart';
+import 'package:news_app/app/data/dto/source_dto.dart';
 import 'package:news_app/features/headline/data/datasources/remote/headline_remote_data_source.dart';
-import 'package:news_app/features/headline/data/dto/news_article_dto.dart';
-import 'package:news_app/features/headline/data/dto/news_response_dto.dart';
-import 'package:news_app/features/headline/data/dto/source_dto.dart';
 import 'package:news_app/features/headline/data/repositories/headline_repository.dart';
 
 import 'headline_repository_test.mocks.dart';

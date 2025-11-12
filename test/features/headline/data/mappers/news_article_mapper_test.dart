@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:news_app/features/headline/data/dto/news_article_dto.dart';
-import 'package:news_app/features/headline/data/dto/source_dto.dart';
-import 'package:news_app/features/headline/data/mappers/news_article_mapper.dart';
+import 'package:news_app/app/data/dto/news_article_dto.dart';
+import 'package:news_app/app/data/dto/source_dto.dart';
+import 'package:news_app/app/data/mappers/news_article_mapper.dart';
 
 void main() {
   group('NewsArticleMapper', () {

@@ -1,7 +1,8 @@
 import 'package:chucker_flutter/chucker_flutter.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart' hide Response;
-import '../../app/app_config.dart';
+
+import '../../config/app_config.dart';
 
 class ApiService extends GetxService {
   ApiService({Dio? dio}) : _dio = dio ?? Dio(_defaultOptions);
