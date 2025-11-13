@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import '../../../../../app/helper/common_widgets/empty_state_widget.dart';
+import '../../../../../app/helper/common_widgets/loading_widget.dart';
 import '../../get/notifications_controller.dart';
+import '../widgets/notification_list_item.dart';
 
 class NotificationsScreen extends GetView<NotificationsController> {
   const NotificationsScreen({super.key});
@@ -15,10 +18,53 @@ class NotificationsScreen extends GetView<NotificationsController> {
           'Notifications',
           style: TextStyle(color: Theme.of(context).colorScheme.secondary),
         ),
+        actions: [buildMarkAllAsRead(context)],
       ),
-      body: const Center(
-        child: Text('Notifications - Coming Soon'),
-      ),
+      body: buildBody(),
     );
+  }
+
+  Widget buildMarkAllAsRead(BuildContext context) {
+    return Obx(() {
+      final hasUnread = controller.notifications.any((n) => !n.isRead);
+      if (!hasUnread) return const SizedBox.shrink();
+      return TextButton(
+        onPressed: controller.markAllAsRead,
+        child: Text(
+          'Mark all read',
+          style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+        ),
+      );
+    });
+  }
+
+  Widget buildBody() {
+    return Obx(() {
+      if (controller.isLoading.value) {
+        return LoadingWidget();
+      }
+
+      if (controller.notifications.isEmpty) {
+        return const EmptyStateWidget(
+          icon: Icons.notifications_none,
+          message: 'No notifications yet',
+        );
+      }
+
+      return RefreshIndicator(
+        onRefresh: controller.loadNotifications,
+        child: ListView.separated(
+          itemCount: controller.notifications.length,
+          separatorBuilder: (context, index) => const Divider(height: 1),
+          itemBuilder: (context, index) {
+            final notification = controller.notifications[index];
+            return NotificationListItem(
+              notification: notification,
+              onTap: () => controller.navigateToDetail(notification),
+            );
+          },
+        ),
+      );
+    });
   }
 }
