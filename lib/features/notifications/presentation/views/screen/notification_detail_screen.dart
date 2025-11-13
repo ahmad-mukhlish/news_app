@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:intl/intl.dart' show DateFormat;
+import 'package:intl/intl.dart';
 
 import '../../../../../app/domain/entities/push_notification.dart';
 import '../../get/notifications_controller.dart';

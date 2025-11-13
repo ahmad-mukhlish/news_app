@@ -31,7 +31,6 @@ class NotificationsBinding extends Bindings {
       Get.lazyPut<NotificationRepository>(
         () => NotificationRepository(
           localDataSource: Get.find<NotificationLocalDataSource>(),
-          storageService: Get.find<LocalStorageService>(),
         ),
       );
     }

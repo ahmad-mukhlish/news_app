@@ -21,7 +21,7 @@ class NotificationListItem extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        color: isUnread ? Colors.blue.withOpacity(0.05) : Colors.transparent,
+        color: isUnread ? Colors.blue.withValues(alpha: 0.05) : Colors.transparent,
         padding: const EdgeInsets.all(16),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,

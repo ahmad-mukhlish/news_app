@@ -5,9 +5,11 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../app/data/notification/mappers/push_notification_mapper.dart';
+import '../../../app/domain/entities/push_notification.dart';
 import '../../../app/services/storage/local_storage_service.dart';
 import '../../../features/notifications/data/datasources/local/notification_local_data_source.dart';
 import '../../../features/notifications/data/repositories/notification_repository.dart';
+import '../../../features/notifications/presentation/views/screen/notification_detail_screen.dart';
 import 'local_notification_display.dart';
 
 /// Notification Lifecycle Callbacks
@@ -32,15 +34,53 @@ Future<NotificationRepository> _ensureRepositoryInitialized() async {
 
     if (!Get.isRegistered<NotificationRepository>()) {
       final dataSource = Get.find<NotificationLocalDataSource>();
-      final storage = Get.find<LocalStorageService>();
       Get.put(NotificationRepository(
         localDataSource: dataSource,
-        storageService: storage,
       ));
     }
   }
 
   return Get.find<NotificationRepository>();
+}
+
+Future<void> _navigateToNotificationDetail(
+  NotificationRepository repository,
+  RemoteMessage message,
+) async {
+  final notification = await _resolveNotificationEntity(repository, message);
+
+  // Wait until navigator is ready before pushing a screen (important on cold start)
+  var attempts = 0;
+  while (Get.key.currentState == null && attempts < 60) {
+    await Future<void>.delayed(const Duration(milliseconds: 50));
+    attempts++;
+  }
+
+  if (Get.key.currentState == null) {
+    print('Navigator not ready, skipping navigation to NotificationDetailScreen.');
+    return;
+  }
+
+  Get.to(
+    () => NotificationDetailScreen(notification: notification),
+    preventDuplicates: true,
+  );
+}
+
+Future<PushNotification> _resolveNotificationEntity(
+  NotificationRepository repository,
+  RemoteMessage message,
+) async {
+  final notificationId = message.messageId;
+
+  if (notificationId != null) {
+    final pushNotifDto = await repository.getNotificationById(notificationId);
+    if (pushNotifDto != null) {
+      return PushNotificationMapper.toEntity(pushNotifDto);
+    }
+  }
+
+  return PushNotificationMapper.fromRemoteMessage(message);
 }
 
 
@@ -85,7 +125,7 @@ Future<void> onMessageOpenedApp(RemoteMessage message) async {
     await repository.markNotificationReadById(notificationId);
   }
 
-  // TODO: Navigate to specific screen based on data
+  await _navigateToNotificationDetail(repository, message);
 }
 
 /// Scenario 3: Background Message Received
@@ -131,5 +171,5 @@ Future<void> onInitialMessage(RemoteMessage message) async {
     await repository.markNotificationReadById(notificationId);
   }
 
-  // TODO: Navigate to specific screen based on data
+  await _navigateToNotificationDetail(repository, message);
 }

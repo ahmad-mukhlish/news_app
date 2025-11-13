@@ -3,27 +3,15 @@ import 'package:get/get.dart';
 import '../../../../app/data/notification/dto/push_notification_dto.dart';
 import '../../../../app/data/notification/mappers/push_notification_mapper.dart';
 import '../../../../app/domain/entities/push_notification.dart';
-import '../../../../app/services/storage/local_storage_service.dart';
 import '../datasources/local/notification_local_data_source.dart';
 
 class NotificationRepository {
   final NotificationLocalDataSource _localDataSource;
-  final LocalStorageService _storageService;
   final RxList<PushNotification> notifications = <PushNotification>[].obs;
 
   NotificationRepository({
     required NotificationLocalDataSource localDataSource,
-    required LocalStorageService storageService,
-  }) : _localDataSource = localDataSource,
-       _storageService = storageService;
-
-  Future<void> saveFcmToken(String token) async {
-    await _storageService.saveFcmToken(token);
-  }
-
-  Future<String?> getFcmToken() async {
-    return await _storageService.getFcmToken();
-  }
+  }) : _localDataSource = localDataSource;
 
   Future<void> appendNotification(PushNotificationDto pushNotifDto) async {
     final pushNotifDtos = await _localDataSource.getAll();
