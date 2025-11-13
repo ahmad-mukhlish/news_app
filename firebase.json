@@ -1,0 +1,31 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "dhealth-news-app",
+          "appId": "1:744655155722:android:66ab3666af2b09391665f3",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "ios": {
+        "default": {
+          "projectId": "dhealth-news-app",
+          "appId": "1:744655155722:ios:b7d7649c88c99a9c1665f3",
+          "uploadDebugSymbols": false,
+          "fileOutput": "ios/Runner/GoogleService-Info.plist"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "dhealth-news-app",
+          "configurations": {
+            "android": "1:744655155722:android:66ab3666af2b09391665f3",
+            "ios": "1:744655155722:ios:b7d7649c88c99a9c1665f3",
+            "web": "1:744655155722:web:a8a910e924b8679c1665f3"
+          }
+        }
+      }
+    }
+  }
+}
