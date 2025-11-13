@@ -1,10 +1,15 @@
+import 'package:get/get.dart';
+
 import '../../../../app/data/notification/dto/push_notification_dto.dart';
+import '../../../../app/data/notification/mappers/push_notification_mapper.dart';
+import '../../../../app/domain/entities/push_notification.dart';
 import '../../../../app/services/storage/local_storage_service.dart';
 import '../datasources/local/notification_local_data_source.dart';
 
 class NotificationRepository {
   final NotificationLocalDataSource _localDataSource;
   final LocalStorageService _storageService;
+  final RxList<PushNotification> notifications = <PushNotification>[].obs;
 
   NotificationRepository({
     required NotificationLocalDataSource localDataSource,
@@ -20,14 +25,17 @@ class NotificationRepository {
     return await _storageService.getFcmToken();
   }
 
-  Future<void> appendNotification(PushNotificationDto notification) async {
-    final notifications = await _localDataSource.getAll();
-    notifications.insert(0, notification);
-    await _localDataSource.saveAll(notifications);
+  Future<void> appendNotification(PushNotificationDto pushNotifDto) async {
+    final pushNotifDtos = await _localDataSource.getAll();
+    pushNotifDtos.insert(0, pushNotifDto);
+    await _localDataSource.saveAll(pushNotifDtos);
+    _syncInMemoryNotifications(pushNotifDtos);
   }
 
   Future<List<PushNotificationDto>> getAllNotifications() async {
-    return await _localDataSource.getAll();
+    final pushNotifDtos = await _localDataSource.getAll();
+    _syncInMemoryNotifications(pushNotifDtos);
+    return pushNotifDtos;
   }
 
   Future<PushNotificationDto?> getNotificationById(String id) async {
@@ -35,44 +43,50 @@ class NotificationRepository {
   }
 
   Future<int> getUnreadNotificationCount() async {
-    final notifications = await _localDataSource.getAll();
-    return notifications
-        .where((notification) => notification.isRead != true)
+    final pushNotifDtos = await _localDataSource.getAll();
+    return pushNotifDtos
+        .where((pushNotifDto) => pushNotifDto.isRead != true)
         .length;
   }
 
   Future<void> markNotificationReadById(String id) async {
-    final notifications = await _localDataSource.getAll();
-    final updatedNotifications = notifications.map((notification) {
-      if (notification.id == id) {
+    final pushNotifDtos = await _localDataSource.getAll();
+    final updatedNotifications = pushNotifDtos.map((pushNotifDto) {
+      if (pushNotifDto.id == id) {
         return PushNotificationDto(
-          id: notification.id,
-          title: notification.title,
-          body: notification.body,
-          receivedAt: notification.receivedAt,
-          data: notification.data,
-          imageUrl: notification.imageUrl,
+          id: pushNotifDto.id,
+          title: pushNotifDto.title,
+          body: pushNotifDto.body,
+          receivedAt: pushNotifDto.receivedAt,
+          data: pushNotifDto.data,
+          imageUrl: pushNotifDto.imageUrl,
           isRead: true,
         );
       }
-      return notification;
+      return pushNotifDto;
     }).toList();
     await _localDataSource.saveAll(updatedNotifications);
+    _syncInMemoryNotifications(updatedNotifications);
   }
 
   Future<void> markAllNotificationsRead() async {
-    final notifications = await _localDataSource.getAll();
-    final updatedNotifications = notifications.map((notification) {
+    final pushNotifDtos = await _localDataSource.getAll();
+    final updatedNotifications = pushNotifDtos.map((pushNotifDto) {
       return PushNotificationDto(
-        id: notification.id,
-        title: notification.title,
-        body: notification.body,
-        receivedAt: notification.receivedAt,
-        data: notification.data,
-        imageUrl: notification.imageUrl,
+        id: pushNotifDto.id,
+        title: pushNotifDto.title,
+        body: pushNotifDto.body,
+        receivedAt: pushNotifDto.receivedAt,
+        data: pushNotifDto.data,
+        imageUrl: pushNotifDto.imageUrl,
         isRead: true,
       );
     }).toList();
     await _localDataSource.saveAll(updatedNotifications);
+    _syncInMemoryNotifications(updatedNotifications);
+  }
+
+  void _syncInMemoryNotifications(List<PushNotificationDto> pushNotifDtos) {
+    notifications.assignAll(PushNotificationMapper.toEntityList(pushNotifDtos));
   }
 }
