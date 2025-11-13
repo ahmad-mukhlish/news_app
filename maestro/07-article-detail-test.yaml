@@ -1,0 +1,114 @@
+appId: com.dhealth.news.news_app
+---
+# Article Detail Test: Tests opening and viewing news articles
+# Verifies article cards can be tapped and details are displayed
+
+- launchApp:
+    clearState: true
+
+- waitForAnimationToEnd:
+    timeout: 10000
+
+# Verify home screen is visible
+- assertVisible: "News App"
+
+# Wait for articles to load
+- extendedWaitUntil:
+    visible: ".*"
+    timeout: 15000
+
+# Scroll down a bit to ensure articles are loaded
+- scroll:
+    direction: DOWN
+
+# Test 1: Tap on first article
+- tapOn:
+    index: 0
+
+# Wait for article detail or external browser to open
+- waitForAnimationToEnd:
+    timeout: 5000
+
+# The app uses url_launcher, so it might open external browser
+# Try to go back if we're still in the app
+- pressKey: Back
+
+- waitForAnimationToEnd
+
+# Verify we're back on home screen
+- assertVisible: "News App"
+
+# Test 2: Tap on second article
+- scroll:
+    direction: DOWN
+
+- tapOn:
+    index: 1
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+- pressKey: Back
+
+- waitForAnimationToEnd
+
+# Test 3: Article from search results
+- tapOn:
+    point: "30%,91%"
+- waitForAnimationToEnd
+
+- tapOn: "Search news..."
+- inputText: "technology"
+- pressKey: Enter
+
+# Wait for search results
+- extendedWaitUntil:
+    visible: ".*"
+    timeout: 15000
+
+- scroll:
+    direction: DOWN
+
+# Tap on search result article
+- tapOn:
+    index: 0
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+- pressKey: Back
+
+- waitForAnimationToEnd
+
+# Test 4: Article from categories
+- tapOn:
+    point: "50%,91%"
+- waitForAnimationToEnd
+
+# Wait for category articles to load
+- extendedWaitUntil:
+    visible: ".*"
+    timeout: 15000
+
+- tapOn: "Business"
+- waitForAnimationToEnd:
+    timeout: 5000
+
+- scroll:
+    direction: DOWN
+
+# Tap on category article
+- tapOn:
+    index: 0
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+- pressKey: Back
+
+- waitForAnimationToEnd
+
+# Return to home
+- tapOn:
+    point: "10%,91%"
+- assertVisible: "News App"

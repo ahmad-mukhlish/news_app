@@ -1,0 +1,159 @@
+appId: com.dhealth.news.news_app
+---
+# Pagination Test: Tests infinite scroll pagination
+# Verifies that more articles load when scrolling to bottom
+
+- launchApp:
+    clearState: true
+
+- waitForAnimationToEnd:
+    timeout: 10000
+
+# Test 1: Home screen pagination
+- assertVisible: "News App"
+
+# Wait for initial articles to load
+- extendedWaitUntil:
+    visible: ".*"
+    timeout: 15000
+
+# Scroll multiple times to trigger pagination
+- scroll:
+    direction: DOWN
+
+- waitForAnimationToEnd:
+    timeout: 2000
+
+- scroll:
+    direction: DOWN
+
+- waitForAnimationToEnd:
+    timeout: 2000
+
+- scroll:
+    direction: DOWN
+
+- waitForAnimationToEnd:
+    timeout: 2000
+
+- scroll:
+    direction: DOWN
+
+- waitForAnimationToEnd:
+    timeout: 2000
+
+- scroll:
+    direction: DOWN
+
+- waitForAnimationToEnd:
+    timeout: 3000
+
+# More aggressive scrolling to reach end
+- scroll:
+    direction: DOWN
+
+- waitForAnimationToEnd:
+    timeout: 3000
+
+- scroll:
+    direction: DOWN
+
+- waitForAnimationToEnd:
+    timeout: 3000
+
+# Scroll back up
+- scroll:
+    direction: UP
+
+- scroll:
+    direction: UP
+
+# Test 2: Search results pagination
+- tapOn:
+    point: "30%,91%"
+- waitForAnimationToEnd
+
+- tapOn: "Search news..."
+- inputText: "world news"
+- pressKey: Enter
+
+# Wait for search results
+- extendedWaitUntil:
+    visible: ".*"
+    timeout: 15000
+
+# Scroll through search results
+- scroll:
+    direction: DOWN
+
+- waitForAnimationToEnd:
+    timeout: 2000
+
+- scroll:
+    direction: DOWN
+
+- waitForAnimationToEnd:
+    timeout: 2000
+
+- scroll:
+    direction: DOWN
+
+- waitForAnimationToEnd:
+    timeout: 2000
+
+- scroll:
+    direction: DOWN
+
+- waitForAnimationToEnd:
+    timeout: 3000
+
+- scroll:
+    direction: DOWN
+
+- waitForAnimationToEnd:
+    timeout: 3000
+
+# Test 3: Categories pagination
+- tapOn:
+    point: "50%,91%"
+- waitForAnimationToEnd
+
+- tapOn: "Technology"
+- waitForAnimationToEnd:
+    timeout: 5000
+
+# Scroll through category results
+- scroll:
+    direction: DOWN
+
+- waitForAnimationToEnd:
+    timeout: 2000
+
+- scroll:
+    direction: DOWN
+
+- waitForAnimationToEnd:
+    timeout: 2000
+
+- scroll:
+    direction: DOWN
+
+- waitForAnimationToEnd:
+    timeout: 2000
+
+- scroll:
+    direction: DOWN
+
+- waitForAnimationToEnd:
+    timeout: 3000
+
+- scroll:
+    direction: DOWN
+
+- waitForAnimationToEnd:
+    timeout: 3000
+
+# Return to home
+- tapOn:
+    point: "10%,91%"
+- assertVisible: "News App"

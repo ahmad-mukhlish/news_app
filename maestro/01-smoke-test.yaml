@@ -1,0 +1,44 @@
+appId: com.dhealth.news.news_app
+---
+# Smoke Test: Quick validation that app launches and basic features work
+# This test ensures the app is functional before running detailed tests
+
+- launchApp:
+    clearState: true
+
+- waitForAnimationToEnd:
+    timeout: 10000
+
+# Verify app launched successfully and Home screen is visible
+- assertVisible: "News App"
+
+# Quick navigation check - tap each tab using semantic labels
+# Tabs have semantic labels: "Search tab", "Categories tab", etc.
+
+# Tap Search tab
+- tapOn:
+    text: ".*Search tab.*"
+- waitForAnimationToEnd
+
+# Tap Categories tab
+- tapOn:
+    text: ".*Categories tab.*"
+- waitForAnimationToEnd
+
+# Tap Notifications tab
+- tapOn:
+    text: ".*Notifications tab.*"
+- waitForAnimationToEnd
+
+# Tap Profile tab
+- tapOn:
+    text: ".*Profile tab.*"
+- waitForAnimationToEnd
+
+# Return to Home tab
+- tapOn:
+    text: ".*Home.*Tab.*"
+- waitForAnimationToEnd
+
+# Verify we're back on home
+- assertVisible: "News App"

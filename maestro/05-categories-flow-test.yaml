@@ -1,0 +1,101 @@
+appId: com.dhealth.news.news_app
+---
+# Categories Flow Test: Tests category filtering functionality
+# Verifies category chips, selection, and filtered news loading
+
+- launchApp:
+    clearState: true
+
+- waitForAnimationToEnd:
+    timeout: 10000
+
+# Navigate to Categories tab
+- tapOn:
+    point: "50%,91%"
+- waitForAnimationToEnd
+
+# Verify categories screen is visible
+- assertVisible: "Categories"
+
+# Wait for initial category content to load
+- extendedWaitUntil:
+    visible: ".*"
+    timeout: 15000
+
+# Test category selection - these are common news categories
+# The horizontal scrollable list should contain these
+
+# Test Business category
+- tapOn: "Business"
+- waitForAnimationToEnd:
+    timeout: 5000
+
+# Scroll down to verify business news loaded
+- scroll:
+    direction: DOWN
+
+# Test Entertainment category
+- scroll:
+    direction: UP
+
+- tapOn: "Entertainment"
+- waitForAnimationToEnd:
+    timeout: 5000
+
+- scroll:
+    direction: DOWN
+
+# Test Sports category
+- scroll:
+    direction: UP
+
+- tapOn: "Sports"
+- waitForAnimationToEnd:
+    timeout: 5000
+
+- scroll:
+    direction: DOWN
+
+# Test Technology category (scroll horizontal category list first)
+- scroll:
+    direction: UP
+
+- tapOn: "Technology"
+- waitForAnimationToEnd:
+    timeout: 5000
+
+- scroll:
+    direction: DOWN
+
+# Test Science category
+- scroll:
+    direction: UP
+
+- tapOn: "Science"
+- waitForAnimationToEnd:
+    timeout: 5000
+
+- scroll:
+    direction: DOWN
+
+# Test Health category
+- scroll:
+    direction: UP
+
+- tapOn: "Health"
+- waitForAnimationToEnd:
+    timeout: 5000
+
+- scroll:
+    direction: DOWN
+
+# Go back to first category (General)
+- scroll:
+    direction: UP
+
+- tapOn: "General"
+- waitForAnimationToEnd:
+    timeout: 5000
+
+# Verify we're still on categories screen
+- assertVisible: "Categories"

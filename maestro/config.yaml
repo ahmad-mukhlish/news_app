@@ -1,0 +1,12 @@
+appId: com.dhealth.news.news_app
+---
+# Shared configuration for News App Maestro tests
+# This file contains common setup and environment variables
+
+- launchApp:
+    clearState: true
+    clearKeychain: true
+
+# Wait for app to fully initialize
+- waitForAnimationToEnd:
+    timeout: 10000

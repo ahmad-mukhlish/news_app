@@ -25,42 +25,65 @@ class MainScreen extends GetView<MainController> {
     return Obx(
       () => Scaffold(
         body: pages[controller.selectedIndex.value],
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: controller.selectedIndex.value,
-          onTap: controller.changePage,
-          type: BottomNavigationBarType.fixed,
-          selectedItemColor: Theme.of(context).primaryColor,
-          unselectedItemColor: Theme.of(context).colorScheme.tertiary,
-          items: [
-            const BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined),
-              activeIcon: Icon(Icons.home),
-              label: 'Home',
-            ),
-            const BottomNavigationBarItem(
-              icon: Icon(Icons.search_outlined),
-              activeIcon: Icon(Icons.saved_search),
-              label: 'Search',
-            ),
-            const BottomNavigationBarItem(
-              icon: Icon(Icons.category_outlined),
-              activeIcon: Icon(Icons.category),
-              label: 'Categories',
-            ),
-            BottomNavigationBarItem(
-              icon: NotificationBadgeIcon(count: controller.unreadCount),
-              activeIcon: NotificationBadgeIcon(
-                count: controller.unreadCount,
-                isActive: true,
+        bottomNavigationBar: Semantics(
+          container: true,
+          child: BottomNavigationBar(
+            currentIndex: controller.selectedIndex.value,
+            onTap: controller.changePage,
+            type: BottomNavigationBarType.fixed,
+            selectedItemColor: Theme.of(context).primaryColor,
+            unselectedItemColor: Theme.of(context).colorScheme.tertiary,
+            items: [
+              BottomNavigationBarItem(
+                icon: Semantics(
+                  label: 'Home tab',
+                  button: true,
+                  child: const Icon(Icons.home_outlined),
+                ),
+                activeIcon: const Icon(Icons.home),
+                label: 'Home',
               ),
-              label: 'Notif',
-            ),
-            const BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline),
-              activeIcon: Icon(Icons.person),
-              label: 'Profile',
-            ),
-          ],
+              BottomNavigationBarItem(
+                icon: Semantics(
+                  label: 'Search tab',
+                  button: true,
+                  child: const Icon(Icons.search_outlined),
+                ),
+                activeIcon: const Icon(Icons.saved_search),
+                label: 'Search',
+              ),
+              BottomNavigationBarItem(
+                icon: Semantics(
+                  label: 'Categories tab',
+                  button: true,
+                  child: const Icon(Icons.category_outlined),
+                ),
+                activeIcon: const Icon(Icons.category),
+                label: 'Categories',
+              ),
+              BottomNavigationBarItem(
+                icon: Semantics(
+                  label: 'Notifications tab',
+                  button: true,
+                  child: NotificationBadgeIcon(count: controller.unreadCount),
+                ),
+                activeIcon: NotificationBadgeIcon(
+                  count: controller.unreadCount,
+                  isActive: true,
+                ),
+                label: 'Notif',
+              ),
+              BottomNavigationBarItem(
+                icon: Semantics(
+                  label: 'Profile tab',
+                  button: true,
+                  child: const Icon(Icons.person_outline),
+                ),
+                activeIcon: const Icon(Icons.person),
+                label: 'Profile',
+              ),
+            ],
+          ),
         ),
       ),
     );

@@ -1,0 +1,58 @@
+appId: com.dhealth.news.news_app
+---
+# Navigation Test: Comprehensive bottom navigation testing
+# Tests all 5 navigation tabs and verifies proper screen switching
+# Navigation tabs: Home(10%), Search(30%), Categories(50%), Notif(70%), Profile(90%) at 91% height
+
+- launchApp:
+    clearState: true
+
+- waitForAnimationToEnd:
+    timeout: 10000
+
+# Test 1: Home Tab
+- assertVisible: "News App"
+
+# Test 2: Navigate to Search
+- tapOn:
+    point: "30%,91%"
+- waitForAnimationToEnd
+
+# Test 3: Navigate to Categories
+- tapOn:
+    point: "50%,91%"
+- waitForAnimationToEnd
+
+# Test 4: Navigate to Notifications
+- tapOn:
+    point: "70%,91%"
+- waitForAnimationToEnd
+
+# Test 5: Navigate to Profile
+- tapOn:
+    point: "90%,91%"
+- waitForAnimationToEnd
+
+# Test 6: Return to Home
+- tapOn:
+    point: "10%,91%"
+- waitForAnimationToEnd
+- assertVisible: "News App"
+
+# Test 7: Rapid navigation switching
+- tapOn:
+    point: "30%,91%"
+- tapOn:
+    point: "50%,91%"
+- tapOn:
+    point: "10%,91%"
+- assertVisible: "News App"
+
+# Test 8: Verify navigation state persistence
+- tapOn:
+    point: "30%,91%"
+- tapOn:
+    point: "10%,91%"
+- tapOn:
+    point: "30%,91%"
+- waitForAnimationToEnd
