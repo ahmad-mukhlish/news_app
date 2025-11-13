@@ -140,7 +140,7 @@ class NewsArticleCard extends StatelessWidget {
         errorWidget: (context, url, error) => Container(
           height: 200,
           color: Theme.of(context).primaryColor,
-          child: const Icon(Icons.broken_image, size: 64),
+          child: Icon(Icons.broken_image, size: 64, color: Theme.of(context).colorScheme.secondary,),
         ),
       ),
     );

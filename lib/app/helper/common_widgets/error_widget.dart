@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
+import 'lottie_widget.dart';
 
 class ErrorStateWidget extends StatelessWidget {
   final String title;
   final String message;
   final VoidCallback onRetry;
+  final String? lottieUrl;
+  final double? lottieHeight;
 
   const ErrorStateWidget({
     super.key,
     required this.title,
     required this.message,
     required this.onRetry,
+    this.lottieUrl,
+    this.lottieHeight,
   });
 
   @override
@@ -18,7 +23,9 @@ class ErrorStateWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Icon(Icons.error_outline, size: 64, color: Colors.red),
+          LottieWidget(
+            url: lottieUrl,
+          ),
           const SizedBox(height: 16),
           Text(
             title,
@@ -30,7 +37,7 @@ class ErrorStateWidget extends StatelessWidget {
             child: Text(
               message,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.bodyMedium,
+              style: Theme.of(context).textTheme.bodySmall,
             ),
           ),
           const SizedBox(height: 16),

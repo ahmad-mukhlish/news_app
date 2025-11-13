@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:news_app/app/config/app_config.dart';
+import 'package:news_app/app/helper/common_widgets/lottie_widget.dart';
 
 import '../../get/profile_controller.dart';
 
@@ -16,8 +18,25 @@ class ProfileScreen extends GetView<ProfileController> {
           style: TextStyle(color: Theme.of(context).colorScheme.secondary),
         ),
       ),
-      body: const Center(
-        child: Text('Profile - Coming Soon'),
+      body: buildBody(context),
+    );
+  }
+
+  Widget buildBody(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          const LottieWidget(
+            url: AppConfig.comingSoonAnimation,
+            height: 220,
+          ),
+          const SizedBox(height: 16),
+          Text(
+            'Profile - Coming Soon',
+            style: Theme.of(context).textTheme.titleMedium,
+          ),
+        ],
       ),
     );
   }

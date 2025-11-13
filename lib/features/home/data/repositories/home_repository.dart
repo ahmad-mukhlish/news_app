@@ -1,3 +1,4 @@
+import '../../../../app/data/mappers/news_article_mapper.dart';
 import '../../../../app/domain/entities/news_article.dart';
 import '../../../../app/data/mappers/news_article_mapper.dart';
 import '../datasources/remote/home_remote_data_source.dart';

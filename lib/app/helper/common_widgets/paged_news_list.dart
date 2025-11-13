@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
+import '../../config/app_config.dart';
 import '../../domain/entities/news_article.dart';
 import '../common_methods.dart';
 import 'empty_state_widget.dart';
@@ -37,10 +38,12 @@ class PagedNewsList extends StatelessWidget {
               firstPageErrorIndicatorBuilder: (context) => ErrorStateWidget(
                 title: 'Error loading news',
                 message: state.error.toString(),
+                lottieUrl: AppConfig.errorAnimation,
                 onRetry: () => pagingController.refresh(),
               ),
               noItemsFoundIndicatorBuilder: (context) => const EmptyStateWidget(
                 message: 'No news available',
+                lottieUrl: AppConfig.emptyNewsAnimation,
               ),
               firstPageProgressIndicatorBuilder: (context) => const LoadingWidget(),
               newPageProgressIndicatorBuilder: (context) => const Padding(

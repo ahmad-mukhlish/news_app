@@ -33,4 +33,28 @@ class AppConfig {
     'PACKAGE_NAME',
     defaultValue: 'com.dhealth.newsapp',
   );
+
+  // Lottie Animations
+  static const String searchPageLottieAnimation = String.fromEnvironment(
+    'SEARCH_PAGE_LOTTIE_ANIMATION',
+    defaultValue:
+        '',
+  );
+
+  static const String emptyNewsAnimation = String.fromEnvironment(
+    'EMPTY_NEWS_ANIMATION',
+    defaultValue:
+        '',
+  );
+
+  static const String errorAnimation = String.fromEnvironment(
+    'ERROR_ANIMATION',
+    defaultValue:
+    '',
+  );
+
+  static const String comingSoonAnimation = String.fromEnvironment(
+    'COMING_SOON_ANIMATION',
+    defaultValue: '',
+  );
 }

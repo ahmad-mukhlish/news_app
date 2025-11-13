@@ -1,17 +1,38 @@
 import 'package:flutter/material.dart';
+import 'lottie_widget.dart';
 
 class EmptyStateWidget extends StatelessWidget {
   final String message;
+  final String? lottieUrl;
+  final double? lottieHeight;
 
   const EmptyStateWidget({
     super.key,
     required this.message,
+    this.lottieUrl,
+    this.lottieHeight,
   });
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: Text(message),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          LottieWidget(
+            url: lottieUrl,
+            height: lottieHeight,
+            padding: EdgeInsets.only(bottom: 16),
+          ),
+          Text(
+            message,
+            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
     );
   }
 }
