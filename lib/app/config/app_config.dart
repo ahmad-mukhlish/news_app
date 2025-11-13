@@ -57,4 +57,20 @@ class AppConfig {
     'COMING_SOON_ANIMATION',
     defaultValue: '',
   );
+
+  // Notification Configuration (for white-labeling)
+  static const String notificationChannelId = String.fromEnvironment(
+    'NOTIFICATION_CHANNEL_ID',
+    defaultValue: 'news_app_high_importance_channel',
+  );
+
+  static const String notificationChannelName = String.fromEnvironment(
+    'NOTIFICATION_CHANNEL_NAME',
+    defaultValue: 'News App Alerts',
+  );
+
+  static const String notificationIcon = String.fromEnvironment(
+    'NOTIFICATION_ICON',
+    defaultValue: '@mipmap/ic_launcher',
+  );
 }

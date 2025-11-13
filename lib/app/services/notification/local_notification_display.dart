@@ -3,13 +3,15 @@ import 'dart:convert';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
+import '../../config/app_config.dart';
+
 final FlutterLocalNotificationsPlugin _localNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
 const AndroidNotificationChannel _defaultAndroidChannel =
     AndroidNotificationChannel(
-      'news_app_high_importance_channel',
-      'News App Alerts',
+      AppConfig.notificationChannelId,
+      AppConfig.notificationChannelName,
       description: 'Used to deliver in-app alerts while the app is active.',
       importance: Importance.max,
     );
@@ -20,7 +22,7 @@ Future<void> _ensureLocalNotificationsInitialized() async {
   if (_localNotificationsInitialized) return;
 
   const initializationSettings = InitializationSettings(
-    android: AndroidInitializationSettings('@mipmap/ic_launcher'),
+    android: AndroidInitializationSettings(AppConfig.notificationIcon),
     iOS: DarwinInitializationSettings(
       requestAlertPermission: true,
       requestBadgePermission: true,
@@ -54,7 +56,7 @@ Future<void> displayLocalNotification(
   final dataTitle = message.data['title']?.toString();
   final dataBody = message.data['body']?.toString();
 
-  final title = notification?.title ?? dataTitle ?? 'News App';
+  final title = notification?.title ?? dataTitle ?? AppConfig.appName;
   final body = notification?.body ?? dataBody ?? '';
 
   if (title.isEmpty && body.isEmpty) return;
@@ -70,7 +72,7 @@ Future<void> displayLocalNotification(
         _defaultAndroidChannel.id,
         _defaultAndroidChannel.name,
         channelDescription: _defaultAndroidChannel.description,
-        icon: notification?.android?.smallIcon ?? '@mipmap/ic_launcher',
+        icon: notification?.android?.smallIcon ?? AppConfig.notificationIcon,
         importance: Importance.max,
         priority: Priority.high,
         ticker: 'News update',
