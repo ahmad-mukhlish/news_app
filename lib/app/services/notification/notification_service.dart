@@ -93,7 +93,7 @@ class NotificationService extends GetxService {
   Future<void> _checkInitialMessage() async {
     final message = await _messaging.getInitialMessage();
     if (message != null) {
-      onInitialMessage(message);
+      await onInitialMessage(message);
     }
   }
 }
