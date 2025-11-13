@@ -7,6 +7,7 @@ import '../../../../notifications/presentation/views/screen/notifications_screen
 import '../../../../profile/presentation/views/screen/profile_screen.dart';
 import '../../../../search/presentation/views/screen/search_screen.dart';
 import '../../get/main_controller.dart';
+import '../widgets/notification_badge_icon.dart';
 
 class MainScreen extends GetView<MainController> {
   const MainScreen({super.key});
@@ -30,28 +31,31 @@ class MainScreen extends GetView<MainController> {
           type: BottomNavigationBarType.fixed,
           selectedItemColor: Theme.of(context).primaryColor,
           unselectedItemColor: Theme.of(context).colorScheme.tertiary,
-          items: const [
-            BottomNavigationBarItem(
+          items: [
+            const BottomNavigationBarItem(
               icon: Icon(Icons.home_outlined),
               activeIcon: Icon(Icons.home),
               label: 'Home',
             ),
-            BottomNavigationBarItem(
+            const BottomNavigationBarItem(
               icon: Icon(Icons.search_outlined),
               activeIcon: Icon(Icons.saved_search),
               label: 'Search',
             ),
-            BottomNavigationBarItem(
+            const BottomNavigationBarItem(
               icon: Icon(Icons.category_outlined),
               activeIcon: Icon(Icons.category),
               label: 'Categories',
             ),
             BottomNavigationBarItem(
-              icon: Icon(Icons.notifications_outlined),
-              activeIcon: Icon(Icons.notifications),
+              icon: NotificationBadgeIcon(count: controller.unreadCount),
+              activeIcon: NotificationBadgeIcon(
+                count: controller.unreadCount,
+                isActive: true,
+              ),
               label: 'Notif',
             ),
-            BottomNavigationBarItem(
+            const BottomNavigationBarItem(
               icon: Icon(Icons.person_outline),
               activeIcon: Icon(Icons.person),
               label: 'Profile',

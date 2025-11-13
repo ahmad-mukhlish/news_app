@@ -49,7 +49,7 @@ class NotificationsController extends GetxController {
   }
 
   Future<void> navigateToDetail(PushNotification notification) async {
-    await navigateToNotificationDetail(
+    await routeToNotificationDetail(
       notification: notification,
       onMarkAsRead: markAsRead,
     );

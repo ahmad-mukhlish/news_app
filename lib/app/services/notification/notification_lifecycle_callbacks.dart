@@ -100,7 +100,7 @@ Future<void> onMessageOpenedApp(RemoteMessage message) async {
 
   final notification = await _resolveNotificationEntity(repository, message);
 
-  await navigateToNotificationDetail(
+  await routeToNotificationDetail(
     notification: notification,
     ensureNavigatorReady: true,
   );
@@ -150,7 +150,7 @@ Future<void> onInitialMessage(RemoteMessage message) async {
 
   final notification = await _resolveNotificationEntity(repository, message);
 
-  await navigateToNotificationDetail(
+  await routeToNotificationDetail(
     notification: notification,
     ensureNavigatorReady: true,
   );
