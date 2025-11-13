@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:firebase_messaging/firebase_messaging.dart';
+
 import '../../../domain/entities/push_notification.dart';
 import '../dto/push_notification_dto.dart';
 
@@ -57,5 +60,26 @@ class PushNotificationMapper {
       imageUrl: imageUrl,
       isRead: false,
     );
+  }
+
+  /// Deserialize JSON string to list of DTOs
+  static List<PushNotificationDto> dtoListFromJsonString(String json) {
+    if (json.isEmpty) return [];
+
+    try {
+      final List<dynamic> decoded = jsonDecode(json);
+      return decoded
+          .map((item) =>
+              PushNotificationDto.fromJson(item as Map<String, dynamic>))
+          .toList();
+    } catch (e) {
+      return [];
+    }
+  }
+
+  /// Serialize list of DTOs to JSON string
+  static String dtoListToJsonString(List<PushNotificationDto> dtos) {
+    final jsonList = dtos.map((dto) => dto.toJson()).toList();
+    return jsonEncode(jsonList);
   }
 }

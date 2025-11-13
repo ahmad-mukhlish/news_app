@@ -19,8 +19,6 @@ class ApiService extends GetxService {
     );
   }
 
-  static ApiService get to => Get.find<ApiService>();
-
   Dio get client => _dio;
 
   void setHeaderToken(String bearerToken) =>
