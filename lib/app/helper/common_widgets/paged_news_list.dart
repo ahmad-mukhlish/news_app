@@ -45,7 +45,8 @@ class PagedNewsList extends StatelessWidget {
                 message: 'No news available',
                 lottieUrl: AppConfig.emptyNewsAnimation,
               ),
-              firstPageProgressIndicatorBuilder: (context) => const LoadingWidget(),
+              firstPageProgressIndicatorBuilder: (context) =>
+                  const LoadingWidget(),
               newPageProgressIndicatorBuilder: (context) => const Padding(
                 padding: EdgeInsets.all(16.0),
                 child: Center(child: CircularProgressIndicator()),

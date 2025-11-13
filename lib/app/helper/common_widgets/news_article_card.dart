@@ -8,11 +8,7 @@ class NewsArticleCard extends StatelessWidget {
   final NewsArticle article;
   final VoidCallback onTap;
 
-  const NewsArticleCard({
-    super.key,
-    required this.article,
-    required this.onTap,
-  });
+  const NewsArticleCard({super.key, required this.article, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -21,9 +17,7 @@ class NewsArticleCard extends StatelessWidget {
       child: InkWell(
         onTap: onTap,
         borderRadius: BorderRadius.circular(12),
-        child: Stack(
-          children: [buildContent(context), buildOpenLinkIcon(context)],
-        ),
+        child: Stack(children: [buildContent(context), buildOpenLinkIcon(context)]),
       ),
     );
   }
@@ -31,10 +25,7 @@ class NewsArticleCard extends StatelessWidget {
   Widget buildContent(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        if (article.urlToImage.isNotEmpty) buildImage(context),
-        buildArticleText(context),
-      ],
+      children: [if (article.urlToImage.isNotEmpty) buildImage(context), buildArticleText(context)],
     );
   }
 
@@ -48,11 +39,7 @@ class NewsArticleCard extends StatelessWidget {
           color: Theme.of(context).colorScheme.surface.withValues(alpha: 0.9),
           shape: BoxShape.circle,
         ),
-        child: Icon(
-          Icons.open_in_new,
-          size: 20,
-          color: Theme.of(context).primaryColor,
-        ),
+        child: Icon(Icons.open_in_new, size: 20, color: Theme.of(context).primaryColor),
       ),
     );
   }
@@ -97,9 +84,9 @@ class NewsArticleCard extends StatelessWidget {
       children: [
         Text(
           article.sourceName,
-          style: Theme.of(context).textTheme.labelSmall?.copyWith(
-            color: Theme.of(context).primaryColor,
-          ),
+          style: Theme.of(
+            context,
+          ).textTheme.labelSmall?.copyWith(color: Theme.of(context).primaryColor),
         ),
         const SizedBox(width: 8),
         if (article.author.isNotEmpty) ...[
@@ -108,9 +95,9 @@ class NewsArticleCard extends StatelessWidget {
           Expanded(
             child: Text(
               article.author,
-              style: Theme.of(context).textTheme.labelSmall?.copyWith(
-                color: Theme.of(context).primaryColor,
-              ),
+              style: Theme.of(
+                context,
+              ).textTheme.labelSmall?.copyWith(color: Theme.of(context).primaryColor),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
@@ -140,7 +127,7 @@ class NewsArticleCard extends StatelessWidget {
         errorWidget: (context, url, error) => Container(
           height: 200,
           color: Theme.of(context).primaryColor,
-          child: Icon(Icons.broken_image, size: 64, color: Theme.of(context).colorScheme.secondary,),
+          child: Icon(Icons.broken_image, size: 64, color: Theme.of(context).colorScheme.secondary),
         ),
       ),
     );

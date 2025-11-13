@@ -10,7 +10,7 @@ class LottieWidget extends StatelessWidget {
     super.key,
     required this.url,
     this.height,
-    this.padding = EdgeInsets.zero
+    this.padding = EdgeInsets.zero,
   });
 
   @override

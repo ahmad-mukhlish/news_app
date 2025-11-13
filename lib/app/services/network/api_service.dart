@@ -15,18 +15,16 @@ class ApiService extends GetxService {
       connectTimeout: const Duration(seconds: 20),
       receiveTimeout: const Duration(seconds: 20),
       responseType: ResponseType.json,
-      headers: {
-        'X-Api-Key': AppConfig.newsApiKey,
-      },
+      headers: {'X-Api-Key': AppConfig.newsApiKey},
     );
   }
 
   static ApiService get to => Get.find<ApiService>();
+
   Dio get client => _dio;
 
-  void setHeaderToken(String bearerToken) {
-    _dio.options.headers.addAll({"Authorization" : "Bearer $bearerToken"});
-  }
+  void setHeaderToken(String bearerToken) =>
+      _dio.options.headers.addAll({"Authorization": "Bearer $bearerToken"});
 
   Future<ApiService> init() async {
     _dio.interceptors.add(ChuckerDioInterceptor());

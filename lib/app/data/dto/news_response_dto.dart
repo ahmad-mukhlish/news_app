@@ -15,7 +15,8 @@ class NewsResponseDto {
     return NewsResponseDto(
       status: json['status'] ?? 'error',
       totalResults: json['totalResults'],
-      articles: (json['articles'] as List?)
+      articles:
+          (json['articles'] as List?)
               ?.map((article) => NewsArticleDto.fromJson(article))
               .toList() ??
           [],

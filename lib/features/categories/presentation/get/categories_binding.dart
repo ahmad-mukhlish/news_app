@@ -17,15 +17,16 @@ class CategoriesBinding extends Bindings {
     if (!Get.isRegistered<CategoriesRepository>()) {
       Get.lazyPut<CategoriesRepository>(
         () => CategoriesRepository(
-            remoteDataSource: Get.find<CategoriesRemoteDataSource>()),
+          remoteDataSource: Get.find<CategoriesRemoteDataSource>(),
+        ),
       );
     }
 
     if (!Get.isRegistered<CategoriesController>()) {
       Get.lazyPut<CategoriesController>(
-        () => CategoriesController(repository: Get.find<CategoriesRepository>()),
+        () =>
+            CategoriesController(repository: Get.find<CategoriesRepository>()),
       );
     }
   }
 }
-
