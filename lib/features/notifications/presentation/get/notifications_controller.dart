@@ -3,8 +3,8 @@ import 'dart:developer' as developer;
 import 'package:get/get.dart';
 
 import '../../../../app/domain/entities/push_notification.dart';
+import '../../../../app/helper/common_methods/routing_methods.dart';
 import '../../data/repositories/notification_repository.dart';
-import '../views/screen/notification_detail_screen.dart';
 
 class NotificationsController extends GetxController {
   final NotificationRepository _repository;
@@ -48,10 +48,10 @@ class NotificationsController extends GetxController {
     }
   }
 
-  void navigateToDetail(PushNotification notification) {
-    Get.to(
-      () => NotificationDetailScreen(notification: notification),
-      preventDuplicates: true,
+  Future<void> navigateToDetail(PushNotification notification) async {
+    await navigateToNotificationDetail(
+      notification: notification,
+      onMarkAsRead: markAsRead,
     );
   }
 }

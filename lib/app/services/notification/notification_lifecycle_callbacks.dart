@@ -10,7 +10,7 @@ import '../../../app/domain/entities/push_notification.dart';
 import '../../../app/services/storage/local_storage_service.dart';
 import '../../../features/notifications/data/datasources/local/notification_local_data_source.dart';
 import '../../../features/notifications/data/repositories/notification_repository.dart';
-import '../../../features/notifications/presentation/views/screen/notification_detail_screen.dart';
+import '../../helper/common_methods/routing_methods.dart';
 import 'local_notification_display.dart';
 
 /// Notification Lifecycle Callbacks
@@ -35,37 +35,11 @@ Future<NotificationRepository> _ensureRepositoryInitialized() async {
 
     if (!Get.isRegistered<NotificationRepository>()) {
       final dataSource = Get.find<NotificationLocalDataSource>();
-      Get.put(NotificationRepository(
-        localDataSource: dataSource,
-      ));
+      Get.put(NotificationRepository(localDataSource: dataSource));
     }
   }
 
   return Get.find<NotificationRepository>();
-}
-
-Future<void> _navigateToNotificationDetail(
-  NotificationRepository repository,
-  RemoteMessage message,
-) async {
-  final notification = await _resolveNotificationEntity(repository, message);
-
-  // Wait until navigator is ready before pushing a screen (important on cold start)
-  var attempts = 0;
-  while (Get.key.currentState == null && attempts < 60) {
-    await Future<void>.delayed(const Duration(milliseconds: 50));
-    attempts++;
-  }
-
-  if (Get.key.currentState == null) {
-    developer.log('Navigator not ready, skipping navigation to NotificationDetailScreen.');
-    return;
-  }
-
-  Get.to(
-    () => NotificationDetailScreen(notification: notification),
-    preventDuplicates: true,
-  );
 }
 
 Future<PushNotification> _resolveNotificationEntity(
@@ -84,7 +58,6 @@ Future<PushNotification> _resolveNotificationEntity(
   return PushNotificationMapper.fromRemoteMessage(message);
 }
 
-
 /// Scenario 1: Foreground Message Received
 /// Fires when notification arrives while app is open and visible
 Future<void> onForegroundMessage(RemoteMessage message) async {
@@ -99,8 +72,7 @@ Future<void> onForegroundMessage(RemoteMessage message) async {
   final repository = await _ensureRepositoryInitialized();
 
   // Save to local storage
-  final notification = PushNotificationMapper.fromRemoteMessage(message);
-  final dto = PushNotificationMapper.toDto(notification);
+  final dto = PushNotificationMapper.dtoFromRemoteMessage(message);
   await repository.appendNotification(dto);
 
   // Show local notification
@@ -126,7 +98,12 @@ Future<void> onMessageOpenedApp(RemoteMessage message) async {
     await repository.markNotificationReadById(notificationId);
   }
 
-  await _navigateToNotificationDetail(repository, message);
+  final notification = await _resolveNotificationEntity(repository, message);
+
+  await navigateToNotificationDetail(
+    notification: notification,
+    ensureNavigatorReady: true,
+  );
 }
 
 /// Scenario 3: Background Message Received
@@ -145,8 +122,7 @@ Future<void> onBackgroundMessage(RemoteMessage message) async {
   final repository = await _ensureRepositoryInitialized();
 
   // Save to local storage
-  final notification = PushNotificationMapper.fromRemoteMessage(message);
-  final dto = PushNotificationMapper.toDto(notification);
+  final dto = PushNotificationMapper.dtoFromRemoteMessage(message);
   await repository.appendNotification(dto);
 
   // Display local notification
@@ -172,5 +148,10 @@ Future<void> onInitialMessage(RemoteMessage message) async {
     await repository.markNotificationReadById(notificationId);
   }
 
-  await _navigateToNotificationDetail(repository, message);
+  final notification = await _resolveNotificationEntity(repository, message);
+
+  await navigateToNotificationDetail(
+    notification: notification,
+    ensureNavigatorReady: true,
+  );
 }

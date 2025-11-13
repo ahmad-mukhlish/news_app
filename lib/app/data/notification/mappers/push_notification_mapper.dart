@@ -62,6 +62,11 @@ class PushNotificationMapper {
     );
   }
 
+  /// Convert Firebase RemoteMessage directly to DTO (useful for persistence)
+  static PushNotificationDto dtoFromRemoteMessage(RemoteMessage message) {
+    return toDto(fromRemoteMessage(message));
+  }
+
   /// Deserialize JSON string to list of DTOs
   static List<PushNotificationDto> dtoListFromJsonString(String json) {
     if (json.isEmpty) return [];
