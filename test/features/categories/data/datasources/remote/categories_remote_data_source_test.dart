@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:news_app/app/data/dto/news_response_dto.dart';
+import 'package:news_app/app/data/news/dto/news_response_dto.dart';
 import 'package:news_app/app/services/network/api_service.dart';
 import 'package:news_app/features/categories/data/datasources/remote/categories_remote_data_source.dart';
 import 'package:news_app/features/categories/domain/enums/news_category_enum.dart';

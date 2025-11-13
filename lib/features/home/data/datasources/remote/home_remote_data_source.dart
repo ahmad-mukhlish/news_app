@@ -1,5 +1,5 @@
 import '../../../../../app/services/network/api_service.dart';
-import '../../../../../app/data/dto/news_response_dto.dart';
+import '../../../../../app/data/news/dto/news_response_dto.dart';
 
 class HomeRemoteDataSource {
   final ApiService apiService;

@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
-import 'package:news_app/app/data/dto/news_article_dto.dart';
-import 'package:news_app/app/data/dto/news_response_dto.dart';
-import 'package:news_app/app/data/dto/source_dto.dart';
+import 'package:news_app/app/data/news/dto/news_article_dto.dart';
+import 'package:news_app/app/data/news/dto/news_response_dto.dart';
+import 'package:news_app/app/data/news/dto/source_dto.dart';
 import 'package:news_app/features/search/data/datasources/remote/search_remote_data_source.dart';
 import 'package:news_app/features/search/data/repositories/search_repository.dart';
 import 'package:news_app/features/search/domain/enums/search_in_enum.dart';

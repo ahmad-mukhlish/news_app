@@ -1,4 +1,4 @@
-import '../../../../app/data/mappers/news_article_mapper.dart';
+import '../../../../app/data/news/mappers/news_article_mapper.dart';
 import '../../../../app/domain/entities/news_article.dart';
 import '../../domain/enums/search_in_enum.dart';
 import '../../domain/enums/sort_by_enum.dart';

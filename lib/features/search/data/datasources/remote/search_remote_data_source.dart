@@ -1,4 +1,4 @@
-import '../../../../../app/data/dto/news_response_dto.dart';
+import '../../../../../app/data/news/dto/news_response_dto.dart';
 import '../../../../../app/services/network/api_service.dart';
 import '../../../domain/enums/search_in_enum.dart';
 import '../../../domain/enums/sort_by_enum.dart';

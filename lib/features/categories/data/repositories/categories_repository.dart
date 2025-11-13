@@ -1,4 +1,4 @@
-import '../../../../app/data/mappers/news_article_mapper.dart';
+import '../../../../app/data/news/mappers/news_article_mapper.dart';
 import '../../../../app/domain/entities/news_article.dart';
 import '../../domain/enums/news_category_enum.dart';
 import '../datasources/remote/categories_remote_data_source.dart';

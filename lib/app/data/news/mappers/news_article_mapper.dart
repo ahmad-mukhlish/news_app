@@ -1,4 +1,4 @@
-import '../../domain/entities/news_article.dart';
+import '../../../domain/entities/news_article.dart';
 import '../dto/news_article_dto.dart';
 
 class NewsArticleMapper {
