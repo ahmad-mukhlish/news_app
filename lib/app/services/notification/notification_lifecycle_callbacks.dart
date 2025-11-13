@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:developer' as developer;
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
@@ -57,7 +58,7 @@ Future<void> _navigateToNotificationDetail(
   }
 
   if (Get.key.currentState == null) {
-    print('Navigator not ready, skipping navigation to NotificationDetailScreen.');
+    developer.log('Navigator not ready, skipping navigation to NotificationDetailScreen.');
     return;
   }
 
@@ -87,12 +88,12 @@ Future<PushNotification> _resolveNotificationEntity(
 /// Scenario 1: Foreground Message Received
 /// Fires when notification arrives while app is open and visible
 Future<void> onForegroundMessage(RemoteMessage message) async {
-  print('=== SCENARIO 1: Foreground Message Received ===');
-  print('Message ID: ${message.messageId}');
-  print('Title: ${message.notification?.title}');
-  print('Body: ${message.notification?.body}');
-  print('Data: ${message.data}');
-  print('===============================================');
+  developer.log('=== SCENARIO 1: Foreground Message Received ===');
+  developer.log('Message ID: ${message.messageId}');
+  developer.log('Title: ${message.notification?.title}');
+  developer.log('Body: ${message.notification?.body}');
+  developer.log('Data: ${message.data}');
+  developer.log('===============================================');
 
   // Ensure repository is initialized
   final repository = await _ensureRepositoryInitialized();
@@ -109,12 +110,12 @@ Future<void> onForegroundMessage(RemoteMessage message) async {
 /// Scenario 2: Notification Tapped (Background)
 /// Fires when user taps notification while app is in background
 Future<void> onMessageOpenedApp(RemoteMessage message) async {
-  print('=== SCENARIO 2: Notification Tapped (Background) ===');
-  print('Message ID: ${message.messageId}');
-  print('Title: ${message.notification?.title}');
-  print('Body: ${message.notification?.body}');
-  print('Data: ${message.data}');
-  print('===================================================');
+  developer.log('=== SCENARIO 2: Notification Tapped (Background) ===');
+  developer.log('Message ID: ${message.messageId}');
+  developer.log('Title: ${message.notification?.title}');
+  developer.log('Body: ${message.notification?.body}');
+  developer.log('Data: ${message.data}');
+  developer.log('===================================================');
 
   // Ensure repository is initialized
   final repository = await _ensureRepositoryInitialized();
@@ -133,12 +134,12 @@ Future<void> onMessageOpenedApp(RemoteMessage message) async {
 /// NOTE: Must be top-level function for Firebase background handler
 @pragma('vm:entry-point')
 Future<void> onBackgroundMessage(RemoteMessage message) async {
-  print('=== SCENARIO 3: Background Message Received ===');
-  print('Message ID: ${message.messageId}');
-  print('Title: ${message.notification?.title}');
-  print('Body: ${message.notification?.body}');
-  print('Data: ${message.data}');
-  print('=============================================');
+  developer.log('=== SCENARIO 3: Background Message Received ===');
+  developer.log('Message ID: ${message.messageId}');
+  developer.log('Title: ${message.notification?.title}');
+  developer.log('Body: ${message.notification?.body}');
+  developer.log('Data: ${message.data}');
+  developer.log('=============================================');
 
   // Ensure repository is initialized (works in background isolate)
   final repository = await _ensureRepositoryInitialized();
@@ -155,12 +156,12 @@ Future<void> onBackgroundMessage(RemoteMessage message) async {
 /// Scenario 4: App Opened from Terminated State
 /// Fires when user taps notification to open app from completely closed state
 Future<void> onInitialMessage(RemoteMessage message) async {
-  print('=== SCENARIO 4: App Opened from Terminated State ===');
-  print('Message ID: ${message.messageId}');
-  print('Title: ${message.notification?.title}');
-  print('Body: ${message.notification?.body}');
-  print('Data: ${message.data}');
-  print('====================================================');
+  developer.log('=== SCENARIO 4: App Opened from Terminated State ===');
+  developer.log('Message ID: ${message.messageId}');
+  developer.log('Title: ${message.notification?.title}');
+  developer.log('Body: ${message.notification?.body}');
+  developer.log('Data: ${message.data}');
+  developer.log('====================================================');
 
   // Ensure repository is initialized
   final repository = await _ensureRepositoryInitialized();

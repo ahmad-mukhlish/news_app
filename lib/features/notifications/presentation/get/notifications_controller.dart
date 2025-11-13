@@ -1,3 +1,5 @@
+import 'dart:developer' as developer;
+
 import 'package:get/get.dart';
 
 import '../../../../app/domain/entities/push_notification.dart';
@@ -24,7 +26,7 @@ class NotificationsController extends GetxController {
       isLoading.value = true;
       await _repository.getAllNotifications();
     } catch (e) {
-      print('Error loading notifications: $e');
+      developer.log('Error loading notifications: $e');
     } finally {
       isLoading.value = false;
     }
@@ -34,7 +36,7 @@ class NotificationsController extends GetxController {
     try {
       await _repository.markNotificationReadById(notificationId);
     } catch (e) {
-      print('Error marking notification as read: $e');
+      developer.log('Error marking notification as read: $e');
     }
   }
 
@@ -42,7 +44,7 @@ class NotificationsController extends GetxController {
     try {
       await _repository.markAllNotificationsRead();
     } catch (e) {
-      print('Error marking all notifications as read: $e');
+      developer.log('Error marking all notifications as read: $e');
     }
   }
 

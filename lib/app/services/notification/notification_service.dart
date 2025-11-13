@@ -1,3 +1,4 @@
+import 'dart:developer' as developer;
 import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -40,8 +41,8 @@ class NotificationService extends GetxService {
     // Scenario 4: Check if app was opened from terminated state
     await _checkInitialMessage();
 
-    print('NotificationService initialized successfully');
-    print('FCM Token: $_fcmToken');
+    developer.log('NotificationService initialized successfully');
+    developer.log('FCM Token: $_fcmToken');
 
     return this;
   }
@@ -58,7 +59,7 @@ class NotificationService extends GetxService {
     }
 
     final settings = await _messaging.getNotificationSettings();
-    print('Notification permission status: ${settings.authorizationStatus}');
+    developer.log('Notification permission status: ${settings.authorizationStatus}');
   }
 
   /// Get FCM token
@@ -69,10 +70,10 @@ class NotificationService extends GetxService {
       // Listen to token refresh
       _messaging.onTokenRefresh.listen((newToken) {
         _fcmToken = newToken;
-        print('FCM Token refreshed: $newToken');
+        developer.log('FCM Token refreshed: $newToken');
       });
     } catch (e) {
-      print('Error getting FCM token: $e');
+      developer.log('Error getting FCM token: $e');
     }
   }
 
