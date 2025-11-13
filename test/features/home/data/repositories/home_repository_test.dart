@@ -4,22 +4,23 @@ import 'package:mockito/mockito.dart';
 import 'package:news_app/app/data/dto/news_article_dto.dart';
 import 'package:news_app/app/data/dto/news_response_dto.dart';
 import 'package:news_app/app/data/dto/source_dto.dart';
-import 'package:news_app/features/headline/data/datasources/remote/headline_remote_data_source.dart';
-import 'package:news_app/features/headline/data/repositories/headline_repository.dart';
+import 'package:news_app/features/home/data/datasources/remote/home_remote_data_source.dart';
+import 'package:news_app/features/home/data/repositories/home_repository.dart';
 
-import 'headline_repository_test.mocks.dart';
 
-@GenerateMocks([HeadlineRemoteDataSource])
+import 'home_repository_test.mocks.dart';
+
+@GenerateMocks([HomeRemoteDataSource])
 void main() {
-  late HeadlineRepository repository;
-  late MockHeadlineRemoteDataSource mockRemoteDataSource;
+  late HomeRepository repository;
+  late MockHomeRemoteDataSource mockRemoteDataSource;
 
   setUp(() {
-    mockRemoteDataSource = MockHeadlineRemoteDataSource();
-    repository = HeadlineRepository(remoteDataSource: mockRemoteDataSource);
+    mockRemoteDataSource = MockHomeRemoteDataSource();
+    repository = HomeRepository(remoteDataSource: mockRemoteDataSource);
   });
 
-  group('HeadlineRepository', () {
+  group('HomeRepository', () {
     group('fetchTopHeadlines', () {
       test('should return list of NewsArticle on success', () async {
         final mockResponse = NewsResponseDto(

@@ -3,10 +3,10 @@ import 'package:get/get.dart';
 import 'package:news_app/app/config/app_config.dart';
 
 import '../../../../../app/helper/common_widgets/paged_news_list.dart';
-import '../../get/headline_controller.dart';
+import '../../get/home_controller.dart';
 
-class HeadlineScreen extends GetView<HeadlineController> {
-  const HeadlineScreen({super.key});
+class HomeScreen extends GetView<HomeController> {
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {

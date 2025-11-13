@@ -2,12 +2,12 @@ import 'package:get/get.dart';
 import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../../../../app/domain/entities/news_article.dart';
-import '../../data/repositories/headline_repository.dart';
+import '../../data/repositories/home_repository.dart';
 
-class HeadlineController extends GetxController {
-  final HeadlineRepository repository;
+class HomeController extends GetxController {
+  final HomeRepository repository;
 
-  HeadlineController({required this.repository});
+  HomeController({required this.repository});
 
   late final PagingController<int, NewsArticle> pagingController =
       PagingController(
