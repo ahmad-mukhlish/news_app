@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:news_app/features/categories/domain/enums/news_category.dart';
+import 'package:news_app/features/categories/domain/enums/news_category_enum.dart';
 
 void main() {
   group('NewsCategoryEnum', () {

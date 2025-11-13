@@ -5,8 +5,7 @@ import 'package:mockito/mockito.dart';
 import 'package:news_app/app/data/dto/news_response_dto.dart';
 import 'package:news_app/app/services/network/api_service.dart';
 import 'package:news_app/features/categories/data/datasources/remote/categories_remote_data_source.dart';
-import 'package:news_app/features/categories/domain/enums/news_category.dart';
-
+import 'package:news_app/features/categories/domain/enums/news_category_enum.dart';
 import 'categories_remote_data_source_test.mocks.dart';
 
 @GenerateMocks([ApiService])

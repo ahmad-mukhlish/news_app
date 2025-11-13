@@ -6,7 +6,7 @@ import 'package:news_app/app/data/dto/news_response_dto.dart';
 import 'package:news_app/app/data/dto/source_dto.dart';
 import 'package:news_app/features/categories/data/datasources/remote/categories_remote_data_source.dart';
 import 'package:news_app/features/categories/data/repositories/categories_repository.dart';
-import 'package:news_app/features/categories/domain/enums/news_category.dart';
+import 'package:news_app/features/categories/domain/enums/news_category_enum.dart';
 
 import 'categories_repository_test.mocks.dart';
 

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-
-import '../../../domain/enums/news_category.dart';
+import '../../../domain/enums/news_category_enum.dart';
 
 class CategoryChip extends StatelessWidget {
   final NewsCategoryEnum category;

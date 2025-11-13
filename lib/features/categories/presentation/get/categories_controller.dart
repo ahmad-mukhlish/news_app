@@ -4,7 +4,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../../../../app/domain/entities/news_article.dart';
 import '../../data/repositories/categories_repository.dart';
-import '../../domain/enums/news_category.dart';
+import '../../domain/enums/news_category_enum.dart';
 
 class CategoriesController extends GetxController {
   final CategoriesRepository repository;

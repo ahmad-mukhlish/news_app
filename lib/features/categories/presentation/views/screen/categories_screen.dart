@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../../../../../app/helper/common_widgets/paged_news_list.dart';
-import '../../../domain/enums/news_category.dart';
+import '../../../domain/enums/news_category_enum.dart';
 import '../../get/categories_controller.dart';
 import '../widgets/category_chip.dart';
 

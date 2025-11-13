@@ -1,6 +1,6 @@
 import '../../../../../app/data/dto/news_response_dto.dart';
 import '../../../../../app/services/network/api_service.dart';
-import '../../../domain/enums/news_category.dart';
+import '../../../domain/enums/news_category_enum.dart';
 
 class CategoriesRemoteDataSource {
   final ApiService apiService;

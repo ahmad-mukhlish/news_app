@@ -11,8 +11,8 @@ import 'package:news_app/features/categories/data/datasources/remote/categories_
     as _i2;
 import 'package:news_app/features/categories/data/repositories/categories_repository.dart'
     as _i3;
-import 'package:news_app/features/categories/domain/enums/news_category.dart'
-    as _i6;
+import 'package:news_app/features/categories/domain/enums/news_category_enum.dart' as _i6;
+
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
