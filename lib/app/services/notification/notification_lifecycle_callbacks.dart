@@ -1,4 +1,7 @@
+import 'dart:async';
 import 'package:firebase_messaging/firebase_messaging.dart';
+
+import 'local_notification_display.dart';
 
 /// Notification Lifecycle Callbacks
 /// All top-level functions to handle FCM notification scenarios
@@ -13,7 +16,7 @@ void onForegroundMessage(RemoteMessage message) {
   print('Data: ${message.data}');
   print('===============================================');
   // TODO: Save to local storage
-  // TODO: Show local notification (flutter_local_notifications)
+  unawaited(displayLocalNotification(message, force: true));
 }
 
 /// Scenario 2: Notification Tapped (Background)
@@ -41,6 +44,7 @@ Future<void> onBackgroundMessage(RemoteMessage message) async {
   print('Data: ${message.data}');
   print('=============================================');
   // TODO: Save to local storage
+  await displayLocalNotification(message);
 }
 
 /// Scenario 4: App Opened from Terminated State

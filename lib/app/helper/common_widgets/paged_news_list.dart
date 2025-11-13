@@ -3,7 +3,7 @@ import 'package:infinite_scroll_pagination/infinite_scroll_pagination.dart';
 
 import '../../config/app_config.dart';
 import '../../domain/entities/news_article.dart';
-import '../common_methods.dart';
+import '../common_methods/url_methods.dart';
 import 'empty_state_widget.dart';
 import 'error_widget.dart';
 import 'loading_widget.dart';
@@ -33,7 +33,7 @@ class PagedNewsList extends StatelessWidget {
             builderDelegate: PagedChildBuilderDelegate<NewsArticle>(
               itemBuilder: (context, article, index) => NewsArticleCard(
                 article: article,
-                onTap: () => CommonMethods.openUrl(article.url),
+                onTap: () => openUrl(article.url),
               ),
               firstPageErrorIndicatorBuilder: (context) => ErrorStateWidget(
                 title: 'Error loading news',

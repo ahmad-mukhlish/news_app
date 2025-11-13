@@ -4,6 +4,7 @@ class PushNotificationDto {
   final String? body;
   final String? receivedAt;
   final Map<String, dynamic>? data;
+  final String? imageUrl;
   final bool? isRead;
 
   PushNotificationDto({
@@ -12,6 +13,7 @@ class PushNotificationDto {
     this.body,
     this.receivedAt,
     this.data,
+    this.imageUrl,
     this.isRead,
   });
 
@@ -24,6 +26,7 @@ class PushNotificationDto {
       data: json['data'] != null
           ? Map<String, dynamic>.from(json['data'])
           : null,
+      imageUrl: json['imageUrl'],
       isRead: json['isRead'],
     );
   }
@@ -35,6 +38,7 @@ class PushNotificationDto {
       'body': body,
       'receivedAt': receivedAt,
       'data': data,
+      'imageUrl': imageUrl,
       'isRead': isRead,
     };
   }

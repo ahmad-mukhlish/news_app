@@ -13,6 +13,7 @@ class PushNotificationMapper {
           ? DateTime.tryParse(dto.receivedAt!) ?? DateTime.now()
           : DateTime.now(),
       data: dto.data,
+      imageUrl: dto.imageUrl,
       isRead: dto.isRead ?? false,
     );
   }
@@ -25,6 +26,7 @@ class PushNotificationMapper {
       body: entity.body,
       receivedAt: entity.receivedAt.toIso8601String(),
       data: entity.data,
+      imageUrl: entity.imageUrl,
       isRead: entity.isRead,
     );
   }
@@ -41,12 +43,18 @@ class PushNotificationMapper {
 
   /// Convert Firebase RemoteMessage to Entity
   static PushNotification fromRemoteMessage(RemoteMessage message) {
+    // Extract image URL from various sources
+    final imageUrl = message.notification?.android?.imageUrl ??
+        message.notification?.apple?.imageUrl ??
+        message.data['imageUrl'];
+
     return PushNotification(
       id: message.messageId ?? DateTime.now().millisecondsSinceEpoch.toString(),
       title: message.notification?.title ?? 'No Title',
       body: message.notification?.body ?? 'No Body',
       receivedAt: DateTime.now(),
       data: message.data.isNotEmpty ? message.data : null,
+      imageUrl: imageUrl,
       isRead: false,
     );
   }

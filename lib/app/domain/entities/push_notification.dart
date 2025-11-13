@@ -4,6 +4,7 @@ class PushNotification {
   final String body;
   final DateTime receivedAt;
   final Map<String, dynamic>? data;
+  final String? imageUrl;
   final bool isRead;
 
   PushNotification({
@@ -12,6 +13,7 @@ class PushNotification {
     required this.body,
     required this.receivedAt,
     this.data,
+    this.imageUrl,
     this.isRead = false,
   });
 
@@ -21,6 +23,7 @@ class PushNotification {
     String? body,
     DateTime? receivedAt,
     Map<String, dynamic>? data,
+    String? imageUrl,
     bool? isRead,
   }) {
     return PushNotification(
@@ -29,6 +32,7 @@ class PushNotification {
       body: body ?? this.body,
       receivedAt: receivedAt ?? this.receivedAt,
       data: data ?? this.data,
+      imageUrl: imageUrl ?? this.imageUrl,
       isRead: isRead ?? this.isRead,
     );
   }
