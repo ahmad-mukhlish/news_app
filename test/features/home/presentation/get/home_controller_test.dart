@@ -15,21 +15,17 @@ void main() {
     controller = HomeController(repository: mockRepository);
   });
 
+  tearDown(() {
+    controller.onClose();
+  });
+
   group('HomeController', () {
     test('should initialize with repository', () {
       expect(controller.repository, equals(mockRepository));
-
-      controller.onClose();
     });
 
     test('should initialize with PagingController', () {
       expect(controller.pagingController, isNotNull);
-
-      controller.onClose();
-    });
-
-    test('should properly dispose pagingController on close', () {
-      expect(() => controller.onClose(), returnsNormally);
     });
   });
 }
