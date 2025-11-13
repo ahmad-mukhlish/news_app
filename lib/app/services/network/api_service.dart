@@ -1,4 +1,3 @@
-import 'package:chucker_flutter/chucker_flutter.dart';
 import 'package:dio/dio.dart';
 import 'package:get/get.dart' hide Response;
 
@@ -25,7 +24,6 @@ class ApiService extends GetxService {
       _dio.options.headers.addAll({"Authorization": "Bearer $bearerToken"});
 
   Future<ApiService> init() async {
-    _dio.interceptors.add(ChuckerDioInterceptor());
     return this;
   }
 
