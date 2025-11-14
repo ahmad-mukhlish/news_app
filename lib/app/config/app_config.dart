@@ -20,7 +20,7 @@ class AppConfig {
   // API Configuration
   static const String newsApiKey = String.fromEnvironment(
     'NEWS_API_KEY',
-    defaultValue: 'YOUR_API_KEY_HERE',
+    defaultValue: '6fb73906c96d4863aec69ba4b95d1cae',
   );
 
   static const String newsApiBaseUrl = String.fromEnvironment(
