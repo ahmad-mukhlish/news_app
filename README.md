@@ -27,3 +27,11 @@ Added firebase to handling :
 1. Foreground state
 2. Background state
 3. Terminated state
+
+## Unit and Widget Testing with 93.7% Coverage 🎉
+
+
+
+https://github.com/user-attachments/assets/594bdce1-53c1-48de-a969-1d2c788db954
+
+
