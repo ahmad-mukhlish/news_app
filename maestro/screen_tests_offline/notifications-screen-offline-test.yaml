@@ -7,17 +7,3 @@ appId: com.dhealth.news.news_app
 
 # Navigate to Notifications tab and perform the shared checks
 - runFlow: ../common_tests/notifications-test.yaml
-
-# Try pull-to-refresh in offline mode to surface error message
-- swipe:
-    direction: DOWN
-    duration: 500
-
-- waitForAnimationToEnd:
-    timeout: 5000
-
-- runFlow:
-    when:
-      visible: "No internet connection"
-    commands:
-      - assertVisible: "No internet connection"

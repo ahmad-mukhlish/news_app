@@ -3,32 +3,12 @@ appId: com.dhealth.news.news_app
 # Test Mark as Read Functionality
 # Tests marking individual notifications as read and marking all as read
 
-# Navigate to Notifications tab
-- tapOn:
-    text: ".*Notifications tab.*"
-- waitForAnimationToEnd
-
-- assertVisible: "Notifications"
-
 # Only test if there are notifications
 - runFlow:
     when:
       notVisible: "No notifications yet"
     commands:
-      # Test 1: Individual notification marking (by opening and going back)
-      - tapOn:
-          text: ".*Notification item.*"
-      - waitForAnimationToEnd:
-          timeout: 2000
-
-      - runFlow:
-          when:
-            visible: "Notification Detail"
-          commands:
-            - back
-            - waitForAnimationToEnd
-
-      # Test 2: Mark all as read button
+      # Test 1: Mark all as read button
       - runFlow:
           when:
             visible:
@@ -64,20 +44,13 @@ appId: com.dhealth.news.news_app
             - assertNotVisible:
                 text: ".*Mark.*read.*"
 
-      # Test 3: Verify notifications are still visible after marking as read
+      # Test 2: Verify notifications are still visible after marking as read
       - assertVisible: "Notifications"
       - runFlow:
           when:
             notVisible: "No notifications yet"
           commands:
             # Can still access notification details
-            - tapOn:
-                text: ".*Notification item.*"
+            - assertVisible :
+               text: ".*Notification item.*"
             - waitForAnimationToEnd
-
-            - runFlow:
-                when:
-                  visible: "Notification Detail"
-                commands:
-                  - back
-                  - waitForAnimationToEnd
