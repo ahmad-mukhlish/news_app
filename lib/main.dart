@@ -8,37 +8,37 @@ import 'app/config/flavors.dart';
 import 'app/services/network/api_service.dart';
 import 'app/services/notification/notification_service.dart';
 import 'app/services/storage/local_storage_service.dart';
+import 'features/notifications/presentation/get/notifications_binding.dart';
 import 'firebase_options.dart';
 
 
-void main() async {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setFlavorFromEnvironment();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-  initServices();
+
+  await initServicesAndDependencies();
 
   runApp(const App());
 }
 
-void initServices() {
-  Get.putAsync<ApiService>(() => ApiService().init(), permanent: true);
+Future<void> initServicesAndDependencies() async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
-  // Register LocalStorageService for future use
-  Get.putAsync<LocalStorageService>(
-    () async {
-      final prefs = await SharedPreferences.getInstance();
-      return LocalStorageService(prefs: prefs);
-    },
+  await Get.putAsync<ApiService>(() => ApiService().init(), permanent: true);
+
+  final prefs = await SharedPreferences.getInstance();
+  Get.put<LocalStorageService>(
+    LocalStorageService(prefs: prefs),
     permanent: true,
   );
 
-  Get.putAsync<NotificationService>(() => NotificationService().init(), permanent: true);
+  await Get.putAsync<NotificationService>(() => NotificationService().init(), permanent: true);
+
 }
 
 void setFlavorFromEnvironment() {
   const flavorString = String.fromEnvironment('FLAVOR', defaultValue: 'prod');
   F.updateFlavor(flavorString);
 }
-

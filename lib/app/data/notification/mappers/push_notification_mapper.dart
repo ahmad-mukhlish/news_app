@@ -50,11 +50,13 @@ class PushNotificationMapper {
     final imageUrl = message.notification?.android?.imageUrl ??
         message.notification?.apple?.imageUrl ??
         message.data['imageUrl'];
+    final dataTitle = message.data['title']?.toString();
+    final dataBody = message.data['body']?.toString();
 
     return PushNotification(
       id: message.messageId ?? DateTime.now().millisecondsSinceEpoch.toString(),
-      title: message.notification?.title ?? 'No Title',
-      body: message.notification?.body ?? 'No Body',
+      title: message.notification?.title ?? dataTitle ?? 'No Title',
+      body: message.notification?.body ?? dataBody ?? 'No Body',
       receivedAt: DateTime.now(),
       data: message.data.isNotEmpty ? message.data : null,
       imageUrl: imageUrl,

@@ -1,10 +1,15 @@
 import 'dart:convert';
+import 'dart:developer' as developer;
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../../config/app_config.dart';
+import '../../data/notification/mappers/push_notification_mapper.dart';
+import '../../domain/entities/push_notification.dart';
+import '../../helper/common_methods/navigation_methods.dart';
+import 'notification_repository_provider.dart';
 
 FlutterLocalNotificationsPlugin _localNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
@@ -46,7 +51,12 @@ Future<void> _ensureLocalNotificationsInitialized() async {
     ),
   );
 
-  await _localNotificationsPlugin.initialize(initializationSettings);
+  await _localNotificationsPlugin.initialize(
+    initializationSettings,
+    onDidReceiveNotificationResponse: handleLocalNotificationResponse,
+    onDidReceiveBackgroundNotificationResponse:
+        handleLocalNotificationBackgroundResponse,
+  );
 
   final androidImplementation = _localNotificationsPlugin
       .resolvePlatformSpecificImplementation<
@@ -69,11 +79,11 @@ Future<void> displayLocalNotification(
   // When not forced, let the system notification handle background display.
   if (!force && hasNotificationPayload) return;
 
-  final dataTitle = message.data['title']?.toString();
-  final dataBody = message.data['body']?.toString();
-
-  final title = notification?.title ?? dataTitle ?? AppConfig.appName;
-  final body = notification?.body ?? dataBody ?? '';
+  final notificationEntity = PushNotificationMapper.fromRemoteMessage(message);
+  final title = notificationEntity.title.isEmpty
+      ? AppConfig.appName
+      : notificationEntity.title;
+  final body = notificationEntity.body;
 
   if (title.isEmpty && body.isEmpty) return;
 
@@ -99,6 +109,91 @@ Future<void> displayLocalNotification(
         presentSound: true,
       ),
     ),
-    payload: message.data.isEmpty ? null : jsonEncode(message.data),
+    payload: jsonEncode(_buildPayload(notificationEntity)),
   );
+}
+
+Map<String, dynamic> _buildPayload(PushNotification notification) {
+  return {
+    'notificationId': notification.id,
+    'title': notification.title,
+    'body': notification.body,
+    'imageUrl': notification.imageUrl,
+    'receivedAt': notification.receivedAt.toIso8601String(),
+    if (notification.data != null) 'data': notification.data,
+  };
+}
+
+Map<String, dynamic>? _decodePayload(String? payload) {
+  if (payload == null || payload.isEmpty) return null;
+
+  try {
+    final decoded = jsonDecode(payload);
+    if (decoded is Map<String, dynamic>) {
+      return decoded;
+    }
+  } catch (error, stackTrace) {
+    developer.log(
+      'Failed to decode local notification payload: $error',
+      stackTrace: stackTrace,
+    );
+  }
+  return null;
+}
+
+PushNotification _notificationFromPayload(Map<String, dynamic> payload) {
+  final receivedAtRaw = payload['receivedAt']?.toString();
+  final receivedAt = receivedAtRaw != null
+      ? DateTime.tryParse(receivedAtRaw) ?? DateTime.now()
+      : DateTime.now();
+
+  return PushNotification(
+    id: payload['notificationId']?.toString() ??
+        DateTime.now().millisecondsSinceEpoch.toString(),
+    title: payload['title']?.toString() ?? AppConfig.appName,
+    body: payload['body']?.toString() ?? '',
+    receivedAt: receivedAt,
+    data: payload['data'] is Map<String, dynamic>
+        ? Map<String, dynamic>.from(payload['data'] as Map)
+        : null,
+    imageUrl: payload['imageUrl']?.toString(),
+  );
+}
+
+@visibleForTesting
+Future<void> handleLocalNotificationResponse(
+  NotificationResponse response,
+) async {
+  final payload = _decodePayload(response.payload);
+  if (payload == null) return;
+
+  final fallbackNotification = _notificationFromPayload(payload);
+
+  try {
+    final repository = await ensureNotificationRepositoryInitialized();
+    final storedNotificationDto =
+        await repository.getNotificationById(fallbackNotification.id);
+
+    final resolvedNotification = storedNotificationDto != null
+        ? PushNotificationMapper.toEntity(storedNotificationDto)
+        : fallbackNotification;
+
+    await goToNotificationDetail(
+      notification: resolvedNotification,
+      ensureNavigatorReady: true,
+      onMarkAsRead: repository.markNotificationReadById,
+    );
+  } catch (error, stackTrace) {
+    developer.log(
+      'Failed to handle local notification response: $error',
+      stackTrace: stackTrace,
+    );
+  }
+}
+
+@pragma('vm:entry-point')
+Future<void> handleLocalNotificationBackgroundResponse(
+  NotificationResponse response,
+) {
+  return handleLocalNotificationResponse(response);
 }

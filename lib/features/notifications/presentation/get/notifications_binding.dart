@@ -36,8 +36,8 @@ class NotificationsBinding extends Bindings {
     }
 
     if (!Get.isRegistered<NotificationsController>()) {
-      Get.lazyPut<NotificationsController>(
-        () => NotificationsController(
+      Get.put<NotificationsController>(
+        NotificationsController(
           repository: Get.find<NotificationRepository>(),
         ),
       );

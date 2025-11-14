@@ -520,5 +520,21 @@ void main() {
         expect(deserializedDtoList[0].data!['number'], 42);
       });
     });
+
+    group('fromRemoteMessage', () {
+      test('falls back to data payload when notification is missing', () {
+        final message = RemoteMessage.fromMap({
+          'messageId': 'message-1',
+          'sentTime': DateTime.now().millisecondsSinceEpoch,
+          'data': {'title': 'Data Title', 'body': 'Data Body'},
+        });
+
+        final result = PushNotificationMapper.fromRemoteMessage(message);
+
+        expect(result.id, 'message-1');
+        expect(result.title, 'Data Title');
+        expect(result.body, 'Data Body');
+      });
+    });
   });
 }

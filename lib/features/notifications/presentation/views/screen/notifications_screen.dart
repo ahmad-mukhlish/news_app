@@ -30,11 +30,24 @@ class NotificationsScreen extends GetView<NotificationsController> {
       if (!hasUnread) return const SizedBox.shrink();
       return Semantics(
         label: "Mark read",
-        child: TextButton(
-          onPressed: controller.markAllAsRead,
-          child: Text(
-            'Mark all read',
-            style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold),
+        button: true,
+        excludeSemantics: true,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8),
+          child: TextButton(
+            style: TextButton.styleFrom(
+              minimumSize: Size.zero,
+              tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            ),
+            onPressed: controller.markAllAsRead,
+            child: Text(
+              'Mark all read',
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.secondary,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
           ),
         ),
       );

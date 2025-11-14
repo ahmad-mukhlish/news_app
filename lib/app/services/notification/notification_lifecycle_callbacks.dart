@@ -4,15 +4,13 @@ import 'dart:developer' as developer;
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../app/data/notification/mappers/push_notification_mapper.dart';
 import '../../../app/domain/entities/push_notification.dart';
-import '../../../app/services/storage/local_storage_service.dart';
-import '../../../features/notifications/data/datasources/local/notification_local_data_source.dart';
 import '../../../features/notifications/data/repositories/notification_repository.dart';
 import '../../helper/common_methods/navigation_methods.dart';
 import 'local_notification_display.dart';
+import 'notification_repository_provider.dart';
 
 typedef LocalNotificationDisplayer = Future<void> Function(
   RemoteMessage message, {
@@ -39,26 +37,7 @@ void resetDisplayNotificationDisplayer() {
 /// Ensure NotificationRepository is initialized (lazy initialization)
 /// Works in both main isolate and background isolate
 Future<NotificationRepository> _ensureRepositoryInitialized() async {
-  if (!Get.isRegistered<NotificationRepository>()) {
-    // Initialize dependencies chain
-    // SharedPreferences.getInstance() is already a singleton - no need for GetX
-    if (!Get.isRegistered<LocalStorageService>()) {
-      final prefs = await SharedPreferences.getInstance();
-      Get.put(LocalStorageService(prefs: prefs));
-    }
-
-    if (!Get.isRegistered<NotificationLocalDataSource>()) {
-      final storage = Get.find<LocalStorageService>();
-      Get.put(NotificationLocalDataSource(storageService: storage));
-    }
-
-    if (!Get.isRegistered<NotificationRepository>()) {
-      final dataSource = Get.find<NotificationLocalDataSource>();
-      Get.put(NotificationRepository(localDataSource: dataSource));
-    }
-  }
-
-  return Get.find<NotificationRepository>();
+  return ensureNotificationRepositoryInitialized();
 }
 
 Future<PushNotification> _resolveNotificationEntity(

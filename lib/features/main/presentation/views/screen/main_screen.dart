@@ -3,9 +3,9 @@ import 'package:get/get.dart';
 
 import '../../../../categories/presentation/views/screen/categories_screen.dart';
 import '../../../../home/presentation/views/screen/home_screen.dart';
-import '../../../../notifications/presentation/views/screen/notifications_screen.dart';
 import '../../../../profile/presentation/views/screen/profile_screen.dart';
 import '../../../../search/presentation/views/screen/search_screen.dart';
+import '../../../../notifications/presentation/views/screen/notifications_screen.dart';
 import '../../get/main_controller.dart';
 import '../widgets/notification_badge_icon.dart';
 
