@@ -1,17 +1,14 @@
 appId: com.dhealth.news.news_app
 ---
 # Master flow to run all tests
-# Runs smoke test, common tests, online tests, and offline tests
+# Runs navigation regression, online tests, and offline tests
 
-# Test 1: Smoke Test (Quick validation)
-- runFlow: 01-smoke-test.yaml
+# Test 1: Navigation Regression (standalone so it can fail fast)
+- runFlow: navigation-test.yaml
 
-# Test 2: Common Tests (Pagination only - edge cases moved to screen tests)
-- runFlow: common_tests/pagination-test.yaml
-
-# Test 3: Online Test Flow (All screen tests with network)
+# Test 2: Online Test Flow (All screen tests with network)
 - runFlow: screen_tests_online/online_test_flow.yaml
 
-# Test 4: Offline Test Flow (All screen tests without network)
+# Test 3: Offline Test Flow (All screen tests without network)
 # NOTE: Uncomment below and disable network to run offline tests
 # - runFlow: screen_tests_offline/offline_test_flow.yaml
