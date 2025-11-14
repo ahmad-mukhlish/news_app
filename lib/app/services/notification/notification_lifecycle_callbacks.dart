@@ -3,7 +3,7 @@ import 'dart:developer' as developer;
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 import '../../../app/data/notification/mappers/push_notification_mapper.dart';
 import '../../../app/domain/entities/push_notification.dart';
@@ -22,10 +22,9 @@ import 'local_notification_display.dart';
 Future<NotificationRepository> _ensureRepositoryInitialized() async {
   if (!Get.isRegistered<NotificationRepository>()) {
     // Initialize dependencies chain
-    // SharedPreferences.getInstance() is already a singleton - no need for GetX
     if (!Get.isRegistered<LocalStorageService>()) {
-      final prefs = await SharedPreferences.getInstance();
-      Get.put(LocalStorageService(prefs: prefs));
+      final box = await Hive.openBox(LocalStorageService.kBoxName);
+      Get.put(LocalStorageService(box: box));
     }
 
     if (!Get.isRegistered<NotificationLocalDataSource>()) {

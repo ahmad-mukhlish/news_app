@@ -1,7 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 import 'app/config/app.dart';
 import 'app/config/flavors.dart';
@@ -14,27 +14,26 @@ import 'firebase_options.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setFlavorFromEnvironment();
+  await Hive.initFlutter();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  initServices();
+  await initServices();
 
   runApp(const App());
 }
 
-void initServices() {
-  Get.putAsync<ApiService>(() => ApiService().init(), permanent: true);
-
-  // Register LocalStorageService for future use
-  Get.putAsync<LocalStorageService>(
+Future<void> initServices() async {
+  await Get.putAsync<ApiService>(() => ApiService().init(), permanent: true);
+  await Get.putAsync<LocalStorageService>(
     () async {
-      final prefs = await SharedPreferences.getInstance();
-      return LocalStorageService(prefs: prefs);
+      final box = await Hive.openBox(LocalStorageService.kBoxName);
+      return LocalStorageService(box: box);
     },
     permanent: true,
   );
 
-  Get.putAsync<NotificationService>(() => NotificationService().init(), permanent: true);
+  await Get.putAsync<NotificationService>(() => NotificationService().init(), permanent: true);
 }
 
 void setFlavorFromEnvironment() {

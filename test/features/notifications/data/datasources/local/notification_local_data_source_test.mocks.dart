@@ -6,6 +6,8 @@
 import 'dart:async' as _i3;
 
 import 'package:mockito/mockito.dart' as _i1;
+import 'package:news_app/app/data/notification/dto/push_notification_dto.dart'
+    as _i4;
 import 'package:news_app/app/services/storage/local_storage_service.dart'
     as _i2;
 
@@ -34,36 +36,21 @@ class MockLocalStorageService extends _i1.Mock
   }
 
   @override
-  _i3.Future<void> saveFcmToken(String? token) =>
+  _i3.Future<void> saveNotifications(
+    List<_i4.PushNotificationDto>? notifications,
+  ) =>
       (super.noSuchMethod(
-            Invocation.method(#saveFcmToken, [token]),
+            Invocation.method(#saveNotifications, [notifications]),
             returnValue: _i3.Future<void>.value(),
             returnValueForMissingStub: _i3.Future<void>.value(),
           )
           as _i3.Future<void>);
 
   @override
-  _i3.Future<String?> getFcmToken() =>
+  List<_i4.PushNotificationDto> getNotifications() =>
       (super.noSuchMethod(
-            Invocation.method(#getFcmToken, []),
-            returnValue: _i3.Future<String?>.value(),
+            Invocation.method(#getNotifications, []),
+            returnValue: <_i4.PushNotificationDto>[],
           )
-          as _i3.Future<String?>);
-
-  @override
-  _i3.Future<void> saveNotificationsJson(String? json) =>
-      (super.noSuchMethod(
-            Invocation.method(#saveNotificationsJson, [json]),
-            returnValue: _i3.Future<void>.value(),
-            returnValueForMissingStub: _i3.Future<void>.value(),
-          )
-          as _i3.Future<void>);
-
-  @override
-  _i3.Future<String?> getNotificationsJson() =>
-      (super.noSuchMethod(
-            Invocation.method(#getNotificationsJson, []),
-            returnValue: _i3.Future<String?>.value(),
-          )
-          as _i3.Future<String?>);
+          as List<_i4.PushNotificationDto>);
 }
