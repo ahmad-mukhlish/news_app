@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'dart:developer' as developer;
 import 'dart:io';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 import 'notification_lifecycle_callbacks.dart';
@@ -94,7 +96,12 @@ class NotificationService extends GetxService {
   Future<void> _checkInitialMessage() async {
     final message = await _messaging.getInitialMessage();
     if (message != null) {
-      await onInitialMessage(message);
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        // Defer navigation until after the first frame so GetMaterialApp has
+        // established a navigator; otherwise onInitialMessage would block app
+        // startup while waiting for navigation to become available.
+        unawaited(onInitialMessage(message));
+      });
     }
   }
 }
