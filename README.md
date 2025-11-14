@@ -1,8 +1,9 @@
 # news_app
 
-A news flutter App
+A news flutter App.
+Thank you for seeing my work here 👍
 
-## Fully Automated Test By Maestro 🎉
+## Fully Automated Test By Maestro  🎉
 
 [![Watch the video](https://img.youtube.com/vi/i3MNbDQ-sUo/maxresdefault.jpg)](https://youtu.be/i3MNbDQ-sUo)
 ### [Watch the full demo (4 minutes) at youtube](https://youtu.be/i3MNbDQ-sUo)
@@ -10,7 +11,7 @@ A news flutter App
 This is included the phase 1 features : 
 home (headlines), search with combo-box, category and profile (with coming soon)
 
-even we fully support the automation testing in offline mode 🚀
+even we fully support the automation testing in offline mode  🚀
 
 How to run the automation testing :
 1. Download maestro first to try this automation testing [here](https://docs.maestro.dev/getting-started/installing-maestro)
@@ -30,7 +31,7 @@ Added firebase to handling :
 2. Background state
 3. Terminated state
 
-## Unit and Widget Testing with 90%+ Coverage 🎉
+## Unit and Widget Testing with 90%+ Coverage  🔭
 
 This could be checked by these commands :
 
