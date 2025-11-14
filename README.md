@@ -4,8 +4,8 @@ A news flutter App
 
 ## Fully Automated Test By Maestro 🎉
 
-[![Watch the video](https://img.youtube.com/vi/NYMoQf19x_I/maxresdefault.jpg)](https://youtu.be/NYMoQf19x_I)
-### [Watch full automation demo at youtube](https://youtu.be/NYMoQf19x_I)
+[![Watch the video](https://img.youtube.com/vi/i3MNbDQ-sUo/maxresdefault.jpg)](https://youtu.be/i3MNbDQ-sUo)
+### [Watch the full demo (4 minutes) at youtube](https://youtu.be/i3MNbDQ-sUo)
 
 This is included the phase 1 features : 
 home (headlines), search with combo-box, category and profile (with coming soon)
