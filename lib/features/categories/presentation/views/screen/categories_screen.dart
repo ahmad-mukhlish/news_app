@@ -40,24 +40,27 @@ class CategoriesScreen extends GetView<CategoriesController> {
   }
 
   Widget buildCategorySlider() {
-    return SizedBox(
-      height: 116,
-      child: ListView.builder(
-        scrollDirection: Axis.horizontal,
-        itemCount: NewsCategoryEnum.values.length,
-        itemBuilder: (context, index) {
-          final category = NewsCategoryEnum.values[index];
-          return Padding(
-            padding: controller.getCategoryPadding(index),
-            child: Obx(
-              () => CategoryChip(
-                category: category,
-                isSelected: controller.selectedCategory.value == category,
-                onTap: () => controller.selectCategory(category),
+    return Semantics(
+      label: "Category slider",
+      child: SizedBox(
+        height: 116,
+        child: ListView.builder(
+          scrollDirection: Axis.horizontal,
+          itemCount: NewsCategoryEnum.values.length,
+          itemBuilder: (context, index) {
+            final category = NewsCategoryEnum.values[index];
+            return Padding(
+              padding: controller.getCategoryPadding(index),
+              child: Obx(
+                () => CategoryChip(
+                  category: category,
+                  isSelected: controller.selectedCategory.value == category,
+                  onTap: () => controller.selectCategory(category),
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
       ),
     );
   }

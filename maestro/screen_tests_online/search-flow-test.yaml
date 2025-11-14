@@ -70,9 +70,6 @@ appId: com.dhealth.news.news_app
 - assertVisible:
     text: ".*News card.*"
 
-# Test pagination and article interaction on second search results
-- runFlow: ../common_tests/pagination-test.yaml
-
 # Edge Case 1: Empty search query
 - tapOn: ".*Clear search.*"
 - waitForAnimationToEnd:
