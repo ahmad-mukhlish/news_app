@@ -16,7 +16,7 @@ class NotificationsScreen extends GetView<NotificationsController> {
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: Text(
           'Notifications',
-          style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+          style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold),
         ),
         actions: [buildMarkAllAsRead(context)],
       ),
@@ -34,7 +34,7 @@ class NotificationsScreen extends GetView<NotificationsController> {
           onPressed: controller.markAllAsRead,
           child: Text(
             'Mark all read',
-            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+            style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold),
           ),
         ),
       );

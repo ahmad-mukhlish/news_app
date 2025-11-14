@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'dart:developer' as developer;
 
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
@@ -17,7 +18,21 @@ import '../../../features/notifications/presentation/views/screen/notification_d
 /// [onMarkAsRead] if provided. When [ensureNavigatorReady] is true, the method
 /// waits for a navigator before attempting navigation (needed for background
 /// callbacks).
-Future<void> goToNotificationDetail({
+typedef GoToNotificationDetailFn = Future<void> Function({
+  required PushNotification notification,
+  bool ensureNavigatorReady,
+  Future<void> Function(String notificationId)? onMarkAsRead,
+});
+
+@visibleForTesting
+GoToNotificationDetailFn goToNotificationDetail = _goToNotificationDetail;
+
+@visibleForTesting
+void resetGoToNotificationDetail() {
+  goToNotificationDetail = _goToNotificationDetail;
+}
+
+Future<void> _goToNotificationDetail({
   required PushNotification notification,
   bool ensureNavigatorReady = false,
   Future<void> Function(String notificationId)? onMarkAsRead,

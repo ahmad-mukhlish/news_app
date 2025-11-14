@@ -20,7 +20,7 @@ class AppConfig {
   // API Configuration
   static const String newsApiKey = String.fromEnvironment(
     'NEWS_API_KEY',
-    defaultValue: '6fb73906c96d4863aec69ba4b95d1cae',
+    defaultValue: 'e5b8d7516ad4439595ce42c4ce8477d3',
   );
 
   static const String newsApiBaseUrl = String.fromEnvironment(
@@ -71,6 +71,6 @@ class AppConfig {
 
   static const String notificationIcon = String.fromEnvironment(
     'NOTIFICATION_ICON',
-    defaultValue: '@mipmap/ic_launcher',
+    defaultValue: '@mipmap/launcher_icon',
   );
 }

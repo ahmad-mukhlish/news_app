@@ -4,8 +4,7 @@ appId: com.dhealth.news.news_app
 # Tests all 5 navigation tabs and verifies proper screen switching
 # Navigation tabs: Home(10%), Search(30%), Categories(50%), Notif(70%), Profile(90%) at 91% height
 
-- launchApp:
-    clearState: true
+- runFlow: ../common_tests/setup-online.yaml
 
 - waitForAnimationToEnd:
     timeout: 5000

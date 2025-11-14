@@ -28,11 +28,11 @@ appId: com.dhealth.news.news_app
     when:
       notVisible: "No notifications yet"
     commands:
-      # Test 2a: Test mark as read functionality
-      - runFlow: notifications-mark-read-test.yaml
-
-      # Test 2b: Navigate to notification detail
+      # Test 2a: Navigate to notification detail
       - runFlow: notifications-detail-test.yaml
+
+      # Test 2b: Test mark as read functionality
+      - runFlow: notifications-mark-read-test.yaml
 
 # Test 3: Navigation Persistence
 # Navigate away and back to ensure state is maintained

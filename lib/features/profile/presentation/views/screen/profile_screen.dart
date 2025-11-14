@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 import 'package:news_app/app/config/app_config.dart';
 import 'package:news_app/app/helper/common_widgets/lottie_widget.dart';
 
-import '../../get/profile_controller.dart';
-
-class ProfileScreen extends GetView<ProfileController> {
+class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
@@ -15,7 +12,7 @@ class ProfileScreen extends GetView<ProfileController> {
         backgroundColor: Theme.of(context).colorScheme.primary,
         title: Text(
           'Profile',
-          style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+          style: TextStyle(color: Theme.of(context).colorScheme.secondary, fontWeight: FontWeight.bold),
         ),
       ),
       body: buildBody(context),

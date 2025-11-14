@@ -24,7 +24,7 @@ class NotificationListItem extends StatelessWidget {
         onTap: onTap,
         child: Container(
           color: isUnread
-              ? Colors.blue.withValues(alpha: 0.05)
+              ? Theme.of(context).colorScheme.primary.withValues(alpha: 0.05)
               : Colors.transparent,
           padding: const EdgeInsets.all(16),
           child: Row(

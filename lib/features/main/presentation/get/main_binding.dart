@@ -4,7 +4,6 @@ import '../../../categories/presentation/get/categories_binding.dart';
 import '../../../home/presentation/get/home_binding.dart';
 import '../../../notifications/data/repositories/notification_repository.dart';
 import '../../../notifications/presentation/get/notifications_binding.dart';
-import '../../../profile/presentation/get/profile_binding.dart';
 import '../../../search/presentation/get/search_binding.dart';
 import 'main_controller.dart';
 
@@ -27,6 +26,5 @@ class MainBinding extends Bindings {
     HomeBinding().dependencies();
     SearchBinding().dependencies();
     CategoriesBinding().dependencies();
-    ProfileBinding().dependencies();
   }
 }
