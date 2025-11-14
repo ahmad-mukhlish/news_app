@@ -10,6 +10,12 @@ appId: com.dhealth.news.news_app
     visible: ".*News card.*"
     timeout: 5000
 
+# Validate article interactions continue to work after pagination
+- runFlow: ../common_tests/article-interaction-test.yaml
+
+# Ensure pull-to-refresh still behaves correctly after pagination
+- runFlow: ../common_tests/pull-to-refresh-test.yaml
+
 # Test: Scroll down to trigger pagination
 # Scroll multiple times to reach pagination threshold
 - scroll
@@ -26,11 +32,5 @@ appId: com.dhealth.news.news_app
 # Verify articles are still visible after pagination
 - assertVisible:
     text: ".*News card.*"
-
-# Validate article interactions continue to work after pagination
-- runFlow: ../common_tests/article-interaction-test.yaml
-
-# Ensure pull-to-refresh still behaves correctly after pagination
-- runFlow: ../common_tests/pull-to-refresh-test.yaml
 
 
