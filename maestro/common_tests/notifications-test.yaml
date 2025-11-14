@@ -1,7 +1,44 @@
 appId: com.dhealth.news.news_app
 ---
-# Check Notifications tab behavior for both empty and populated states
-# Navigates to Notifications tab, verifies screen, and tests state persistence
+# Comprehensive Notifications Feature Test
+# Tests both empty and populated notification states
+# Covers: empty state, notification list, detail view, mark as read
+
+# Navigate to Notifications tab
+- tapOn:
+    text: ".*Notifications tab.*"
+- waitForAnimationToEnd
+
+# Verify Notifications screen is visible
+- assertVisible: "Notifications"
+
+# Test 1: Empty Notification State
+- runFlow:
+    when:
+      visible: "No notifications yet"
+    commands:
+      - assertVisible: "No notifications yet"
+
+      # Verify "Mark all read" button is NOT visible (no notifications)
+      - assertNotVisible:
+          text: ".*Mark.*read.*"
+
+# Test 2: Populated Notification State
+- runFlow:
+    when:
+      notVisible: "No notifications yet"
+    commands:
+      # Test 2a: Test mark as read functionality
+      - runFlow: notifications-mark-read-test.yaml
+
+      # Test 2b: Navigate to notification detail
+      - runFlow: notifications-detail-test.yaml
+
+# Test 3: Navigation Persistence
+# Navigate away and back to ensure state is maintained
+- tapOn:
+    text: ".*Home.*Tab.*"
+- waitForAnimationToEnd
 
 - tapOn:
     text: ".*Notifications tab.*"
@@ -9,24 +46,9 @@ appId: com.dhealth.news.news_app
 
 - assertVisible: "Notifications"
 
-# Handle empty notifications state if present
-- runFlow:
-    when:
-      visible: "No notifications yet"
-    commands:
-      - assertVisible: "No notifications yet"
-      - scroll
-      - scroll
-
-- waitForAnimationToEnd:
-    timeout: 3000
-
-# Ensure we're still on Notifications screen
-- assertVisible: "Notifications"
-
-# Navigate away and back to ensure state persistence
+# Test 4: Multiple navigation cycles
 - tapOn:
-    text: ".*Home.*Tab.*"
+    text: ".*Search.*tab.*"
 - waitForAnimationToEnd
 
 - tapOn:

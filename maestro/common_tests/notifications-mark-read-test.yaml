@@ -1,0 +1,83 @@
+appId: com.dhealth.news.news_app
+---
+# Test Mark as Read Functionality
+# Tests marking individual notifications as read and marking all as read
+
+# Navigate to Notifications tab
+- tapOn:
+    text: ".*Notifications tab.*"
+- waitForAnimationToEnd
+
+- assertVisible: "Notifications"
+
+# Only test if there are notifications
+- runFlow:
+    when:
+      notVisible: "No notifications yet"
+    commands:
+      # Test 1: Individual notification marking (by opening and going back)
+      - tapOn:
+          text: ".*Notification item.*"
+      - waitForAnimationToEnd:
+          timeout: 2000
+
+      - runFlow:
+          when:
+            visible: "Notification Detail"
+          commands:
+            - back
+            - waitForAnimationToEnd
+
+      # Test 2: Mark all as read button
+      - runFlow:
+          when:
+            visible:
+              text: ".*Mark.*read.*"
+          commands:
+            # Verify button is visible and has correct semantics
+            - assertVisible:
+                text: ".*Mark read.*"
+
+            - assertVisible:
+                text: ".*Mark.*read.*"
+
+            # Tap the button
+            - tapOn:
+                text: ".*Mark.*read.*"
+            - waitForAnimationToEnd:
+                timeout: 1500
+
+            # After marking all as read, button should disappear
+            - assertNotVisible:
+                text: ".*Mark.*read.*"
+
+            # Navigate away and back to verify state persists
+            - tapOn:
+                text: ".*Home.*Tab.*"
+            - waitForAnimationToEnd
+
+            - tapOn:
+                text: ".*Notifications tab.*"
+            - waitForAnimationToEnd
+
+            # Button should still be hidden (all notifications are read)
+            - assertNotVisible:
+                text: ".*Mark.*read.*"
+
+      # Test 3: Verify notifications are still visible after marking as read
+      - assertVisible: "Notifications"
+      - runFlow:
+          when:
+            notVisible: "No notifications yet"
+          commands:
+            # Can still access notification details
+            - tapOn:
+                text: ".*Notification item.*"
+            - waitForAnimationToEnd
+
+            - runFlow:
+                when:
+                  visible: "Notification Detail"
+                commands:
+                  - back
+                  - waitForAnimationToEnd

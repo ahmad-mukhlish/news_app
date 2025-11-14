@@ -13,13 +13,14 @@ class HomeRepository {
     int? page,
   }) async {
     try {
-      final response = await remoteDataSource.fetchTopHeadlines(
-        country: country,
-        pageSize: pageSize,
-        page: page,
-      );
+      // final response = await remoteDataSource.fetchTopHeadlines(
+      //   country: country,
+      //   pageSize: pageSize,
+      //   page: page,
+      // );
 
-      return NewsArticleMapper.toEntityList(response.articles);
+      // return NewsArticleMapper.toEntityList(response.articles);
+      return [];
     } catch (e) {
       rethrow;
     }

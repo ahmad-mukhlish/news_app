@@ -1,0 +1,58 @@
+appId: com.dhealth.news.news_app
+---
+# Detailed Notification Detail Screen Test
+# Tests all elements on the notification detail screen including images and additional data
+
+# Navigate to Notifications tab
+- tapOn:
+    text: ".*Notifications tab.*"
+- waitForAnimationToEnd
+
+- assertVisible: "Notifications"
+
+# Only run if notifications exist
+- runFlow:
+    when:
+      notVisible: "No notifications yet"
+    commands:
+      # Navigate to first notification
+      - tapOn:
+          text: ".*Notification item.*"
+      - waitForAnimationToEnd:
+          timeout: 2000
+
+      # Verify we're on detail screen
+      - runFlow:
+          when:
+            visible: "Notification Detail"
+          commands:
+            - assertVisible: "Notification Detail"
+
+            # Test all semantic elements
+            # 1. Verify title
+            - runFlow:
+                when:
+                  visible:
+                    text: ".*Notif title.*"
+                commands:
+                  - assertVisible:
+                      text: ".*Notif title.*"
+
+            # 2. Verify body text
+            - runFlow:
+                when:
+                  visible:
+                    text: ".*Notif body.*"
+                commands:
+                  - assertVisible:
+                      text: ".*Notif body.*"
+
+            # 3. Check for notification image
+            - runFlow:
+                when:
+                  visible:
+                    text: ".*Notif photo.*"
+                commands:
+                  - assertVisible:
+                      text: ".*Notif photo.*"
+

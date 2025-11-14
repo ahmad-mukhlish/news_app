@@ -28,11 +28,14 @@ class NotificationsScreen extends GetView<NotificationsController> {
     return Obx(() {
       final hasUnread = controller.notifications.any((n) => !n.isRead);
       if (!hasUnread) return const SizedBox.shrink();
-      return TextButton(
-        onPressed: controller.markAllAsRead,
-        child: Text(
-          'Mark all read',
-          style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+      return Semantics(
+        label: "Mark read",
+        child: TextButton(
+          onPressed: controller.markAllAsRead,
+          child: Text(
+            'Mark all read',
+            style: TextStyle(color: Theme.of(context).colorScheme.secondary),
+          ),
         ),
       );
     });

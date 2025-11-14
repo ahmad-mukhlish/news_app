@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../app/domain/entities/push_notification.dart';
@@ -14,22 +15,17 @@ class NotificationDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: buildAppBar(context),
-      body: buildBody(),
-    );
+    return Scaffold(appBar: buildAppBar(context), body: buildBody());
   }
 
   PreferredSizeWidget buildAppBar(BuildContext context) {
     return AppBar(
       backgroundColor: Theme.of(context).colorScheme.primary,
       title: Text(
-        'Notification',
+        'Notification Detail',
         style: TextStyle(color: Theme.of(context).colorScheme.secondary),
       ),
-      iconTheme: IconThemeData(
-        color: Theme.of(context).colorScheme.secondary,
-      ),
+      iconTheme: IconThemeData(color: Theme.of(context).colorScheme.secondary),
     );
   }
 
@@ -47,10 +43,7 @@ class NotificationDetailScreen extends StatelessWidget {
           const SizedBox(height: 16),
           buildBodyText(),
           const SizedBox(height: 24),
-          if (notification.imageUrl != null) ...[
-            buildImageSection(),
-            const SizedBox(height: 24),
-          ],
+          buildImageSection(notification.imageUrl),
           if (notification.data != null && notification.data!.isNotEmpty)
             buildAdditionalDataSection(),
         ],
@@ -61,64 +54,49 @@ class NotificationDetailScreen extends StatelessWidget {
   Widget buildTimestamp() {
     return Text(
       formattedDate,
-      style: TextStyle(
-        fontSize: 12,
-        color: Colors.grey[600],
-      ),
+      style: TextStyle(fontSize: 12, color: Colors.grey[600]),
     );
   }
 
   Widget buildTitle() {
-    return Text(
-      notification.title,
-      style: const TextStyle(
-        fontSize: 24,
-        fontWeight: FontWeight.bold,
+    return Semantics(
+      label: "Notif title",
+      child: Text(
+        notification.title,
+        style: const TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
       ),
     );
   }
 
   Widget buildBodyText() {
-    return Text(
-      notification.body,
-      style: const TextStyle(
-        fontSize: 16,
-        height: 1.5,
+    return Semantics(
+      label: "Notif body",
+      child: Text(
+        notification.body,
+        style: const TextStyle(fontSize: 16, height: 1.5),
       ),
     );
   }
 
-  Widget buildImageSection() {
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(8),
-      child: Image.network(
-        notification.imageUrl!,
-        width: double.infinity,
-        fit: BoxFit.cover,
-        errorBuilder: (context, error, stackTrace) {
-          return Container(
-            height: 200,
-            color: Colors.grey[200],
-            child: const Center(
-              child: Icon(
-                Icons.broken_image,
-                size: 48,
-                color: Colors.grey,
-              ),
+  Widget buildImageSection(String? imageUrl) {
+    if (imageUrl == null) return Container();
+
+    return Column(
+      children: [
+        Semantics(
+          label: "Notif photo",
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: CachedNetworkImage(
+              imageUrl: imageUrl,
+              width: double.infinity,
+              fit: BoxFit.cover,
+              errorWidget: (_, __, ___) => Container(),
             ),
-          );
-        },
-        loadingBuilder: (context, child, loadingProgress) {
-          if (loadingProgress == null) return child;
-          return Container(
-            height: 200,
-            color: Colors.grey[200],
-            child: const Center(
-              child: CircularProgressIndicator(),
-            ),
-          );
-        },
-      ),
+          ),
+        ),
+        const SizedBox(height: 24),
+      ],
     );
   }
 
@@ -149,20 +127,13 @@ class NotificationDetailScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 4),
                 child: RichText(
                   text: TextSpan(
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[800],
-                    ),
+                    style: TextStyle(fontSize: 14, color: Colors.grey[800]),
                     children: [
                       TextSpan(
                         text: '${entry.key}: ',
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: const TextStyle(fontWeight: FontWeight.bold),
                       ),
-                      TextSpan(
-                        text: entry.value.toString(),
-                      ),
+                      TextSpan(text: entry.value.toString()),
                     ],
                   ),
                 ),

@@ -3,8 +3,7 @@ appId: com.dhealth.news.news_app
 # Common Setup for Offline Tests
 # Launches app with fresh state and enables airplane mode
 
-- launchApp:
-    clearState: true
+- launchApp
 
 - setAirplaneMode: enabled
 

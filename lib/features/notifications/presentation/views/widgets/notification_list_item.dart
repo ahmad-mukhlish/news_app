@@ -18,63 +18,70 @@ class NotificationListItem extends StatelessWidget {
     final isUnread = !notification.isRead;
     final timeAgo = formatTimeAgo(notification.receivedAt);
 
-    return InkWell(
-      onTap: onTap,
+    return Semantics(
+      label: "Notification item",
+      child: InkWell(
+        onTap: onTap,
+        child: Container(
+          color: isUnread
+              ? Colors.blue.withValues(alpha: 0.05)
+              : Colors.transparent,
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Red dot indicator for unread
+              buildReadMarking(isUnread),
+              // Notification content
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      notification.title,
+                      style: TextStyle(
+                        fontSize: 16,
+                        fontWeight: isUnread
+                            ? FontWeight.bold
+                            : FontWeight.normal,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      notification.body,
+                      maxLines: 2,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      timeAgo,
+                      style: TextStyle(fontSize: 12, color: Colors.grey[500]),
+                    ),
+                  ],
+                ),
+              ),
+              // Chevron icon
+              Icon(Icons.chevron_right, color: Colors.grey[400]),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget buildReadMarking(bool isUnread) {
+    if (isUnread) return Container();
+
+    return Semantics(
+      label: "Unread",
       child: Container(
-        color: isUnread ? Colors.blue.withValues(alpha: 0.05) : Colors.transparent,
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Red dot indicator for unread
-            Container(
-              width: 8,
-              height: 8,
-              margin: const EdgeInsets.only(top: 6, right: 12),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: isUnread ? Colors.red : Colors.transparent,
-              ),
-            ),
-            // Notification content
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    notification.title,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: isUnread ? FontWeight.bold : FontWeight.normal,
-                    ),
-                  ),
-                  const SizedBox(height: 4),
-                  Text(
-                    notification.body,
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: Colors.grey[600],
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    timeAgo,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: Colors.grey[500],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            // Chevron icon
-            Icon(
-              Icons.chevron_right,
-              color: Colors.grey[400],
-            ),
-          ],
+        width: 8,
+        height: 8,
+        margin: const EdgeInsets.only(top: 6, right: 12),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.red,
         ),
       ),
     );
