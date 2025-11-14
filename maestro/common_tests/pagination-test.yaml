@@ -27,6 +27,10 @@ appId: com.dhealth.news.news_app
 - assertVisible:
     text: ".*News card.*"
 
+# Validate article interactions continue to work after pagination
+- runFlow: ../common_tests/article-interaction-test.yaml
 
+# Ensure pull-to-refresh still behaves correctly after pagination
+- runFlow: ../common_tests/pull-to-refresh-test.yaml
 
 

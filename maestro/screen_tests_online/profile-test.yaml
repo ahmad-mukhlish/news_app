@@ -1,0 +1,19 @@
+appId: com.dhealth.news.news_app
+---
+# Profile Test: Validate profile tab placeholder content
+# Verifies navigating to Profile shows the Coming Soon message
+
+- launchApp:
+    clearState: true
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+# Navigate to Profile tab
+- tapOn:
+    text: ".*Profile tab.*"
+- waitForAnimationToEnd
+
+# Profile screen should display placeholder message
+- assertVisible:
+    text: ".*Coming soon.*"

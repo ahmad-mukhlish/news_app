@@ -39,9 +39,6 @@ appId: com.dhealth.news.news_app
 - assertVisible:
     text: ".*News card.*"
 
-# Test pull-to-refresh functionality
-- runFlow: ../common_tests/pull-to-refresh-test.yaml
-
 # Test pagination and article interaction on search results
 - runFlow: ../common_tests/pagination-test.yaml
 
@@ -95,5 +92,4 @@ appId: com.dhealth.news.news_app
 # Verify results loaded
 - assertVisible:
     text: ".*Empty news.*"
-
 

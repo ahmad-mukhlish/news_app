@@ -14,3 +14,6 @@ appId: com.dhealth.news.news_app
 
 # Test 4: Notifications (assuming notifications exist)
 - runFlow: notifications-test.yaml
+
+# Test 5: Profile placeholder
+- runFlow: profile-test.yaml

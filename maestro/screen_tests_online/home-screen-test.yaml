@@ -16,12 +16,6 @@ appId: com.dhealth.news.news_app
 - waitForAnimationToEnd:
     timeout: 5000
 
-# Test article interaction after pagination
-- runFlow: ../common_tests/article-interaction-test.yaml
-
-# Test pull-to-refresh functionality
-- runFlow: ../common_tests/pull-to-refresh-test.yaml
-
 # Wait for news articles to load
 - extendedWaitUntil:
     visible: ".*News card.*"

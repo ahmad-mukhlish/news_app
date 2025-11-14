@@ -25,9 +25,6 @@ appId: com.dhealth.news.news_app
 
 - runFlow: ../common_tests/scroll-categories-flow.yaml
 
-# Test pull-to-refresh functionality
-- runFlow: ../common_tests/pull-to-refresh-test.yaml
-
 # Test 1: Sports category
 - tapOn: "Sports"
 - waitForAnimationToEnd:
