@@ -1,0 +1,4 @@
+appId: com.dhealth.news.news_app
+---
+# Smoke test wrapper: runs only the home screen end-to-end check.
+- runFlow: screen_tests_online/home-screen-test.yaml
