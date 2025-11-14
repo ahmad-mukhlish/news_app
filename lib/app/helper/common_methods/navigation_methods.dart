@@ -17,7 +17,7 @@ import '../../../features/notifications/presentation/views/screen/notification_d
 /// [onMarkAsRead] if provided. When [ensureNavigatorReady] is true, the method
 /// waits for a navigator before attempting navigation (needed for background
 /// callbacks).
-Future<void> routeToNotificationDetail({
+Future<void> goToNotificationDetail({
   required PushNotification notification,
   bool ensureNavigatorReady = false,
   Future<void> Function(String notificationId)? onMarkAsRead,

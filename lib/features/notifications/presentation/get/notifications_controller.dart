@@ -3,7 +3,7 @@ import 'dart:developer' as developer;
 import 'package:get/get.dart';
 
 import '../../../../app/domain/entities/push_notification.dart';
-import '../../../../app/helper/common_methods/routing_methods.dart';
+import '../../../../app/helper/common_methods/navigation_methods.dart';
 import '../../data/repositories/notification_repository.dart';
 
 class NotificationsController extends GetxController {
@@ -49,7 +49,7 @@ class NotificationsController extends GetxController {
   }
 
   Future<void> navigateToDetail(PushNotification notification) async {
-    await routeToNotificationDetail(
+    await goToNotificationDetail(
       notification: notification,
       onMarkAsRead: markAsRead,
     );

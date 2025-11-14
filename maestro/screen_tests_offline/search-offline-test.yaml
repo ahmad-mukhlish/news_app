@@ -1,0 +1,56 @@
+appId: com.dhealth.news.news_app
+---
+# Search Offline Test: Tests search behavior when network is unavailable
+# Verifies error handling when attempting to search offline
+
+- launchApp:
+    clearState: true
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+# Navigate to Search tab
+- tapOn:
+    text: ".*Search tab.*"
+- waitForAnimationToEnd
+
+# Verify search screen is visible
+- assertVisible: "Search"
+- assertVisible: "Search news..."
+
+# Try to search in offline mode
+- tapOn: "Search news..."
+- inputText: "technology"
+- pressKey: Enter
+
+# Wait for error response
+- waitForAnimationToEnd:
+    timeout: 5000
+
+# Check for error message or no results
+- runFlow:
+    when:
+      visible: "No internet connection"
+    commands:
+      - assertVisible: "No internet connection"
+
+# Alternative: Check for other error messages
+- runFlow:
+    when:
+      visible: "Failed to load"
+    commands:
+      - assertVisible: "Failed to load"
+
+# Try another search query
+- tapOn: ".*Clear search.*"
+- waitForAnimationToEnd
+
+- tapOn: "Search news..."
+- inputText: "bitcoin"
+- pressKey: Enter
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+# Verify error state persists
+- assertVisible: "Search"

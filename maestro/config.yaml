@@ -9,4 +9,4 @@ appId: com.dhealth.news.news_app
 
 # Wait for app to fully initialize
 - waitForAnimationToEnd:
-    timeout: 10000
+    timeout: 1000

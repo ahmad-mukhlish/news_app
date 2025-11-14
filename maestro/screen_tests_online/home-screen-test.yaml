@@ -1,0 +1,35 @@
+appId: com.dhealth.news.news_app
+---
+# Home Screen Test: Tests news article loading and pagination
+# Verifies home screen displays correctly and calls pagination test
+
+- launchApp:
+    clearState: true
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+# Verify home screen is visible
+- assertVisible: "News App"
+- assertVisible: "Home"
+
+# Check for loading state
+- runFlow:
+    when:
+      visible: "Loading"
+    commands:
+      - assertVisible: "Loading"
+      - waitForAnimationToEnd:
+          timeout: 3000
+
+# Wait for news articles to load
+- extendedWaitUntil:
+    visible: ".*News card.*"
+    timeout: 15000
+
+# Verify news cards are visible
+- assertVisible:
+    text: ".*News card.*"
+
+# Test pagination (includes article interaction and pull-to-refresh)
+- runFlow: ../common_tests/pagination-test.yaml

@@ -10,7 +10,7 @@ import '../../../app/domain/entities/push_notification.dart';
 import '../../../app/services/storage/local_storage_service.dart';
 import '../../../features/notifications/data/datasources/local/notification_local_data_source.dart';
 import '../../../features/notifications/data/repositories/notification_repository.dart';
-import '../../helper/common_methods/routing_methods.dart';
+import '../../helper/common_methods/navigation_methods.dart';
 import 'local_notification_display.dart';
 
 /// Notification Lifecycle Callbacks
@@ -100,7 +100,7 @@ Future<void> onMessageOpenedApp(RemoteMessage message) async {
 
   final notification = await _resolveNotificationEntity(repository, message);
 
-  await routeToNotificationDetail(
+  await goToNotificationDetail(
     notification: notification,
     ensureNavigatorReady: true,
   );
@@ -150,7 +150,7 @@ Future<void> onInitialMessage(RemoteMessage message) async {
 
   final notification = await _resolveNotificationEntity(repository, message);
 
-  await routeToNotificationDetail(
+  await goToNotificationDetail(
     notification: notification,
     ensureNavigatorReady: true,
   );

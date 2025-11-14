@@ -1,0 +1,74 @@
+appId: com.dhealth.news.news_app
+---
+# Article Interaction Test: Tests tapping and viewing news articles
+# This test is meant to be called from other flows, assumes articles are already loaded
+# NOTE: This test does not launch the app - it should be called after articles are visible
+
+# Wait for articles to be visible
+- extendedWaitUntil:
+    visible: ".*News card.*"
+    timeout: 10000
+
+# Verify news cards are visible
+- assertVisible:
+    text: ".*News card.*"
+
+# Verify semantic labels are present on news article card
+- assertVisible: "Article title"
+- assertVisible: "Article content"
+
+# Check for optional semantic labels (may not always be present)
+- runFlow:
+    when:
+      visible: "Article image"
+    commands:
+      - assertVisible: "Article image"
+
+- runFlow:
+    when:
+      visible: "Article description"
+    commands:
+      - assertVisible: "Article description"
+
+- runFlow:
+    when:
+      visible: ".*Article source.*"
+    commands:
+      - assertVisible: ".*Article source.*"
+
+- runFlow:
+    when:
+      visible: "Open article in browser"
+    commands:
+      - assertVisible: "Open article in browser"
+
+# Test tapping on first news article, should open browser
+- tapOn:
+    text: ".*News card.*"
+    index: 0
+- waitForAnimationToEnd:
+    timeout: 3000
+
+# Go back
+- pressKey: Back
+- waitForAnimationToEnd
+
+# Scroll down a bit to see more articles
+- scroll
+- waitForAnimationToEnd:
+    timeout: 2000
+
+- scroll
+- waitForAnimationToEnd:
+    timeout: 2000
+
+# Test tapping on another article after scrolling
+- tapOn:
+    text: ".*News card.*"
+    index: 1
+- waitForAnimationToEnd:
+    timeout: 3000
+
+# Go back
+- pressKey: Back
+- waitForAnimationToEnd

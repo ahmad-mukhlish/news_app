@@ -1,0 +1,97 @@
+appId: com.dhealth.news.news_app
+---
+# Categories Flow Test: Tests category filtering functionality
+# Verifies category chips, selection, and filtered news loading
+# Then calls pagination test to verify category results are interactive
+
+- launchApp:
+    clearState: true
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+# Navigate to Categories tab
+- tapOn:
+    text: ".*Categories tab.*"
+- waitForAnimationToEnd
+
+# Verify categories screen is visible
+- assertVisible: "Categories"
+
+# Wait for initial category content to load
+- extendedWaitUntil:
+    visible: ".*News card.*"
+    timeout: 15000
+
+# Test 1: Business category
+- tapOn: "Business"
+- waitForAnimationToEnd:
+    timeout: 5000
+
+# Wait for business news to load
+- extendedWaitUntil:
+    visible: ".*News card.*"
+    timeout: 15000
+
+# Verify business news loaded
+- assertVisible:
+    text: ".*News card.*"
+
+# Test pagination and article interaction on business category
+- runFlow: ../common_tests/pagination-test.yaml
+
+# Test 2: Technology category
+- tapOn:
+    text: ".*Categories tab.*"
+- waitForAnimationToEnd
+
+- tapOn: "Technology"
+- waitForAnimationToEnd:
+    timeout: 5000
+
+# Wait for technology news to load
+- extendedWaitUntil:
+    visible: ".*News card.*"
+    timeout: 15000
+
+# Verify technology news loaded
+- assertVisible:
+    text: ".*News card.*"
+
+# Test pagination and article interaction on technology category
+- runFlow: ../common_tests/pagination-test.yaml
+
+# Test 3: Sports category
+- tapOn:
+    text: ".*Categories tab.*"
+- waitForAnimationToEnd
+
+- tapOn: "Sports"
+- waitForAnimationToEnd:
+    timeout: 5000
+
+# Wait for sports news to load
+- extendedWaitUntil:
+    visible: ".*News card.*"
+    timeout: 15000
+
+# Verify sports news loaded
+- assertVisible:
+    text: ".*News card.*"
+
+# Edge Case: Rapid category switching
+- tapOn: "Business"
+- waitForAnimationToEnd:
+    timeout: 2000
+
+- tapOn: "Health"
+- waitForAnimationToEnd:
+    timeout: 2000
+
+- tapOn: "General"
+- waitForAnimationToEnd:
+    timeout: 2000
+
+# Verify last selected category loaded
+- assertVisible:
+    text: ".*News card.*"

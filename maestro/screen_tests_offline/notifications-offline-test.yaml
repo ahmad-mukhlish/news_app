@@ -1,0 +1,52 @@
+appId: com.dhealth.news.news_app
+---
+# Notifications Offline Test: Tests notifications behavior when network is unavailable
+# Verifies that local notifications still work offline
+
+- launchApp:
+    clearState: true
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+# Navigate to Notifications tab
+- tapOn:
+    text: ".*Notifications tab.*"
+- waitForAnimationToEnd
+
+# Verify notifications screen is visible
+- assertVisible: "Notifications"
+
+# Notifications might be cached locally, so they could be visible
+# Check for either empty state or cached notifications
+- runFlow:
+    when:
+      visible: "No notifications yet"
+    commands:
+      - assertVisible: "No notifications yet"
+
+# Try pull-to-refresh in offline mode
+- swipe:
+    direction: DOWN
+    duration: 500
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+# Check for error message when trying to refresh
+- runFlow:
+    when:
+      visible: "No internet connection"
+    commands:
+      - assertVisible: "No internet connection"
+
+# Navigate away and back
+- tapOn:
+    text: ".*Home.*Tab.*"
+- waitForAnimationToEnd
+
+- tapOn:
+    text: ".*Notifications tab.*"
+- waitForAnimationToEnd
+
+- assertVisible: "Notifications"

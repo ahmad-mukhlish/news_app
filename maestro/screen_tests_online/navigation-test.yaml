@@ -8,51 +8,71 @@ appId: com.dhealth.news.news_app
     clearState: true
 
 - waitForAnimationToEnd:
-    timeout: 10000
+    timeout: 5000
 
 # Test 1: Home Tab
 - assertVisible: "News App"
 
 # Test 2: Navigate to Search
 - tapOn:
-    point: "30%,91%"
+    text: ".*Search tab.*"
 - waitForAnimationToEnd
 
 # Test 3: Navigate to Categories
 - tapOn:
-    point: "50%,91%"
+    text: ".*Categories tab.*"
 - waitForAnimationToEnd
 
 # Test 4: Navigate to Notifications
 - tapOn:
-    point: "70%,91%"
+    text: ".*Notifications tab.*"
 - waitForAnimationToEnd
 
 # Test 5: Navigate to Profile
 - tapOn:
-    point: "90%,91%"
+    text: ".*Profile tab.*"
 - waitForAnimationToEnd
 
 # Test 6: Return to Home
 - tapOn:
-    point: "10%,91%"
+    text: ".*Home.*Tab.*"
 - waitForAnimationToEnd
 - assertVisible: "News App"
 
 # Test 7: Rapid navigation switching
 - tapOn:
-    point: "30%,91%"
+    text: ".*Search tab.*"
 - tapOn:
-    point: "50%,91%"
+    text: ".*Categories tab.*"
 - tapOn:
-    point: "10%,91%"
+    text: ".*Home.*Tab.*"
 - assertVisible: "News App"
 
 # Test 8: Verify navigation state persistence
 - tapOn:
-    point: "30%,91%"
+    text: ".*Search tab.*"
 - tapOn:
-    point: "10%,91%"
+    text: ".*Home.*Tab.*"
 - tapOn:
-    point: "30%,91%"
+    text: ".*Search tab.*"
+- waitForAnimationToEnd
+
+# Test 9: Rapid navigation switching (stress test)
+- tapOn:
+    text: ".*Home.*Tab.*"
+- tapOn:
+    text: ".*Search tab.*"
+- tapOn:
+    text: ".*Categories tab.*"
+- tapOn:
+    text: ".*Notifications tab.*"
+- tapOn:
+    text: ".*Profile tab.*"
+- tapOn:
+    text: ".*Home.*Tab.*"
+- tapOn:
+    text: ".*Categories tab.*"
+- tapOn:
+    text: ".*Search tab.*"
+
 - waitForAnimationToEnd

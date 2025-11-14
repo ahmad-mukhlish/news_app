@@ -1,0 +1,16 @@
+appId: com.dhealth.news.news_app
+---
+# Online Test Flow: Runs all screen tests that require internet connection
+# Tests all main features with network available
+
+# Test 1: Home Screen
+- runFlow: home-screen-test.yaml
+
+# Test 2: Search Flow
+- runFlow: search-flow-test.yaml
+
+# Test 3: Categories Flow
+- runFlow: categories-flow-test.yaml
+
+# Test 4: Notifications (assuming notifications exist)
+- runFlow: notifications-test.yaml

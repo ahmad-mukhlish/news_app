@@ -1,13 +1,17 @@
 appId: com.dhealth.news.news_app
 ---
-# Master flow to run all tests in sequence
+# Master flow to run all tests
+# Runs smoke test, common tests, online tests, and offline tests
 
-- runFlow: maestro/01-smoke-test.yaml
-- runFlow: maestro/02-navigation-test.yaml
-- runFlow: maestro/03-home-screen-test.yaml
-- runFlow: maestro/04-search-flow-test.yaml
-- runFlow: maestro/05-categories-flow-test.yaml
-- runFlow: maestro/06-notifications-test.yaml
-- runFlow: maestro/07-article-detail-test.yaml
-- runFlow: maestro/08-pagination-test.yaml
-- runFlow: maestro/09-edge-cases-test.yaml
+# Test 1: Smoke Test (Quick validation)
+- runFlow: 01-smoke-test.yaml
+
+# Test 2: Common Tests (Pagination only - edge cases moved to screen tests)
+- runFlow: common_tests/pagination-test.yaml
+
+# Test 3: Online Test Flow (All screen tests with network)
+- runFlow: screen_tests_online/online_test_flow.yaml
+
+# Test 4: Offline Test Flow (All screen tests without network)
+# NOTE: Uncomment below and disable network to run offline tests
+# - runFlow: screen_tests_offline/offline_test_flow.yaml

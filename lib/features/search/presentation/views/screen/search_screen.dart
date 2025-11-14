@@ -84,7 +84,11 @@ class SearchScreen extends GetView<SearchController> {
         return const SizedBox.shrink();
       }
       return IconButton(
-        icon: const Icon(Icons.clear),
+        icon: Semantics(
+          label: "Clear search",
+          button: true,
+          child: const Icon(Icons.clear),
+        ),
         onPressed: controller.clearSearch,
       );
     });

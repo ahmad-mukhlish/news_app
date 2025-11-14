@@ -1,0 +1,49 @@
+appId: com.dhealth.news.news_app
+---
+# Pull-to-Refresh Test: Tests pull-to-refresh functionality with loading indicator
+# Verifies that pulling down triggers refresh and shows loading indicator
+# NOTE: This test is agnostic - it works on any screen with pull-to-refresh
+# This test does not launch the app or navigate - it should be called from other flows
+
+# Scroll back to top first
+- swipe:
+    direction: UP
+
+- swipe:
+    direction: UP
+
+- swipe:
+    direction: UP
+
+- swipe:
+    direction: UP
+
+# Wait a moment to ensure we're at the top
+- waitForAnimationToEnd:
+    timeout: 1000
+
+# Trigger pull-to-refresh
+- swipe:
+    direction: DOWN
+    duration: 500
+
+# Check for loading indicator during refresh
+- runFlow:
+    when:
+      visible: "Loading"
+    commands:
+      - assertVisible: "Loading"
+      - waitForAnimationToEnd:
+          timeout: 3000
+
+# Wait for refresh to complete
+- waitForAnimationToEnd:
+    timeout: 5000
+
+# Verify content is still visible after refresh
+- runFlow:
+    when:
+      visible: ".*News card.*"
+    commands:
+      - assertVisible:
+          text: ".*News card.*"

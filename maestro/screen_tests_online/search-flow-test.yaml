@@ -1,0 +1,114 @@
+appId: com.dhealth.news.news_app
+---
+# Search Flow Test: Tests search functionality and results
+# Verifies search input, suggestions, results, and clearing
+# Then calls pagination test to verify search results are interactive
+
+- launchApp:
+    clearState: true
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+# Navigate to Search tab
+- tapOn:
+    text: ".*Search tab.*"
+- waitForAnimationToEnd
+
+# Verify search screen is visible
+- assertVisible: "Search"
+- assertVisible: "Search news..."
+- assertVisible: "Enter keywords to search for news"
+
+# Test 1: Search for "technology"
+- tapOn: "Search news..."
+- inputText: "technology"
+
+# Wait for suggestions to appear (with debounce delay)
+- waitForAnimationToEnd:
+    timeout: 2000
+
+# Submit search query
+- pressKey: Enter
+
+# Wait for search results to load
+- extendedWaitUntil:
+    visible: ".*News card.*"
+    timeout: 15000
+
+# Verify search results loaded
+- assertVisible:
+    text: ".*News card.*"
+
+# Test pagination and article interaction on search results
+- runFlow: ../common_tests/pagination-test.yaml
+
+# Test 2: Clear search button
+- tapOn: ".*Clear search.*"
+- waitForAnimationToEnd:
+    timeout: 1000
+- assertVisible: "Search news..."
+
+# Test 3: Search for "bitcoin"
+- tapOn: "Search news..."
+- inputText: "bitcoin"
+- waitForAnimationToEnd:
+    timeout: 2000
+
+# Submit search
+- pressKey: Enter
+
+# Wait for results
+- extendedWaitUntil:
+    visible: ".*News card.*"
+    timeout: 15000
+
+# Verify results loaded
+- assertVisible:
+    text: ".*News card.*"
+
+# Test pagination and article interaction on second search results
+- runFlow: ../common_tests/pagination-test.yaml
+
+# Edge Case 1: Empty search query
+- tapOn: ".*Clear search.*"
+- waitForAnimationToEnd:
+    timeout: 1000
+
+- tapOn: "Search news..."
+# Type nothing and submit
+- pressKey: Enter
+
+# Should show empty state or stay in same state
+- assertVisible: "Search"
+
+# Edge Case 2: Search with special characters
+- tapOn: "Search news..."
+- inputText: "!@#$%"
+- pressKey: Enter
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+# Edge Case 3: Very long search query
+- tapOn: ".*Clear search.*"
+- waitForAnimationToEnd:
+    timeout: 1000
+
+- tapOn: "Search news..."
+- inputText: "this is a very long search query to test how the application handles extremely long text input from users who might paste entire paragraphs"
+- pressKey: Enter
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+# Clear search
+- tapOn: ".*Clear search.*"
+
+# Edge Case 4: Back button behavior
+- tapOn: "Search news..."
+- inputText: "test"
+- pressKey: Back
+
+# Should dismiss keyboard or go back
+- waitForAnimationToEnd

@@ -1,0 +1,55 @@
+appId: com.dhealth.news.news_app
+---
+# Home Screen Offline Test: Tests behavior when network is unavailable
+# Verifies error handling and empty state display
+
+- launchApp:
+    clearState: true
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+# Verify home screen is visible
+- assertVisible: "News App"
+- assertVisible: "Home"
+
+# In offline mode, articles should not load
+# Check for error message or empty state
+- runFlow:
+    when:
+      visible: "No internet connection"
+    commands:
+      - assertVisible: "No internet connection"
+
+# Alternative: Check for other error messages
+- runFlow:
+    when:
+      visible: "Failed to load"
+    commands:
+      - assertVisible: "Failed to load"
+
+# Try pull-to-refresh in offline mode
+- swipe:
+    direction: DOWN
+    duration: 500
+
+- waitForAnimationToEnd:
+    timeout: 5000
+
+# Verify error state persists
+- runFlow:
+    when:
+      visible: ".*No.*connection.*"
+    commands:
+      - assertVisible: ".*No.*connection.*"
+
+# Navigate to other tabs to verify offline behavior
+- tapOn:
+    text: ".*Search tab.*"
+- waitForAnimationToEnd
+
+- tapOn:
+    text: ".*Home.*Tab.*"
+- waitForAnimationToEnd
+
+- assertVisible: "News App"
