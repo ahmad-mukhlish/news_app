@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -33,13 +31,11 @@ void main() {
     });
 
     test('fetchNextPage should load articles into paging state', () async {
-      final articles = [
-        createArticle(1),
-        createArticle(2),
-      ];
+      final articles = [createArticle(1), createArticle(2)];
 
-      when(mockRepository.fetchTopHeadlines(page: anyNamed('page')))
-          .thenAnswer((_) async => articles);
+      when(
+        mockRepository.fetchTopHeadlines(page: anyNamed('page')),
+      ).thenAnswer((_) async => articles);
 
       controller.pagingController.fetchNextPage();
       await Future<void>.delayed(Duration.zero);

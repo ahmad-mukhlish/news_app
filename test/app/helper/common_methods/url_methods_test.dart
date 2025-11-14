@@ -1,7 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:news_app/app/helper/common_methods/url_methods.dart';
-import 'package:url_launcher_platform_interface/link.dart';
-import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart';
+import 'package:url_launcher_platform_interface/link.dart' show LinkDelegate;
+import 'package:url_launcher_platform_interface/url_launcher_platform_interface.dart' show UrlLauncherPlatform;
 
 class _FakeUrlLauncherPlatform extends UrlLauncherPlatform {
   bool launchCalled = false;

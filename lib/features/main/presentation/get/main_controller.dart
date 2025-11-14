@@ -1,3 +1,6 @@
+import 'dart:async';
+import 'dart:developer' as developer;
+
 import 'package:get/get.dart';
 
 import '../../../notifications/data/repositories/notification_repository.dart';
@@ -10,6 +13,12 @@ class MainController extends GetxController {
   final RxInt selectedIndex = 0.obs;
   final NotificationRepository _notificationRepository;
 
+  @override
+  void onInit() {
+    super.onInit();
+    _preloadNotifications();
+  }
+
   void changePage(int index) {
     selectedIndex.value = index;
   }
@@ -21,4 +30,17 @@ class MainController extends GetxController {
   int get unreadCount => _notificationRepository.notifications
       .where((notification) => !notification.isRead)
       .length;
+
+  Future<void> _preloadNotifications() async {
+    try {
+      await _notificationRepository.getAllNotifications();
+    } catch (error, stackTrace) {
+      developer.log(
+        'Failed to preload notifications',
+        error: error,
+        stackTrace: stackTrace,
+        name: runtimeType.toString(),
+      );
+    }
+  }
 }

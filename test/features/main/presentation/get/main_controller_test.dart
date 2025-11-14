@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:mockito/annotations.dart';
@@ -18,6 +20,8 @@ void main() {
     mockNotificationRepository = MockNotificationRepository();
     notifications = <PushNotification>[].obs;
     when(mockNotificationRepository.notifications).thenReturn(notifications);
+    when(mockNotificationRepository.getAllNotifications())
+        .thenAnswer((_) async => []);
     controller = MainController(notificationRepository: mockNotificationRepository);
   });
 
@@ -61,6 +65,13 @@ void main() {
       ]);
 
       expect(controller.unreadCount, 2);
+    });
+
+    test('onInit preloads notifications to populate badge count', () async {
+      controller.onInit();
+      await Future<void>.delayed(Duration.zero);
+
+      verify(mockNotificationRepository.getAllNotifications()).called(1);
     });
   });
 }
