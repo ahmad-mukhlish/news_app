@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:developer' as developer;
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -12,6 +13,24 @@ import '../../../features/notifications/data/datasources/local/notification_loca
 import '../../../features/notifications/data/repositories/notification_repository.dart';
 import '../../helper/common_methods/navigation_methods.dart';
 import 'local_notification_display.dart';
+
+typedef LocalNotificationDisplayer = Future<void> Function(
+  RemoteMessage message, {
+  bool force,
+});
+
+@visibleForTesting
+LocalNotificationDisplayer displayNotification = displayLocalNotification;
+
+@visibleForTesting
+void setDisplayNotificationDisplayer(LocalNotificationDisplayer displayer) {
+  displayNotification = displayer;
+}
+
+@visibleForTesting
+void resetDisplayNotificationDisplayer() {
+  displayNotification = displayLocalNotification;
+}
 
 /// Notification Lifecycle Callbacks
 /// All top-level functions to handle FCM notification scenarios
@@ -76,7 +95,7 @@ Future<void> onForegroundMessage(RemoteMessage message) async {
   await repository.appendNotification(dto);
 
   // Show local notification
-  unawaited(displayLocalNotification(message, force: true));
+  unawaited(displayNotification(message, force: true));
 }
 
 /// Scenario 2: Notification Tapped (Background)
@@ -126,7 +145,7 @@ Future<void> onBackgroundMessage(RemoteMessage message) async {
   await repository.appendNotification(dto);
 
   // Display local notification
-  await displayLocalNotification(message);
+  await displayNotification(message);
 }
 
 /// Scenario 4: App Opened from Terminated State

@@ -76,7 +76,7 @@ void main() {
           path: '/top-headlines',
           queryParameters: {
             'category': 'business',
-            'pageSize': 20,
+            'pageSize': 10,
             'page': 1,
           },
         )).called(1);
@@ -158,7 +158,7 @@ void main() {
           path: '/top-headlines',
           queryParameters: {
             'category': 'entertainment',
-            'pageSize': 20,
+            'pageSize': 10,
             'page': 1,
           },
         )).called(1);

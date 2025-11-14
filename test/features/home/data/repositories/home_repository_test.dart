@@ -58,7 +58,7 @@ void main() {
 
         final result = await repository.fetchTopHeadlines(
           country: 'us',
-          pageSize: 20,
+          pageSize: 10,
           page: 1,
         );
 
@@ -69,7 +69,7 @@ void main() {
         expect(result[1].author, 'Author 2');
         verify(mockRemoteDataSource.fetchTopHeadlines(
           country: 'us',
-          pageSize: 20,
+          pageSize: 10,
           page: 1,
         )).called(1);
       });

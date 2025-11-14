@@ -34,23 +34,6 @@ class MockLocalStorageService extends _i1.Mock
   }
 
   @override
-  _i3.Future<void> saveFcmToken(String? token) =>
-      (super.noSuchMethod(
-            Invocation.method(#saveFcmToken, [token]),
-            returnValue: _i3.Future<void>.value(),
-            returnValueForMissingStub: _i3.Future<void>.value(),
-          )
-          as _i3.Future<void>);
-
-  @override
-  _i3.Future<String?> getFcmToken() =>
-      (super.noSuchMethod(
-            Invocation.method(#getFcmToken, []),
-            returnValue: _i3.Future<String?>.value(),
-          )
-          as _i3.Future<String?>);
-
-  @override
   _i3.Future<void> saveNotificationsJson(String? json) =>
       (super.noSuchMethod(
             Invocation.method(#saveNotificationsJson, [json]),

@@ -1,11 +1,12 @@
 import 'dart:convert';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 
 import '../../config/app_config.dart';
 
-final FlutterLocalNotificationsPlugin _localNotificationsPlugin =
+FlutterLocalNotificationsPlugin _localNotificationsPlugin =
     FlutterLocalNotificationsPlugin();
 
 const AndroidNotificationChannel _defaultAndroidChannel =
@@ -17,6 +18,21 @@ const AndroidNotificationChannel _defaultAndroidChannel =
     );
 
 bool _localNotificationsInitialized = false;
+
+@visibleForTesting
+void setLocalNotificationsPluginForTesting(
+  FlutterLocalNotificationsPlugin plugin, {
+  bool initialized = false,
+}) {
+  _localNotificationsPlugin = plugin;
+  _localNotificationsInitialized = initialized;
+}
+
+@visibleForTesting
+void resetLocalNotificationsTestingState() {
+  _localNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  _localNotificationsInitialized = false;
+}
 
 Future<void> _ensureLocalNotificationsInitialized() async {
   if (_localNotificationsInitialized) return;
