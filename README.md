@@ -21,7 +21,7 @@ How to run the automation testing :
 
 [![Watch the video](https://img.youtube.com/vi/lSIsPcEIJzQ/maxresdefault.jpg)](https://youtu.be/lSIsPcEIJzQ)
 
-### [Watch this video on YouTube](https://youtu.be/lSIsPcEIJzQ)
+### [Watch notification demo on YouTube](https://youtu.be/lSIsPcEIJzQ)
 
 Added firebase to handling :
 1. Foreground state
