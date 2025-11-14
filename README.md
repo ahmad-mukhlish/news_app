@@ -17,7 +17,7 @@ How to run the automation testing :
    ```
    maestro test maestro/all-tests.yaml
    ```
-## Firebase 
+## Push Notification with Firebase Cloud Messaging (FCM)
 
 [![Watch the video](https://img.youtube.com/vi/lSIsPcEIJzQ/maxresdefault.jpg)](https://youtu.be/lSIsPcEIJzQ)
 
