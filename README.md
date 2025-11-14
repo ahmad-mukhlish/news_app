@@ -28,7 +28,7 @@ Added firebase to handling :
 2. Background state
 3. Terminated state
 
-## Unit and Widget Testing with 93.7% Coverage 🎉
+## Unit and Widget Testing with 90%+ Coverage 🎉
 
 This could be checked by these commands :
 
