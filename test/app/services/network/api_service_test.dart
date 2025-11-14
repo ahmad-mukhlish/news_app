@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+import 'package:news_app/app/config/app_config.dart';
 import 'package:news_app/app/services/network/api_service.dart';
 
 import 'api_service_test.mocks.dart';
@@ -16,6 +17,17 @@ void main() {
       expect(service.client, same(dio));
     });
 
+    test('configures Dio with expected default options', () {
+      final service = ApiService();
+
+      final options = service.client.options;
+      expect(options.baseUrl, AppConfig.newsApiBaseUrl);
+      expect(options.connectTimeout, const Duration(seconds: 20));
+      expect(options.receiveTimeout, const Duration(seconds: 20));
+      expect(options.responseType, ResponseType.json);
+      expect(options.headers['X-Api-Key'], AppConfig.newsApiKey);
+    });
+
     test('setHeaderToken stores Authorization header', () {
       final dio = Dio();
       final service = ApiService(dio: dio);
@@ -24,6 +36,14 @@ void main() {
 
       expect(service.client.options.headers['Authorization'],
           'Bearer token-abc');
+    });
+
+    test('init returns the same service instance', () async {
+      final service = ApiService();
+
+      final resolved = await service.init();
+
+      expect(resolved, same(service));
     });
 
     test('get forwards parameters to Dio', () async {

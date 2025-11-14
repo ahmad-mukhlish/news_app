@@ -8,7 +8,6 @@ import 'app/config/flavors.dart';
 import 'app/services/network/api_service.dart';
 import 'app/services/notification/notification_service.dart';
 import 'app/services/storage/local_storage_service.dart';
-import 'features/notifications/presentation/get/notifications_binding.dart';
 import 'firebase_options.dart';
 
 

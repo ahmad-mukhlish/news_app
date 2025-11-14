@@ -178,7 +178,7 @@ Future<void> handleLocalNotificationResponse(
         ? PushNotificationMapper.toEntity(storedNotificationDto)
         : fallbackNotification;
 
-    await goToNotificationDetail(
+    await navigateToNotificationDetail(
       notification: resolvedNotification,
       ensureNavigatorReady: true,
       onMarkAsRead: repository.markNotificationReadById,

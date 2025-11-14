@@ -3,7 +3,6 @@ import 'dart:developer' as developer;
 
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
-import 'package:get/get.dart';
 
 import '../../../app/data/notification/mappers/push_notification_mapper.dart';
 import '../../../app/domain/entities/push_notification.dart';
@@ -98,7 +97,7 @@ Future<void> onMessageOpenedApp(RemoteMessage message) async {
 
   final notification = await _resolveNotificationEntity(repository, message);
 
-  await goToNotificationDetail(
+  await navigateToNotificationDetail(
     notification: notification,
     ensureNavigatorReady: true,
   );
@@ -148,7 +147,7 @@ Future<void> onInitialMessage(RemoteMessage message) async {
 
   final notification = await _resolveNotificationEntity(repository, message);
 
-  await goToNotificationDetail(
+  await navigateToNotificationDetail(
     notification: notification,
     ensureNavigatorReady: true,
   );

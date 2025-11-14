@@ -1,5 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
+import 'package:mockito/mockito.dart';
+import 'package:news_app/app/domain/entities/news_article.dart';
 import 'package:news_app/features/search/data/repositories/search_repository.dart';
 import 'package:news_app/features/search/domain/entities/search_suggestion_item.dart';
 import 'package:news_app/features/search/domain/enums/search_in_enum.dart';
@@ -46,6 +48,18 @@ void main() {
 
     test('should initialize hasText as false', () {
       expect(controller.hasText.value, false);
+    });
+
+    test('should update hasText when text input changes', () {
+      controller.onInit();
+
+      expect(controller.hasText.value, isFalse);
+
+      controller.searchTextController.text = 'news';
+      expect(controller.hasText.value, isTrue);
+
+      controller.searchTextController.clear();
+      expect(controller.hasText.value, isFalse);
     });
 
     group('generateSuggestions', () {
@@ -249,6 +263,81 @@ void main() {
         controller.clearSearch();
 
         expect(controller.currentQuery.value, 'flutter');
+      });
+    });
+
+    group('pagingController', () {
+      test('should not call repository when query is empty', () async {
+        controller.pagingController.fetchNextPage();
+
+        await pumpEventQueue();
+
+        verifyNever(
+          mockRepository.searchArticles(
+            query: anyNamed('query'),
+            searchIn: anyNamed('searchIn'),
+            sortBy: anyNamed('sortBy'),
+            pageSize: anyNamed('pageSize'),
+            page: anyNamed('page'),
+          ),
+        );
+      });
+
+      test('should fetch first page using active filters', () async {
+        final sampleArticle = NewsArticle(
+          author: 'Author',
+          title: 'Title',
+          description: 'Desc',
+          url: 'https://example.com',
+          urlToImage: 'https://example.com/image.png',
+          publishedAt: DateTime(2024, 1, 1),
+          content: 'Content',
+          sourceName: 'Source',
+        );
+
+        when(
+          mockRepository.searchArticles(
+            query: anyNamed('query'),
+            searchIn: anyNamed('searchIn'),
+            sortBy: anyNamed('sortBy'),
+            pageSize: anyNamed('pageSize'),
+            page: anyNamed('page'),
+          ),
+        ).thenAnswer((_) async => [sampleArticle]);
+
+        final suggestion = SearchSuggestionItem(
+          query: 'flutter',
+          searchIn: SearchInEnum.description,
+          sortBy: SortByEnum.relevancy,
+        );
+
+        controller.executeSearch(suggestion);
+        controller.pagingController.fetchNextPage();
+
+        await untilCalled(
+          mockRepository.searchArticles(
+            query: anyNamed('query'),
+            searchIn: anyNamed('searchIn'),
+            sortBy: anyNamed('sortBy'),
+            pageSize: anyNamed('pageSize'),
+            page: anyNamed('page'),
+          ),
+        );
+
+        verify(
+          mockRepository.searchArticles(
+            query: 'flutter',
+            searchIn: SearchInEnum.description,
+            sortBy: SortByEnum.relevancy,
+            pageSize: null,
+            page: 1,
+          ),
+        ).called(1);
+
+        final pages = controller.pagingController.value.pages;
+        expect(pages, isNotNull);
+        expect(pages!.length, 1);
+        expect(pages.first.single, same(sampleArticle));
       });
     });
 

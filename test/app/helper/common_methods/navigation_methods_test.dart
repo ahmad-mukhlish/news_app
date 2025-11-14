@@ -12,9 +12,14 @@ import 'package:news_app/features/notifications/presentation/get/notifications_c
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-  setUp(() {
+  setUp(() async {
     Get.testMode = true;
     Get.reset();
+    SharedPreferences.setMockInitialValues({});
+    final prefs = await SharedPreferences.getInstance();
+    Get.put<LocalStorageService>(
+      LocalStorageService(prefs: prefs),
+    );
   });
 
   tearDown(() {
@@ -24,7 +29,6 @@ void main() {
   testWidgets(
     'goToNotificationDetail marks notification as read before navigating',
     (WidgetTester tester) async {
-      SharedPreferences.setMockInitialValues({});
       await tester.pumpWidget(const GetMaterialApp(home: SizedBox.shrink()));
 
       await tester.runAsync(() async {
@@ -46,9 +50,29 @@ void main() {
   );
 
   testWidgets(
+    'goToNotificationDetail does not call onMarkAsRead when notification already read',
+    (WidgetTester tester) async {
+      await tester.pumpWidget(const GetMaterialApp(home: SizedBox.shrink()));
+
+      await tester.runAsync(() async {
+        await _ensureNotificationsDependenciesReady();
+        var markInvocations = 0;
+
+        await navigation_methods.goToNotificationDetail(
+          notification: _buildNotification(isRead: true),
+          onMarkAsRead: (_) async {
+            markInvocations++;
+          },
+        );
+
+        expect(markInvocations, 0);
+      });
+    },
+  );
+
+  testWidgets(
     'goToNotificationDetail selects notifications tab when MainController is registered',
     (WidgetTester tester) async {
-      SharedPreferences.setMockInitialValues({});
       await tester.pumpWidget(const GetMaterialApp(home: SizedBox.shrink()));
 
       await tester.runAsync(() async {
@@ -69,6 +93,32 @@ void main() {
           mainController.selectedIndex.value,
           MainController.notificationsTabIndex,
         );
+      });
+    },
+  );
+
+  testWidgets(
+    'goToNotificationDetail waits for navigator readiness before pushing detail screen',
+    (WidgetTester tester) async {
+      await tester.runAsync(() async {
+        await _ensureNotificationsDependenciesReady();
+        var navigationCompleted = false;
+
+        final navigationFuture = navigation_methods.goToNotificationDetail(
+          notification: _buildNotification(isRead: true),
+          ensureNavigatorReady: true,
+        ).then((_) => navigationCompleted = true);
+
+        expect(Get.key.currentState, isNull);
+
+        await Future<void>.delayed(const Duration(milliseconds: 120));
+        await tester.pumpWidget(const GetMaterialApp(home: SizedBox.shrink()));
+        await tester.pumpAndSettle();
+
+        await navigationFuture;
+
+        expect(navigationCompleted, isTrue);
+        expect(Get.key.currentState?.canPop(), isTrue);
       });
     },
   );

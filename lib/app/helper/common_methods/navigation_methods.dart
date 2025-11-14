@@ -27,6 +27,20 @@ typedef GoToNotificationDetailFn = Future<void> Function({
 @visibleForTesting
 GoToNotificationDetailFn goToNotificationDetail = _goToNotificationDetail;
 
+/// Public-facing wrapper that keeps the test overrideable implementation
+/// hidden behind [goToNotificationDetail].
+Future<void> navigateToNotificationDetail({
+  required PushNotification notification,
+  bool ensureNavigatorReady = false,
+  Future<void> Function(String notificationId)? onMarkAsRead,
+}) {
+  return goToNotificationDetail(
+    notification: notification,
+    ensureNavigatorReady: ensureNavigatorReady,
+    onMarkAsRead: onMarkAsRead,
+  );
+}
+
 @visibleForTesting
 void resetGoToNotificationDetail() {
   goToNotificationDetail = _goToNotificationDetail;
