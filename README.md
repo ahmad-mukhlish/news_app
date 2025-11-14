@@ -30,6 +30,15 @@ Added firebase to handling :
 
 ## Unit and Widget Testing with 93.7% Coverage 🎉
 
+This could be checked by these commands :
+
+```
+flutter test --coverage
+genhtml coverage/lcov.info -o coverage/html
+open coverage/html/index.html      
+```
+
+
 
 
 https://github.com/user-attachments/assets/594bdce1-53c1-48de-a969-1d2c788db954
