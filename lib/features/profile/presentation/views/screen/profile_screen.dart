@@ -23,20 +23,23 @@ class ProfileScreen extends GetView<ProfileController> {
   }
 
   Widget buildBody(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          const LottieWidget(
-            url: AppConfig.comingSoonAnimation,
-            height: 220,
-          ),
-          const SizedBox(height: 16),
-          Text(
-            'Profile - Coming Soon',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-        ],
+    return Semantics(
+      label: "Coming soon",
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const LottieWidget(
+              url: AppConfig.comingSoonAnimation,
+              height: 220,
+            ),
+            const SizedBox(height: 16),
+            Text(
+              'Profile - Coming Soon',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+          ],
+        ),
       ),
     );
   }

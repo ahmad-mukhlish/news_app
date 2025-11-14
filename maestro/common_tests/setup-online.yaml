@@ -1,0 +1,10 @@
+appId: com.dhealth.news.news_app
+---
+# Common Setup for Online Tests
+# Launches app fresh and waits for initial animations to finish
+
+- launchApp:
+    clearState: true
+
+- waitForAnimationToEnd:
+    timeout: 5000

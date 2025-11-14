@@ -4,11 +4,7 @@ appId: com.dhealth.news.news_app
 # Verifies category chips, selection, and filtered news loading
 # Then calls pagination test to verify category results are interactive
 
-#- launchApp:
-#    clearState: true
-#
-#- waitForAnimationToEnd:
-#    timeout: 5000
+- runFlow: ../common_tests/setup-online.yaml
 
 # Navigate to Categories tab
 - tapOn:

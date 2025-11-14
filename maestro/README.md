@@ -28,7 +28,7 @@ Tests news article loading and interaction on the home screen.
 
 **Run time:** ~1 minute
 
-### 4. **04-search-flow-test.yaml** - Search Flow Test
+### 4. **04-search-screen-test.yaml** - Search Screen Test
 Tests search functionality and autocomplete.
 - Search input and autocomplete suggestions
 - Search results loading
@@ -37,7 +37,7 @@ Tests search functionality and autocomplete.
 
 **Run time:** ~1.5 minutes
 
-### 5. **05-categories-flow-test.yaml** - Categories Flow Test
+### 5. **05-categories-screen-test.yaml** - Categories Screen Test
 Tests category filtering functionality.
 - Category chip selection
 - Filtered news loading for each category
@@ -45,7 +45,7 @@ Tests category filtering functionality.
 
 **Run time:** ~2 minutes
 
-### 6. **06-notifications-test.yaml** - Notifications Test
+### 6. **06-notifications-screen-test.yaml** - Notifications Screen Test
 Tests notification list and interactions.
 - Notification display (handles empty and populated states)
 - Mark all as read functionality

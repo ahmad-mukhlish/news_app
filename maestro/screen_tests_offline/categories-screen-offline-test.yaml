@@ -1,0 +1,54 @@
+appId: com.dhealth.news.news_app
+---
+# Categories Offline Test: Tests category filtering when network is unavailable
+# Verifies error handling when attempting to load categories offline
+# Mimics online test flow but expects Error widgets instead of News cards
+
+- runFlow: ../common_tests/setup-offline.yaml
+
+# Navigate to Categories tab
+- tapOn:
+    text: ".*Categories tab.*"
+- waitForAnimationToEnd
+
+# Verify categories screen is visible
+- assertVisible: "Categories"
+
+# Wait for initial category content to load - expect Error instead of News cards
+- extendedWaitUntil:
+    visible: ".*Error.*"
+    timeout: 15000
+
+- runFlow: ../common_tests/scroll-categories-flow.yaml
+
+# Test 1: Sports category
+- tapOn: "Sports"
+- waitForAnimationToEnd:
+    timeout: 2000
+
+# Wait for sports news to load - expect Error in offline mode
+- extendedWaitUntil:
+    visible: ".*Error.*"
+    timeout: 15000
+
+# Verify error state
+- assertVisible: ".*Error.*"
+
+# Test retry button
+- runFlow: ../common_tests/retry-offline.yaml
+
+# Test 2: Technology category
+- tapOn: "Technology"
+- waitForAnimationToEnd:
+    timeout: 2000
+
+# Wait for technology news to load - expect Error in offline mode
+- extendedWaitUntil:
+    visible: ".*Error.*"
+    timeout: 15000
+
+# Verify error state persists
+- assertVisible: ".*Error.*"
+
+# Test retry button again
+- runFlow: ../common_tests/retry-offline.yaml

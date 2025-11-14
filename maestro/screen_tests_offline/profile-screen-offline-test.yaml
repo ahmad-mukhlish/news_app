@@ -1,0 +1,9 @@
+appId: com.dhealth.news.news_app
+---
+# Profile Offline Test: Ensure profile tab placeholder is visible offline
+# Verifies that the Coming Soon message appears even without network
+
+- runFlow: ../common_tests/setup-offline.yaml
+
+# Navigate to Profile tab and verify placeholder still appears offline
+- runFlow: ../common_tests/profile-test.yaml

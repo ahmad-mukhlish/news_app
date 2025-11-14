@@ -1,0 +1,12 @@
+appId: com.dhealth.news.news_app
+---
+# Common Retry Flow for Offline Tests
+# Tests the Retry button in Error widget and verifies error persists in offline mode
+
+# Test retry button
+- tapOn: "Retry"
+- waitForAnimationToEnd:
+    timeout: 5000
+
+# Error should persist in offline mode
+- assertVisible: ".*Error.*"

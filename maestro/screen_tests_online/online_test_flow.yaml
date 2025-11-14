@@ -6,14 +6,14 @@ appId: com.dhealth.news.news_app
 # Test 1: Home Screen
 - runFlow: home-screen-test.yaml
 
-# Test 2: Search Flow
-- runFlow: search-flow-test.yaml
+# Test 2: Search Screen
+- runFlow: search-screen-test.yaml
 
-# Test 3: Categories Flow
-- runFlow: categories-flow-test.yaml
+# Test 3: Categories Screen
+- runFlow: categories-screen-test.yaml
 
 # Test 4: Notifications (assuming notifications exist)
-- runFlow: notifications-test.yaml
+- runFlow: notifications-screen-test.yaml
 
 # Test 5: Profile placeholder
-- runFlow: profile-test.yaml
+- runFlow: profile-screen-test.yaml

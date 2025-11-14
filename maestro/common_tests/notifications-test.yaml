@@ -1,0 +1,36 @@
+appId: com.dhealth.news.news_app
+---
+# Check Notifications tab behavior for both empty and populated states
+# Navigates to Notifications tab, verifies screen, and tests state persistence
+
+- tapOn:
+    text: ".*Notifications tab.*"
+- waitForAnimationToEnd
+
+- assertVisible: "Notifications"
+
+# Handle empty notifications state if present
+- runFlow:
+    when:
+      visible: "No notifications yet"
+    commands:
+      - assertVisible: "No notifications yet"
+      - scroll
+      - scroll
+
+- waitForAnimationToEnd:
+    timeout: 3000
+
+# Ensure we're still on Notifications screen
+- assertVisible: "Notifications"
+
+# Navigate away and back to ensure state persistence
+- tapOn:
+    text: ".*Home.*Tab.*"
+- waitForAnimationToEnd
+
+- tapOn:
+    text: ".*Notifications tab.*"
+- waitForAnimationToEnd
+
+- assertVisible: "Notifications"

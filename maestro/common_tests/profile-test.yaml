@@ -1,0 +1,11 @@
+appId: com.dhealth.news.news_app
+---
+# Check Profile placeholder content
+# Navigates to Profile tab and verifies Coming Soon message
+
+- tapOn:
+    text: ".*Profile tab.*"
+- waitForAnimationToEnd
+
+- assertVisible:
+    text: ".*Coming soon.*"

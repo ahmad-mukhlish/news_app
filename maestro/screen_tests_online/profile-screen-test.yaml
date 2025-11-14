@@ -1,0 +1,9 @@
+appId: com.dhealth.news.news_app
+---
+# Profile Test: Validate profile tab placeholder content
+# Verifies navigating to Profile shows the Coming Soon message
+
+- runFlow: ../common_tests/setup-online.yaml
+
+# Navigate to Profile tab and verify placeholder
+- runFlow: ../common_tests/profile-test.yaml

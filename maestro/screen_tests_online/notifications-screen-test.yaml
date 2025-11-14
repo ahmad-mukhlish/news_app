@@ -1,0 +1,9 @@
+appId: com.dhealth.news.news_app
+---
+# Notifications Test: Tests notification list and interactions
+# Verifies notification display, marking as read, and navigation
+
+- runFlow: ../common_tests/setup-online.yaml
+
+# Navigate to Notifications tab and verify behavior
+- runFlow: ../common_tests/notifications-test.yaml

@@ -1,14 +1,10 @@
 appId: com.dhealth.news.news_app
 ---
-# Search Flow Test: Tests search functionality and results
-# Verifies search input, suggestions, results, and clearing
-# Then calls pagination test to verify search results are interactive
+# Search Offline Test: Tests search behavior when network is unavailable
+# Verifies error handling when attempting to search offline
+# Mimics online test flow but expects Error widgets instead of News cards
 
-- launchApp:
-    clearState: true
-
-- waitForAnimationToEnd:
-    timeout: 5000
+- runFlow: ../common_tests/setup-offline.yaml
 
 # Navigate to Search tab
 - tapOn:
@@ -30,17 +26,16 @@ appId: com.dhealth.news.news_app
 # Submit search query
 - pressKey: Enter
 
-# Wait for search results to load
+# Wait for search results to load - expect Error in offline mode
 - extendedWaitUntil:
-    visible: ".*News card.*"
+    visible: ".*Error.*"
     timeout: 15000
 
-# Verify search results loaded
-- assertVisible:
-    text: ".*News card.*"
+# Verify error state
+- assertVisible: ".*Error.*"
 
-# Test pagination and article interaction on search results
-- runFlow: ../common_tests/pagination-test.yaml
+# Test retry button
+- runFlow: ../common_tests/retry-offline.yaml
 
 # Test 2: Clear search button
 - tapOn: ".*Clear search.*"
@@ -48,26 +43,25 @@ appId: com.dhealth.news.news_app
     timeout: 1000
 - assertVisible: "Search news..."
 
-# Test 3: Search for "bitcoin" and click suggestion
+# Test 3: Search for "bitcoin"
 - tapOn: "Search news..."
 - inputText: "bitcoin"
 - waitForAnimationToEnd:
     timeout: 2000
 
-- assertVisible:
-   text: ".*Search suggestion.*"
+# Submit search query (skip suggestion tap in offline mode)
+- pressKey: Enter
 
-- tapOn:
-    text: ".*Search suggestion.*"
-
-# Wait for results
+# Wait for results - expect Error in offline mode
 - extendedWaitUntil:
-    visible: ".*News card.*"
+    visible: ".*Error.*"
     timeout: 15000
 
-# Verify results loaded
-- assertVisible:
-    text: ".*News card.*"
+# Verify error state persists
+- assertVisible: ".*Error.*"
+
+# Test retry button again
+- runFlow: ../common_tests/retry-offline.yaml
 
 # Edge Case 1: Empty search query
 - tapOn: ".*Clear search.*"
@@ -81,7 +75,7 @@ appId: com.dhealth.news.news_app
 # Should show empty state or stay in same state
 - assertVisible: "Search"
 
-# Edge Case 2: Search with special characters, should be empty
+# Edge Case 2: Search with special characters
 - tapOn: "Search news..."
 - inputText: "!@#$%"
 - pressKey: Enter
@@ -89,7 +83,5 @@ appId: com.dhealth.news.news_app
 - waitForAnimationToEnd:
     timeout: 2000
 
-# Verify results loaded
-- assertVisible:
-    text: ".*Empty news.*"
-
+# Verify error state persists
+- assertVisible: ".*Error.*"

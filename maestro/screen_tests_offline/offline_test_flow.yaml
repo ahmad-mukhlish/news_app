@@ -2,19 +2,19 @@ appId: com.dhealth.news.news_app
 ---
 # Offline Test Flow: Runs all screen tests in offline mode
 # Tests error handling and offline behavior
-# NOTE: You must disable network before running these tests
+# This is achieved by using airplane mode
 
 # Test 1: Home Screen Offline
 - runFlow: home-screen-offline-test.yaml
 
 # Test 2: Search Offline
-- runFlow: search-offline-test.yaml
+- runFlow: search-screen-offline-test.yaml
 
 # Test 3: Categories Offline
-- runFlow: categories-offline-test.yaml
+- runFlow: categories-screen-offline-test.yaml
 
 # Test 4: Notifications Offline
-- runFlow: notifications-offline-test.yaml
+- runFlow: notifications-screen-offline-test.yaml
 
 # Test 5: Profile Offline placeholder
-- runFlow: profile-offline-test.yaml
+- runFlow: profile-screen-offline-test.yaml
