@@ -1,4 +1,5 @@
 import '../../../../../app/data/notification/dto/push_notification_dto.dart';
+import '../../../../../app/data/notification/mappers/push_notification_mapper.dart';
 import '../../../../../app/services/storage/local_storage_service.dart';
 
 class NotificationLocalDataSource {
@@ -8,11 +9,13 @@ class NotificationLocalDataSource {
       : _storageService = storageService;
 
   Future<List<PushNotificationDto>> getAll() async {
-    return _storageService.getNotifications();
+    final json = await _storageService.getNotificationsJson();
+    return PushNotificationMapper.dtoListFromJsonString(json ?? '');
   }
 
   Future<void> saveAll(List<PushNotificationDto> notifications) async {
-    await _storageService.saveNotifications(notifications);
+    final jsonString = PushNotificationMapper.dtoListToJsonString(notifications);
+    await _storageService.saveNotificationsJson(jsonString);
   }
 
   Future<PushNotificationDto?> getById(String id) async {

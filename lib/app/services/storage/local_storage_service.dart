@@ -1,24 +1,26 @@
-import 'package:hive_flutter/hive_flutter.dart';
-
-import '../../data/notification/dto/push_notification_dto.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LocalStorageService {
-  late final Box _box;
+  final SharedPreferences _prefs;
 
-  static const String kBoxName = 'news_app_storage';
+  static const String _kFcmTokenKey = 'fcm_token';
   static const String _kNotificationsKey = 'notifications';
 
-  LocalStorageService({required Box box}) : _box = box;
+  LocalStorageService({required SharedPreferences prefs}) : _prefs = prefs;
 
-  Future<void> saveNotifications(List<PushNotificationDto> notifications) async {
-    final jsonList = notifications.map((n) => n.toJson()).toList();
-    await _box.put(_kNotificationsKey, jsonList);
+  Future<void> saveFcmToken(String token) async {
+    await _prefs.setString(_kFcmTokenKey, token);
   }
 
-  List<PushNotificationDto> getNotifications() {
-    final jsonList = _box.get(_kNotificationsKey, defaultValue: <dynamic>[]) as List<dynamic>;
-    return jsonList
-        .map((json) => PushNotificationDto.fromJson(Map<String, dynamic>.from(json as Map)))
-        .toList();
+  Future<String?> getFcmToken() async {
+    return _prefs.getString(_kFcmTokenKey);
+  }
+
+  Future<void> saveNotificationsJson(String json) async {
+    await _prefs.setString(_kNotificationsKey, json);
+  }
+
+  Future<String?> getNotificationsJson() async {
+    return _prefs.getString(_kNotificationsKey);
   }
 }

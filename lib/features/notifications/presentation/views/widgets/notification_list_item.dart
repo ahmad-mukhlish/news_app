@@ -71,7 +71,7 @@ class NotificationListItem extends StatelessWidget {
   }
 
   Widget buildReadMarking(bool isUnread) {
-    if (isUnread) return Container();
+    if (isUnread == false) return Container();
 
     return Semantics(
       label: "Unread",

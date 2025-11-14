@@ -20,37 +20,50 @@ void main() {
 
   group('NotificationLocalDataSource', () {
     group('getAll', () {
-      test('should return empty list when storage returns empty list', () async {
-        when(mockStorageService.getNotifications())
-            .thenReturn([]);
+      test('should return empty list when storage returns null', () async {
+        when(mockStorageService.getNotificationsJson())
+            .thenAnswer((_) async => null);
 
         final result = await dataSource.getAll();
 
         expect(result, isEmpty);
-        verify(mockStorageService.getNotifications()).called(1);
+        verify(mockStorageService.getNotificationsJson()).called(1);
       });
 
-      test('should return list of DTOs when storage has notifications',
+      test('should return empty list when storage returns empty string',
           () async {
-        final notifications = [
-          PushNotificationDto(
-            id: '1',
-            title: 'Notification 1',
-            body: 'Body 1',
-            receivedAt: '2024-01-01T10:00:00Z',
-            isRead: false,
-          ),
-          PushNotificationDto(
-            id: '2',
-            title: 'Notification 2',
-            body: 'Body 2',
-            receivedAt: '2024-01-02T10:00:00Z',
-            isRead: true,
-          ),
-        ];
+        when(mockStorageService.getNotificationsJson())
+            .thenAnswer((_) async => '');
 
-        when(mockStorageService.getNotifications())
-            .thenReturn(notifications);
+        final result = await dataSource.getAll();
+
+        expect(result, isEmpty);
+        verify(mockStorageService.getNotificationsJson()).called(1);
+      });
+
+      test('should return list of DTOs when storage returns valid JSON',
+          () async {
+        const jsonString = '''
+        [
+          {
+            "id": "1",
+            "title": "Notification 1",
+            "body": "Body 1",
+            "receivedAt": "2024-01-01T10:00:00Z",
+            "isRead": false
+          },
+          {
+            "id": "2",
+            "title": "Notification 2",
+            "body": "Body 2",
+            "receivedAt": "2024-01-02T10:00:00Z",
+            "isRead": true
+          }
+        ]
+        ''';
+
+        when(mockStorageService.getNotificationsJson())
+            .thenAnswer((_) async => jsonString);
 
         final result = await dataSource.getAll();
 
@@ -61,24 +74,39 @@ void main() {
         expect(result[1].id, '2');
         expect(result[1].title, 'Notification 2');
         expect(result[1].isRead, true);
-        verify(mockStorageService.getNotifications()).called(1);
+        verify(mockStorageService.getNotificationsJson()).called(1);
+      });
+
+      test('should return empty list when storage returns invalid JSON',
+          () async {
+        const invalidJson = 'not valid json {]';
+
+        when(mockStorageService.getNotificationsJson())
+            .thenAnswer((_) async => invalidJson);
+
+        final result = await dataSource.getAll();
+
+        expect(result, isEmpty);
+        verify(mockStorageService.getNotificationsJson()).called(1);
       });
 
       test('should handle DTOs with null fields', () async {
-        final notifications = [
-          PushNotificationDto(
-            id: 'null-test',
-            title: null,
-            body: null,
-            receivedAt: null,
-            data: null,
-            imageUrl: null,
-            isRead: null,
-          ),
-        ];
+        const jsonString = '''
+        [
+          {
+            "id": "null-test",
+            "title": null,
+            "body": null,
+            "receivedAt": null,
+            "data": null,
+            "imageUrl": null,
+            "isRead": null
+          }
+        ]
+        ''';
 
-        when(mockStorageService.getNotifications())
-            .thenReturn(notifications);
+        when(mockStorageService.getNotificationsJson())
+            .thenAnswer((_) async => jsonString);
 
         final result = await dataSource.getAll();
 
@@ -86,21 +114,23 @@ void main() {
         expect(result[0].id, 'null-test');
         expect(result[0].title, null);
         expect(result[0].body, null);
-        verify(mockStorageService.getNotifications()).called(1);
+        verify(mockStorageService.getNotificationsJson()).called(1);
       });
 
       test('should handle DTOs with data field', () async {
-        final notifications = [
-          PushNotificationDto(
-            id: 'with-data',
-            title: 'Has Data',
-            body: 'Body',
-            data: {'custom': 'value', 'number': 42},
-          ),
-        ];
+        const jsonString = '''
+        [
+          {
+            "id": "with-data",
+            "title": "Has Data",
+            "body": "Body",
+            "data": {"custom": "value", "number": 42}
+          }
+        ]
+        ''';
 
-        when(mockStorageService.getNotifications())
-            .thenReturn(notifications);
+        when(mockStorageService.getNotificationsJson())
+            .thenAnswer((_) async => jsonString);
 
         final result = await dataSource.getAll();
 
@@ -108,12 +138,12 @@ void main() {
         expect(result[0].data, isNotNull);
         expect(result[0].data!['custom'], 'value');
         expect(result[0].data!['number'], 42);
-        verify(mockStorageService.getNotifications()).called(1);
+        verify(mockStorageService.getNotificationsJson()).called(1);
       });
     });
 
     group('saveAll', () {
-      test('should save notifications to storage', () async {
+      test('should save notifications as JSON string to storage', () async {
         final notifications = [
           PushNotificationDto(
             id: '1',
@@ -131,31 +161,30 @@ void main() {
           ),
         ];
 
-        when(mockStorageService.saveNotifications(any))
+        when(mockStorageService.saveNotificationsJson(any))
             .thenAnswer((_) async => {});
 
         await dataSource.saveAll(notifications);
 
         final captured =
-            verify(mockStorageService.saveNotifications(captureAny))
+            verify(mockStorageService.saveNotificationsJson(captureAny))
                 .captured;
         expect(captured.length, 1);
 
-        final savedList = captured[0] as List<PushNotificationDto>;
-        expect(savedList.length, 2);
-        expect(savedList[0].id, '1');
-        expect(savedList[0].title, 'Notification 1');
-        expect(savedList[1].id, '2');
-        expect(savedList[1].isRead, true);
+        final savedJson = captured[0] as String;
+        expect(savedJson, contains('"id":"1"'));
+        expect(savedJson, contains('"title":"Notification 1"'));
+        expect(savedJson, contains('"id":"2"'));
+        expect(savedJson, contains('"isRead":true'));
       });
 
-      test('should save empty list', () async {
-        when(mockStorageService.saveNotifications(any))
+      test('should save empty list as empty JSON array', () async {
+        when(mockStorageService.saveNotificationsJson(any))
             .thenAnswer((_) async => {});
 
         await dataSource.saveAll([]);
 
-        verify(mockStorageService.saveNotifications([])).called(1);
+        verify(mockStorageService.saveNotificationsJson('[]')).called(1);
       });
 
       test('should save notifications with data field', () async {
@@ -168,19 +197,19 @@ void main() {
           ),
         ];
 
-        when(mockStorageService.saveNotifications(any))
+        when(mockStorageService.saveNotificationsJson(any))
             .thenAnswer((_) async => {});
 
         await dataSource.saveAll(notifications);
 
         final captured =
-            verify(mockStorageService.saveNotifications(captureAny))
+            verify(mockStorageService.saveNotificationsJson(captureAny))
                 .captured;
-        final savedList = captured[0] as List<PushNotificationDto>;
+        final savedJson = captured[0] as String;
 
-        expect(savedList[0].data, isNotNull);
-        expect(savedList[0].data!['key'], 'value');
-        expect(savedList[0].data!['count'], 5);
+        expect(savedJson, contains('"data"'));
+        expect(savedJson, contains('"key":"value"'));
+        expect(savedJson, contains('"count":5'));
       });
 
       test('should save notifications with null fields', () async {
@@ -193,41 +222,43 @@ void main() {
           ),
         ];
 
-        when(mockStorageService.saveNotifications(any))
+        when(mockStorageService.saveNotificationsJson(any))
             .thenAnswer((_) async => {});
 
         await dataSource.saveAll(notifications);
 
         final captured =
-            verify(mockStorageService.saveNotifications(captureAny))
+            verify(mockStorageService.saveNotificationsJson(captureAny))
                 .captured;
-        final savedList = captured[0] as List<PushNotificationDto>;
+        final savedJson = captured[0] as String;
 
-        expect(savedList[0].id, 'null-fields');
-        expect(savedList[0].title, null);
-        expect(savedList[0].body, null);
+        expect(savedJson, contains('"id":"null-fields"'));
+        expect(savedJson, contains('"title":null'));
+        expect(savedJson, contains('"body":null'));
       });
     });
 
     group('getById', () {
       test('should return notification when ID exists', () async {
-        final notifications = [
-          PushNotificationDto(
-            id: 'found-id',
-            title: 'Found Notification',
-            body: 'Found Body',
-            isRead: false,
-          ),
-          PushNotificationDto(
-            id: 'another-id',
-            title: 'Another Notification',
-            body: 'Another Body',
-            isRead: true,
-          ),
-        ];
+        const jsonString = '''
+        [
+          {
+            "id": "found-id",
+            "title": "Found Notification",
+            "body": "Found Body",
+            "isRead": false
+          },
+          {
+            "id": "another-id",
+            "title": "Another Notification",
+            "body": "Another Body",
+            "isRead": true
+          }
+        ]
+        ''';
 
-        when(mockStorageService.getNotifications())
-            .thenReturn(notifications);
+        when(mockStorageService.getNotificationsJson())
+            .thenAnswer((_) async => jsonString);
 
         final result = await dataSource.getById('found-id');
 
@@ -236,61 +267,77 @@ void main() {
         expect(result.title, 'Found Notification');
         expect(result.body, 'Found Body');
         expect(result.isRead, false);
-        verify(mockStorageService.getNotifications()).called(1);
+        verify(mockStorageService.getNotificationsJson()).called(1);
       });
 
       test('should return null when ID does not exist', () async {
-        final notifications = [
-          PushNotificationDto(
-            id: 'existing-id',
-            title: 'Existing',
-            body: 'Body',
-          ),
-        ];
+        const jsonString = '''
+        [
+          {
+            "id": "existing-id",
+            "title": "Existing",
+            "body": "Body"
+          }
+        ]
+        ''';
 
-        when(mockStorageService.getNotifications())
-            .thenReturn(notifications);
+        when(mockStorageService.getNotificationsJson())
+            .thenAnswer((_) async => jsonString);
 
         final result = await dataSource.getById('non-existent-id');
 
         expect(result, isNull);
-        verify(mockStorageService.getNotifications()).called(1);
+        verify(mockStorageService.getNotificationsJson()).called(1);
       });
 
       test('should return null when storage is empty', () async {
-        when(mockStorageService.getNotifications())
-            .thenReturn([]);
+        when(mockStorageService.getNotificationsJson())
+            .thenAnswer((_) async => null);
 
         final result = await dataSource.getById('any-id');
 
         expect(result, isNull);
-        verify(mockStorageService.getNotifications()).called(1);
+        verify(mockStorageService.getNotificationsJson()).called(1);
+      });
+
+      test('should return null when storage has invalid JSON', () async {
+        const invalidJson = 'invalid {]';
+
+        when(mockStorageService.getNotificationsJson())
+            .thenAnswer((_) async => invalidJson);
+
+        final result = await dataSource.getById('any-id');
+
+        expect(result, isNull);
+        verify(mockStorageService.getNotificationsJson()).called(1);
       });
 
       test('should find notification in list with multiple items', () async {
-        final notifications = [
-          PushNotificationDto(id: '1', title: 'First'),
-          PushNotificationDto(id: '2', title: 'Second'),
-          PushNotificationDto(id: '3', title: 'Third'),
-          PushNotificationDto(id: 'target', title: 'Target Notification'),
-          PushNotificationDto(id: '4', title: 'Fourth'),
-        ];
+        const jsonString = '''
+        [
+          {"id": "1", "title": "First"},
+          {"id": "2", "title": "Second"},
+          {"id": "3", "title": "Third"},
+          {"id": "target", "title": "Target Notification"},
+          {"id": "4", "title": "Fourth"}
+        ]
+        ''';
 
-        when(mockStorageService.getNotifications())
-            .thenReturn(notifications);
+        when(mockStorageService.getNotificationsJson())
+            .thenAnswer((_) async => jsonString);
 
         final result = await dataSource.getById('target');
 
         expect(result, isNotNull);
         expect(result!.id, 'target');
         expect(result.title, 'Target Notification');
-        verify(mockStorageService.getNotifications()).called(1);
+        verify(mockStorageService.getNotificationsJson()).called(1);
       });
     });
 
     group('error handling', () {
       test('getAll should propagate storage service errors', () async {
-        when(mockStorageService.getNotifications())
+        when(mockStorageService.getNotificationsJson())
             .thenThrow(Exception('Storage error'));
 
         expect(
@@ -300,7 +347,7 @@ void main() {
       });
 
       test('saveAll should propagate storage service errors', () async {
-        when(mockStorageService.saveNotifications(any))
+        when(mockStorageService.saveNotificationsJson(any))
             .thenThrow(Exception('Storage error'));
 
         final notifications = [
