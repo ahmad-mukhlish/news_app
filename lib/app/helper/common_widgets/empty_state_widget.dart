@@ -21,31 +21,34 @@ class EmptyStateWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          if (icon != null)
-            Icon(
-              icon,
-              size: iconSize,
-              color: iconColor,
+    return Semantics(
+      label: "Empty news",
+      child: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (icon != null)
+              Icon(
+                icon,
+                size: iconSize,
+                color: iconColor,
+              ),
+            if (lottieUrl != null)
+              LottieWidget(
+                url: lottieUrl,
+                height: lottieHeight,
+                padding: const EdgeInsets.only(bottom: 16),
+              ),
+            const SizedBox(height: 16),
+            Text(
+              message,
+              style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
+              textAlign: TextAlign.center,
             ),
-          if (lottieUrl != null)
-            LottieWidget(
-              url: lottieUrl,
-              height: lottieHeight,
-              padding: const EdgeInsets.only(bottom: 16),
-            ),
-          const SizedBox(height: 16),
-          Text(
-            message,
-            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

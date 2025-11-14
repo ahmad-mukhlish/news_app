@@ -9,7 +9,7 @@ class SearchRemoteDataSource {
   SearchRemoteDataSource({required this.apiService});
 
   static const String everything = '/everything';
-  static const int defaultPageSize = 20;
+  static const int defaultPageSize = 10;
   static const int defaultPage = 1;
 
   Future<NewsResponseDto> searchArticles({

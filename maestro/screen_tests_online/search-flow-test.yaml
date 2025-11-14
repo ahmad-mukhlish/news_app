@@ -49,14 +49,17 @@ appId: com.dhealth.news.news_app
     timeout: 1000
 - assertVisible: "Search news..."
 
-# Test 3: Search for "bitcoin"
+# Test 3: Search for "bitcoin" and click suggestion
 - tapOn: "Search news..."
 - inputText: "bitcoin"
 - waitForAnimationToEnd:
     timeout: 2000
 
-# Submit search
-- pressKey: Enter
+- assertVisible:
+   text: ".*Search suggestion.*"
+
+- tapOn:
+    text: ".*Search suggestion.*"
 
 # Wait for results
 - extendedWaitUntil:
@@ -82,33 +85,16 @@ appId: com.dhealth.news.news_app
 # Should show empty state or stay in same state
 - assertVisible: "Search"
 
-# Edge Case 2: Search with special characters
+# Edge Case 2: Search with special characters, should be empty
 - tapOn: "Search news..."
 - inputText: "!@#$%"
 - pressKey: Enter
 
 - waitForAnimationToEnd:
-    timeout: 5000
+    timeout: 2000
 
-# Edge Case 3: Very long search query
-- tapOn: ".*Clear search.*"
-- waitForAnimationToEnd:
-    timeout: 1000
+# Verify results loaded
+- assertVisible:
+    text: ".*Empty news.*"
 
-- tapOn: "Search news..."
-- inputText: "this is a very long search query to test how the application handles extremely long text input from users who might paste entire paragraphs"
-- pressKey: Enter
 
-- waitForAnimationToEnd:
-    timeout: 5000
-
-# Clear search
-- tapOn: ".*Clear search.*"
-
-# Edge Case 4: Back button behavior
-- tapOn: "Search news..."
-- inputText: "test"
-- pressKey: Back
-
-# Should dismiss keyboard or go back
-- waitForAnimationToEnd

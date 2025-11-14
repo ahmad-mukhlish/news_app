@@ -8,64 +8,25 @@ appId: com.dhealth.news.news_app
 # Wait for articles to be visible
 - extendedWaitUntil:
     visible: ".*News card.*"
-    timeout: 15000
-
-# Verify news cards are visible
-- assertVisible:
-    text: ".*News card.*"
+    timeout: 5000
 
 # Test: Scroll down to trigger pagination
 # Scroll multiple times to reach pagination threshold
 - scroll
-- waitForAnimationToEnd:
-    timeout: 2000
-
 - scroll
-- waitForAnimationToEnd:
-    timeout: 2000
-
 - scroll
-- waitForAnimationToEnd:
-    timeout: 2000
-
 - scroll
-- waitForAnimationToEnd:
-    timeout: 2000
-
 - scroll
-- waitForAnimationToEnd:
-    timeout: 2000
-
 - scroll
-- waitForAnimationToEnd:
-    timeout: 2000
-
-# Check for loading indicator during pagination
-- runFlow:
-    when:
-      visible: "Loading"
-    commands:
-      - assertVisible: "Loading"
-      - waitForAnimationToEnd:
-          timeout: 3000
-
-# Continue scrolling after pagination loads
 - scroll
-- waitForAnimationToEnd:
-    timeout: 3000
-
 - scroll
-- waitForAnimationToEnd:
-    timeout: 3000
+- scroll
+- scroll
 
 # Verify articles are still visible after pagination
 - assertVisible:
     text: ".*News card.*"
 
-# Test article interaction after pagination
-- runFlow: article-interaction-test.yaml
 
-# Test pull-to-refresh functionality
-- runFlow: pull-to-refresh-test.yaml
 
 

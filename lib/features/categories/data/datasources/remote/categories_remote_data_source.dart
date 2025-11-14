@@ -8,7 +8,7 @@ class CategoriesRemoteDataSource {
   CategoriesRemoteDataSource({required this.apiService});
 
   static const String topHeadlines = '/top-headlines';
-  static const int defaultPageSize = 20;
+  static const int defaultPageSize = 10;
   static const int defaultPage = 1;
 
   Future<NewsResponseDto> fetchCategoryNews({

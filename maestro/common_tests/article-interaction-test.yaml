@@ -4,43 +4,48 @@ appId: com.dhealth.news.news_app
 # This test is meant to be called from other flows, assumes articles are already loaded
 # NOTE: This test does not launch the app - it should be called after articles are visible
 
-# Wait for articles to be visible
-- extendedWaitUntil:
-    visible: ".*News card.*"
-    timeout: 10000
 
 # Verify news cards are visible
 - assertVisible:
     text: ".*News card.*"
 
 # Verify semantic labels are present on news article card
-- assertVisible: "Article title"
-- assertVisible: "Article content"
+- assertVisible:
+    text: ".*Article title.*"
+- assertVisible:
+    text: ".*Article content.*"
 
 # Check for optional semantic labels (may not always be present)
 - runFlow:
     when:
-      visible: "Article image"
+      visible:
+        text: ".*Article image.*"
     commands:
-      - assertVisible: "Article image"
+      - assertVisible:
+          text: ".*Article image.*"
 
 - runFlow:
     when:
-      visible: "Article description"
+      visible:
+        text: ".*Article description.*"
     commands:
-      - assertVisible: "Article description"
+      - assertVisible:
+          text: ".*Article description.*"
 
 - runFlow:
     when:
       visible: ".*Article source.*"
     commands:
-      - assertVisible: ".*Article source.*"
+      - assertVisible:
+          text: ".*Article source.*"
 
 - runFlow:
     when:
-      visible: "Open article in browser"
+      visible:
+        text: ".*Open article in browser.*"
     commands:
-      - assertVisible: "Open article in browser"
+      - assertVisible:
+          text: ".*Open article in browser.*"
 
 # Test tapping on first news article, should open browser
 - tapOn:

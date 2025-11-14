@@ -12,11 +12,14 @@ class SearchSuggestionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListTile(
-      leading: const Icon(Icons.search),
-      title: Text(
-        suggestion.displayText,
-        style: const TextStyle(fontSize: 14),
+    return Semantics(
+      label: "Search suggestion",
+      child: ListTile(
+        leading: const Icon(Icons.search),
+        title: Text(
+          suggestion.displayText,
+          style: const TextStyle(fontSize: 14),
+        ),
       ),
     );
   }

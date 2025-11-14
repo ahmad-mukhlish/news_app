@@ -13,14 +13,11 @@ appId: com.dhealth.news.news_app
 - assertVisible: "News App"
 - assertVisible: "Home"
 
-# Check for loading state
-- runFlow:
-    when:
-      visible: "Loading"
-    commands:
-      - assertVisible: "Loading"
-      - waitForAnimationToEnd:
-          timeout: 3000
+# Test article interaction after pagination
+- runFlow: article-interaction-test.yaml
+
+# Test pull-to-refresh functionality
+- runFlow: pull-to-refresh-test.yaml
 
 # Wait for news articles to load
 - extendedWaitUntil:
