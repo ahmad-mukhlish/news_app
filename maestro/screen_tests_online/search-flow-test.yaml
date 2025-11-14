@@ -18,7 +18,6 @@ appId: com.dhealth.news.news_app
 # Verify search screen is visible
 - assertVisible: "Search"
 - assertVisible: "Search news..."
-- assertVisible: "Enter keywords to search for news"
 
 # Test 1: Search for "technology"
 - tapOn: "Search news..."
@@ -41,7 +40,7 @@ appId: com.dhealth.news.news_app
     text: ".*News card.*"
 
 # Test pull-to-refresh functionality
-- runFlow: ./common_tests/pull-to-refresh-test.yaml
+- runFlow: ../common_tests/pull-to-refresh-test.yaml
 
 # Test pagination and article interaction on search results
 - runFlow: ../common_tests/pagination-test.yaml

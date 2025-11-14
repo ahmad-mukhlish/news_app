@@ -1,4 +1,3 @@
-import 'package:chucker_flutter/chucker_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 import '../../features/main/presentation/get/main_binding.dart';
@@ -25,7 +24,6 @@ class App extends StatelessWidget {
       ),
       home: const MainScreen(),
       initialBinding: MainBinding(),
-      navigatorObservers: [ChuckerFlutter.navigatorObserver],
     );
   }
 }

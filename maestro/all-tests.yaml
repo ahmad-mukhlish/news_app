@@ -3,8 +3,8 @@ appId: com.dhealth.news.news_app
 # Master flow to run all tests
 # Runs navigation regression, online tests, and offline tests
 
-## Test 1: Navigation Regression (standalone so it can fail fast)
-#- runFlow: navigation-test.yaml
+# Test 1: Navigation Regression (standalone so it can fail fast)
+- runFlow: common_tests/navigation-test.yaml
 
 # Test 2: Online Test Flow (All screen tests with network)
 - runFlow: screen_tests_online/online_test_flow.yaml
