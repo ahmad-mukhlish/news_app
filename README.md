@@ -1,16 +1,20 @@
 # news_app
 
-A new Flutter project.
+A news flutter App
 
-## Getting Started
+## Fully Automated Test By Maestro 🎉
 
-This project is a starting point for a Flutter application.
+This is included the phase 1 features : 
+home (headlines), search with combo-box, category and profile (with coming soon)
 
-A few resources to get you started if this is your first Flutter project:
+How to run the automation testing :
+1. Download maestro first to try this automation testing [here](https://docs.maestro.dev/getting-started/installing-maestro)
+2. Then run this App
+3. Then use this command at terminal : 
+   maestro test maestro/all-tests.yaml
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+[![Watch the video](https://img.youtube.com/vi/NYMoQf19x_I/maxresdefault.jpg)](https://youtu.be/NYMoQf19x_I)
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+### [Watch this video on YouTube](https://youtu.be/NYMoQf19x_I)
+
+## Firebase 
