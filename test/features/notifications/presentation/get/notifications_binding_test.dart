@@ -1,5 +1,3 @@
-import 'dart:async';
-
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
 import 'package:news_app/app/services/storage/local_storage_service.dart';
@@ -25,11 +23,11 @@ void main() {
     Get.reset();
   });
 
-  Future<void> _pump() => Future<void>.delayed(Duration.zero);
+  Future<void> pump() => Future<void>.delayed(Duration.zero);
 
   test('dependencies registers storage, data source, repository, and controller', () async {
     NotificationsBinding().dependencies();
-    await _pump();
+    await pump();
 
     expect(Get.isRegistered<LocalStorageService>(), isTrue);
     expect(Get.isRegistered<NotificationLocalDataSource>(), isTrue);
@@ -39,11 +37,11 @@ void main() {
 
   test('reusing binding does not overwrite existing instances', () async {
     NotificationsBinding().dependencies();
-    await _pump();
+    await pump();
     final initialRepository = Get.find<NotificationRepository>();
 
     NotificationsBinding().dependencies();
-    await _pump();
+    await pump();
 
     expect(Get.find<NotificationRepository>(), same(initialRepository));
   });
