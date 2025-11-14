@@ -21,36 +21,39 @@ class PagedNewsList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return PagingListener(
-      controller: pagingController,
-      builder: (context, state, fetchNextPage) {
-        return RefreshIndicator(
-          onRefresh: () async => pagingController.refresh(),
-          child: PagedListView<int, NewsArticle>(
-            state: state,
-            fetchNextPage: fetchNextPage,
-            padding: padding ?? const EdgeInsets.all(16),
-            builderDelegate: PagedChildBuilderDelegate<NewsArticle>(
-              itemBuilder: (context, article, index) => NewsArticleCard(
-                article: article,
-                onTap: () => openUrl(article.url),
+    return Semantics(
+      label: "Pagination list",
+      child: PagingListener(
+        controller: pagingController,
+        builder: (context, state, fetchNextPage) {
+          return RefreshIndicator(
+            onRefresh: () async => pagingController.refresh(),
+            child: PagedListView<int, NewsArticle>(
+              state: state,
+              fetchNextPage: fetchNextPage,
+              padding: padding ?? const EdgeInsets.all(16),
+              builderDelegate: PagedChildBuilderDelegate<NewsArticle>(
+                itemBuilder: (context, article, index) => NewsArticleCard(
+                  article: article,
+                  onTap: () => openUrl(article.url),
+                ),
+                firstPageErrorIndicatorBuilder: (context) => ErrorStateWidget(
+                  title: 'Error loading news',
+                  message: state.error.toString(),
+                  lottieUrl: AppConfig.errorAnimation,
+                  onRetry: () => pagingController.refresh(),
+                ),
+                noItemsFoundIndicatorBuilder: (context) => const EmptyStateWidget(
+                  message: 'No news available',
+                  lottieUrl: AppConfig.emptyNewsAnimation,
+                ),
+                firstPageProgressIndicatorBuilder: (context) => const LoadingWidget(),
+                newPageProgressIndicatorBuilder: (context) => const LoadingWidget(),
               ),
-              firstPageErrorIndicatorBuilder: (context) => ErrorStateWidget(
-                title: 'Error loading news',
-                message: state.error.toString(),
-                lottieUrl: AppConfig.errorAnimation,
-                onRetry: () => pagingController.refresh(),
-              ),
-              noItemsFoundIndicatorBuilder: (context) => const EmptyStateWidget(
-                message: 'No news available',
-                lottieUrl: AppConfig.emptyNewsAnimation,
-              ),
-              firstPageProgressIndicatorBuilder: (context) => const LoadingWidget(),
-              newPageProgressIndicatorBuilder: (context) => const LoadingWidget(),
             ),
-          ),
-        );
-      },
+          );
+        },
+      ),
     );
   }
 }

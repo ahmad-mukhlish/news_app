@@ -2,12 +2,12 @@ appId: com.dhealth.news.news_app
 ---
 # Categories Offline Test: Tests category filtering when network is unavailable
 # Verifies error handling when attempting to load categories offline
-
-- launchApp:
-    clearState: true
-
-- waitForAnimationToEnd:
-    timeout: 5000
+#
+#- launchApp:
+#    clearState: true
+#
+#- waitForAnimationToEnd:
+#    timeout: 5000
 
 # Navigate to Categories tab
 - tapOn:
@@ -16,6 +16,8 @@ appId: com.dhealth.news.news_app
 
 # Verify categories screen is visible
 - assertVisible: "Categories"
+
+- runFlow: ../common_tests/scroll-categories-flow.yaml
 
 # Wait for potential error message
 - waitForAnimationToEnd:

@@ -17,7 +17,7 @@ appId: com.dhealth.news.news_app
 - runFlow: article-interaction-test.yaml
 
 # Test pull-to-refresh functionality
-- runFlow: pull-to-refresh-test.yaml
+- runFlow: ../common_tests/pull-to-refresh-test.yaml
 
 # Wait for news articles to load
 - extendedWaitUntil:

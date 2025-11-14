@@ -7,6 +7,8 @@ appId: com.dhealth.news.news_app
 
 # Trigger pull-to-refresh
 - swipe:
+    from:
+      text: ".*Pagination list.*"
     direction: DOWN
     duration: 100
 

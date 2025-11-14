@@ -1,0 +1,30 @@
+appId: com.dhealth.news.news_app
+---
+# Scroll Categories Flow: Ensures all category chips are visible by swiping horizontally
+
+- assertVisible: "Business"
+- assertVisible: "Entertainment"
+- assertVisible: "General"
+- assertVisible: ".*Category slider.*"
+
+- swipe:
+    from:
+      text: ".*Category slider.*"
+    direction: LEFT
+    duration: 600
+
+- assertVisible: "Health"
+- assertVisible: "Science"
+
+- swipe:
+    from:
+      text: ".*Category slider.*"
+    direction: LEFT
+    duration: 600
+
+- assertVisible: "Sports"
+- assertVisible: "Technology"
+
+- swipe:
+    direction: RIGHT
+    duration: 600

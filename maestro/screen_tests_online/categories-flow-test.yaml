@@ -4,11 +4,11 @@ appId: com.dhealth.news.news_app
 # Verifies category chips, selection, and filtered news loading
 # Then calls pagination test to verify category results are interactive
 
-- launchApp:
-    clearState: true
-
-- waitForAnimationToEnd:
-    timeout: 5000
+#- launchApp:
+#    clearState: true
+#
+#- waitForAnimationToEnd:
+#    timeout: 5000
 
 # Navigate to Categories tab
 - tapOn:
@@ -23,33 +23,10 @@ appId: com.dhealth.news.news_app
     visible: ".*News card.*"
     timeout: 15000
 
-# Scroll horizontally through category chips and assert each category renders
-- assertVisible: "Business"
-- assertVisible: "Entertainment"
-- assertVisible: "General"
-- assertVisible: ".*Category slider.*"
+- runFlow: ../common_tests/scroll-categories-flow.yaml
 
-- swipe:
-    from:
-      text: ".*Category slider.*"
-    direction: LEFT
-    duration: 600
-
-- assertVisible: "Health"
-- assertVisible: "Science"
-
-- swipe:
-    from:
-      text: ".*Category slider.*"
-    direction: LEFT
-    duration: 600
-
-- assertVisible: "Sports"
-- assertVisible: "Technology"
-
-- swipe:
-    direction: RIGHT
-    duration: 600
+# Test pull-to-refresh functionality
+- runFlow: ../common_tests/pull-to-refresh-test.yaml
 
 # Test 1: Sports category
 - tapOn: "Sports"
