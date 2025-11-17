@@ -94,6 +94,9 @@ def sanitize_line(line: str) -> str:
         if value and value[0] not in {"'", '"'}:
             return f"{key}=\"{value}\"\n"
         return f"{key}={value}\n"
+    if '=' in stripped and '<' in stripped and stripped.split('=', 1)[1].strip() and stripped.split('=', 1)[1].strip()[0] not in {"'", '"'}:
+        key, value = stripped.split('=', 1)
+        return f"{key}=\"{value}\"\n"
     return stripped + '\n'
 
 with src.open('r') as f_in, dst.open('w') as f_out:
@@ -225,7 +228,7 @@ package_rename_config:
     package_name: "$PACKAGE_NAME"
 EOF
 
-APK_OUTPUT_PATH="$PROJECT_ROOT/build/app/outputs/flutter-apk/app-release.apk"
+APK_OUTPUT_PATH="$PROJECT_ROOT/build/app/outputs/flutter-apk/app-debug.apk"
 
 run_flutter_with_env_defines() {
   local device_id="${FLUTTER_RUN_DEVICE_ID:-}"
@@ -235,12 +238,12 @@ run_flutter_with_env_defines() {
   fi
 
   run_with_spinner "Running flutter run on $device_id" \
-    bash -c "printf 'q\n' | flutter run --dart-define-from-file='$ENV_SOURCE_FILE' -d '$device_id' --release"
+    bash -c "printf 'q\n' | flutter run --dart-define-from-file='$ENV_SOURCE_FILE' -d '$device_id' --debug"
 }
 
-build_release_apk() {
-  run_with_spinner "Building release APK" \
-    flutter build apk --release --dart-define-from-file="$ENV_SOURCE_FILE"
+build_debug_apk() {
+  run_with_spinner "Building debug APK" \
+    flutter build apk --debug --dart-define-from-file="$ENV_SOURCE_FILE"
 
   if [[ ! -f "$APK_OUTPUT_PATH" ]]; then
     echo "[whitelabel] APK not found at $APK_OUTPUT_PATH" >&2
@@ -260,7 +263,7 @@ dropbox_upload_file() {
     return
   fi
 
-  local remote_path="${DROPBOX_UPLOAD_PATH:-/whitelabel/app-release.apk}"
+  local remote_path="${DROPBOX_UPLOAD_PATH:-/whitelabel/app-debug.apk}"
   local api_arg
   api_arg=$(python3 - "$remote_path" <<'PY'
 import json
@@ -338,8 +341,10 @@ else:
 PY
 )
 
+  local final_share_url=""
   if [[ -n "$share_url" ]]; then
-    echo "[whitelabel] Dropbox shared link: ${share_url/&dl=0/&dl=1}"
+    final_share_url="${share_url/&dl=0/&dl=1}"
+    echo "[whitelabel] Dropbox shared link: $final_share_url"
   elif [[ "$share_error_tag" == "shared_link_already_exists" ]]; then
     local list_payload existing_response existing_url
     list_payload=$(python3 - "$remote_path" <<'PY'
@@ -381,13 +386,50 @@ PY
 )
 
     if [[ -n "$existing_url" ]]; then
-      echo "[whitelabel] Dropbox shared link: ${existing_url/&dl=0/&dl=1}"
+      final_share_url="${existing_url/&dl=0/&dl=1}"
+      echo "[whitelabel] Dropbox shared link: $final_share_url"
     else
       echo "[whitelabel] Dropbox share response: $share_response"
       echo "[whitelabel] Dropbox existing-link lookup response: $existing_response"
     fi
   else
     echo "[whitelabel] Dropbox share response: $share_response"
+  fi
+
+  if [[ -n "$final_share_url" ]]; then
+    print_whatsapp_share_link "$final_share_url"
+  fi
+}
+
+print_whatsapp_share_link() {
+  local public_url="$1"
+  if [[ -z "${WHITELABEL_WA_NUMBER:-}" ]]; then
+    return
+  fi
+
+  local trimmed_number="${WHITELABEL_WA_NUMBER//[[:space:]]/}"
+  trimmed_number="${trimmed_number#+}"
+  if [[ -z "$trimmed_number" ]]; then
+    return
+  fi
+
+  local wa_link
+  wa_link=$(python3 - "$trimmed_number" "$APP_NAME" "$public_url" <<'PY'
+import sys
+import urllib.parse
+
+number = sys.argv[1]
+app_name = sys.argv[2]
+share_url = sys.argv[3]
+
+message = f"Download the APK {app_name}\nLink : {share_url}"
+encoded_message = urllib.parse.quote(message, safe="")
+print(f"https://wa.me/{number}?text={encoded_message}")
+PY
+)
+
+  if [[ -n "$wa_link" ]]; then
+    echo "[whitelabel] WhatsApp share link: $wa_link"
   fi
 }
 
@@ -528,7 +570,7 @@ run_with_spinner "Regenerating launcher icons" \
 
 run_flutter_with_env_defines
 
-build_release_apk
+build_debug_apk
 
 dropbox_upload_file "$APK_OUTPUT_PATH"
 

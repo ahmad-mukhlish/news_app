@@ -85,7 +85,7 @@ Package renaming (via [`package_rename_plus`](https://pub.dev/packages/package_r
 1. Place the correct icon at `assets/icon/icon.png` (or set `APP_ICON_PATH` to a local path / `http(s)` URL).
 2. Drop the Firebase config files into `assets/config/` (or set the env vars described above).
 3. Run `./whitelabel.sh path/to/env-file` (for the default `.env` just run `./whitelabel.sh`).
-4. (Optional) Set `FLUTTER_RUN_DEVICE_ID` if you want the script to run `flutter run --dart-define-from-file=.env` on a connected device/emulator, and provide `DROPBOX_API_KEY` (with `files.content.write`) plus `DROPBOX_UPLOAD_PATH` to automatically upload the built APK to Dropbox.
+4. (Optional) Set `FLUTTER_RUN_DEVICE_ID` if you want the script to run `flutter run --dart-define-from-file=.env` on a connected device/emulator, provide `DROPBOX_API_KEY` (with `files.content.write`) plus `DROPBOX_UPLOAD_PATH` to automatically upload the built APK to Dropbox, and add `WHITELABEL_WA_NUMBER` to surface a WhatsApp-ready `wa.me` link once the Dropbox share URL is available.
 5. The script will:
    - copy the Firebase JSON/Plist/Dart options into the platform targets
    - run `flutter pub get`
@@ -94,5 +94,6 @@ Package renaming (via [`package_rename_plus`](https://pub.dev/packages/package_r
    - rewrite every Maestro flow’s `appId` to the new package name
    - (optional) run `flutter run --dart-define-from-file=.env` on `FLUTTER_RUN_DEVICE_ID`
    - build a release APK with the same dart-defines and, when configured, upload it to Dropbox
+   - (optional) print a Whatsapp `wa.me` link prefilled with `Download the APK <APP_NAME>\nLink : <Dropbox link>` when `WHITELABEL_WA_NUMBER` is set and Dropbox upload succeeds
 
 If anything fails (missing env var, icon, etc.) the script exits with an error so you can fix the input and re-run.
