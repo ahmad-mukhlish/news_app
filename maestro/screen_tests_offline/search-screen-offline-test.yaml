@@ -1,4 +1,4 @@
-appId: com.globedaily.app
+appId: com.newsflash.app
 ---
 # Search Offline Test: Tests search behavior when network is unavailable
 # Verifies error handling when attempting to search offline

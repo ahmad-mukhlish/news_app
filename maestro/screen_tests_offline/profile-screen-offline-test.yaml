@@ -1,4 +1,4 @@
-appId: com.globedaily.app
+appId: com.newsflash.app
 ---
 # Profile Offline Test: Ensure profile tab placeholder is visible offline
 # Verifies that the Coming Soon message appears even without network

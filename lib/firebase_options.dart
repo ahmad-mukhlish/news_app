@@ -53,11 +53,11 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyBM6SR0C51GtYTPtNvnxMhjKSFhI0Iqamw',
-    appId: '1:9605814252:android:937fb8154ad988786fd2c9',
-    messagingSenderId: '9605814252',
-    projectId: 'globe-daily-c845d',
-    storageBucket: 'globe-daily-c845d.firebasestorage.app',
+    apiKey: 'AIzaSyCOjkA-bAm4-n7KQ-blESLuoSYHZhSJ9GQ',
+    appId: '1:737427710992:android:834832813dab9b5350d695',
+    messagingSenderId: '737427710992',
+    projectId: 'news-flash-a3985',
+    storageBucket: 'news-flash-a3985.firebasestorage.app',
   );
 
 }

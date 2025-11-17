@@ -1,4 +1,4 @@
-appId: com.globedaily.app
+appId: com.newsflash.app
 ---
 # Search Flow Test: Tests search functionality and results
 # Verifies search input, suggestions, results, and clearing

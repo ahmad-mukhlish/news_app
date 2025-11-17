@@ -1,4 +1,4 @@
-appId: com.globedaily.app
+appId: com.newsflash.app
 ---
 # Home Screen Offline Test: Tests behavior when network is unavailable
 # Verifies error handling and empty state display

@@ -1,4 +1,4 @@
-appId: com.globedaily.app
+appId: com.newsflash.app
 ---
 # Profile Test: Validate profile tab placeholder content
 # Verifies navigating to Profile shows the Coming Soon message

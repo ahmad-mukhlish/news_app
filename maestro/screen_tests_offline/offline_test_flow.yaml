@@ -1,4 +1,4 @@
-appId: com.globedaily.app
+appId: com.newsflash.app
 ---
 # Offline Test Flow: Runs all screen tests in offline mode
 # Tests error handling and offline behavior

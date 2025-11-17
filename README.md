@@ -68,8 +68,8 @@ Package renaming (via [`package_rename_plus`](https://pub.dev/packages/package_r
 
 ### Icon location
 
-- Every branding pass expects the final source icon at `assets/icon/icon.png` (vector PNG, 1024×1024 recommended by `flutter_launcher_icons`).
-- If you keep icons elsewhere, set `APP_ICON_PATH` in the env file and the script will copy it into `assets/icon/icon.png` before running.
+- Every branding pass generates icons from `assets/icon/icon.png` (vector PNG, 1024×1024 recommended by `flutter_launcher_icons`).
+- To avoid manual copying, point `APP_ICON_PATH` at either a local path (relative/absolute) or an `http(s)` URL. `whitelabel.sh` downloads the file into `assets/icon/icon.png` and validates that it is a PNG image (public, no auth/confirmation screens).
 
 ### Firebase configuration files
 
@@ -82,7 +82,7 @@ Package renaming (via [`package_rename_plus`](https://pub.dev/packages/package_r
 
 ### Running the script
 
-1. Place the correct icon at `assets/icon/icon.png` (or set `APP_ICON_PATH`).
+1. Place the correct icon at `assets/icon/icon.png` (or set `APP_ICON_PATH` to a local path / `http(s)` URL).
 2. Drop the Firebase config files into `assets/config/` (or set the env vars described above).
 3. Run `./whitelabel.sh path/to/env-file` (for the default `.env` just run `./whitelabel.sh`).
 3. The script will:

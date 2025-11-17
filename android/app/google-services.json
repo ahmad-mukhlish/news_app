@@ -1,21 +1,21 @@
 {
   "project_info": {
-    "project_number": "9605814252",
-    "project_id": "globe-daily-c845d",
-    "storage_bucket": "globe-daily-c845d.firebasestorage.app"
+    "project_number": "737427710992",
+    "project_id": "news-flash-a3985",
+    "storage_bucket": "news-flash-a3985.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:9605814252:android:937fb8154ad988786fd2c9",
+        "mobilesdk_app_id": "1:737427710992:android:834832813dab9b5350d695",
         "android_client_info": {
-          "package_name": "com.globedaily.app"
+          "package_name": "com.newsflash.app"
         }
       },
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyBM6SR0C51GtYTPtNvnxMhjKSFhI0Iqamw"
+          "current_key": "AIzaSyCOjkA-bAm4-n7KQ-blESLuoSYHZhSJ9GQ"
         }
       ],
       "services": {

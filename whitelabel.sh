@@ -32,22 +32,46 @@ cd "$PROJECT_ROOT"
 
 ENV_FILE="${1:-$PROJECT_ROOT/.env}"
 CURRENT_ENV_FILE="$PROJECT_ROOT/.env"
+SANITIZED_ENV_FILE="$(mktemp -t whitelabel_env)"
 
 if [[ ! -f "$ENV_FILE" ]]; then
   echo "[whitelabel] Env file not found: $ENV_FILE" >&2
   exit 1
 fi
 
-if [[ -f "$CURRENT_ENV_FILE" ]] && cmp -s "$ENV_FILE" "$CURRENT_ENV_FILE"; then
+python3 - "$ENV_FILE" "$SANITIZED_ENV_FILE" <<'PY'
+import pathlib
+import sys
+
+src = pathlib.Path(sys.argv[1])
+dst = pathlib.Path(sys.argv[2])
+
+def sanitize_line(line: str) -> str:
+    stripped = line.rstrip('\n\r')
+    if stripped.startswith('APP_ICON_PATH='):
+        key, value = stripped.split('=', 1)
+        value = value.strip()
+        if value and value[0] not in {"'", '"'}:
+            return f"{key}=\"{value}\"\n"
+        return f"{key}={value}\n"
+    return stripped + '\n'
+
+with src.open('r') as f_in, dst.open('w') as f_out:
+    for line in f_in:
+        f_out.write(sanitize_line(line))
+PY
+
+ENV_SOURCE_FILE="$SANITIZED_ENV_FILE"
+if [[ -f "$CURRENT_ENV_FILE" ]] && cmp -s "$ENV_SOURCE_FILE" "$CURRENT_ENV_FILE"; then
   echo "[whitelabel] Using existing .env as env source"
 else
-  cp "$ENV_FILE" "$CURRENT_ENV_FILE"
+  cp "$ENV_SOURCE_FILE" "$CURRENT_ENV_FILE"
   echo "[whitelabel] Copied $ENV_FILE => .env"
 fi
 
 set -a
 # shellcheck disable=SC1090
-source "$ENV_FILE"
+source "$ENV_SOURCE_FILE"
 set +a
 
 REQUIRED_VARS=(APP_NAME PACKAGE_NAME FIREBASE_PROJECT)
@@ -62,20 +86,67 @@ done
 ICON_TARGET_REL="assets/icon/icon.png"
 ICON_TARGET_ABS="$PROJECT_ROOT/$ICON_TARGET_REL"
 ICON_SOURCE_REL="${APP_ICON_PATH:-$ICON_TARGET_REL}"
-ICON_SOURCE_ABS="$ICON_SOURCE_REL"
-if [[ ! "$ICON_SOURCE_ABS" = /* ]]; then
-  ICON_SOURCE_ABS="$PROJECT_ROOT/$ICON_SOURCE_ABS"
+ICON_SOURCE_REL="${ICON_SOURCE_REL//$'\r'/}"
+ICON_SOURCE_ABS=""
+TMP_ICON=""
+
+ensure_png_file() {
+  local file_path="$1"
+  python3 - "$file_path" <<'PY'
+import imghdr
+import os
+import sys
+
+path = sys.argv[1]
+if not os.path.isfile(path):
+    print(f"[whitelabel] Icon validation failed; file missing: {path}", file=sys.stderr)
+    sys.exit(1)
+
+fmt = imghdr.what(path)
+if fmt != 'png':
+    print(f"[whitelabel] Icon must be a PNG file, but detected '{fmt or 'unknown'}'", file=sys.stderr)
+    sys.exit(2)
+PY
+}
+
+if [[ "$ICON_SOURCE_REL" =~ ^https?:// ]]; then
+  echo "[whitelabel] Downloading icon from $ICON_SOURCE_REL"
+  TMP_ICON="$(mktemp -t whitelabel_icon)"
+  if command -v curl >/dev/null 2>&1; then
+    if ! curl -fsSL "$ICON_SOURCE_REL" -o "$TMP_ICON"; then
+      echo "[whitelabel] Failed downloading icon via curl" >&2
+      exit 1
+    fi
+  elif command -v wget >/dev/null 2>&1; then
+    if ! wget -q -O "$TMP_ICON" "$ICON_SOURCE_REL"; then
+      echo "[whitelabel] Failed downloading icon via wget" >&2
+      exit 1
+    fi
+  else
+    echo "[whitelabel] Neither curl nor wget available to download icon" >&2
+    exit 1
+  fi
+  ICON_SOURCE_ABS="$TMP_ICON"
+else
+  ICON_SOURCE_ABS="$ICON_SOURCE_REL"
+  if [[ ! "$ICON_SOURCE_ABS" = /* ]]; then
+    ICON_SOURCE_ABS="$PROJECT_ROOT/$ICON_SOURCE_ABS"
+  fi
 fi
 
 if [[ ! -f "$ICON_SOURCE_ABS" ]]; then
-  echo "[whitelabel] Icon not found. Provide APP_ICON_PATH to an existing file or place it at $ICON_TARGET_REL" >&2
+  echo "[whitelabel] Icon not found. Provide APP_ICON_PATH to an existing file, remote URL, or place it at $ICON_TARGET_REL" >&2
   exit 1
 fi
+
+ensure_png_file "$ICON_SOURCE_ABS"
 
 if [[ "$ICON_SOURCE_ABS" != "$ICON_TARGET_ABS" ]]; then
   mkdir -p "$(dirname "$ICON_TARGET_ABS")"
   cp "$ICON_SOURCE_ABS" "$ICON_TARGET_ABS"
 fi
+
+ensure_png_file "$ICON_TARGET_ABS"
 
 echo "[whitelabel] Using env file: $ENV_FILE"
 echo "[whitelabel] App name........: $APP_NAME"
@@ -84,7 +155,14 @@ echo "[whitelabel] Icon path.......: $ICON_TARGET_REL"
 echo "[whitelabel] Firebase project.................: $FIREBASE_PROJECT"
 
 TMP_CONFIG="$(mktemp -t package_rename_config)"
-trap 'rm -f "$TMP_CONFIG"' EXIT
+cleanup() {
+  rm -f "$TMP_CONFIG"
+  rm -f "$SANITIZED_ENV_FILE"
+  if [[ -n "$TMP_ICON" ]]; then
+    rm -f "$TMP_ICON"
+  fi
+}
+trap cleanup EXIT
 
 cat >"$TMP_CONFIG" <<EOF
 package_rename_config:
