@@ -1,4 +1,4 @@
-appId: com.newsflash.app
+appId: com.globedaily.app
 ---
 # Pull-to-Refresh Test: Tests pull-to-refresh functionality with loading indicator
 # Verifies that pulling down triggers refresh and shows loading indicator

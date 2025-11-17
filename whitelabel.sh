@@ -31,10 +31,18 @@ PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$PROJECT_ROOT"
 
 ENV_FILE="${1:-$PROJECT_ROOT/.env}"
+CURRENT_ENV_FILE="$PROJECT_ROOT/.env"
 
 if [[ ! -f "$ENV_FILE" ]]; then
   echo "[whitelabel] Env file not found: $ENV_FILE" >&2
   exit 1
+fi
+
+if [[ -f "$CURRENT_ENV_FILE" ]] && cmp -s "$ENV_FILE" "$CURRENT_ENV_FILE"; then
+  echo "[whitelabel] Using existing .env as env source"
+else
+  cp "$ENV_FILE" "$CURRENT_ENV_FILE"
+  echo "[whitelabel] Copied $ENV_FILE => .env"
 fi
 
 set -a

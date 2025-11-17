@@ -1,4 +1,4 @@
-appId: com.newsflash.app
+appId: com.globedaily.app
 ---
 # Master flow to run all tests
 # Runs navigation regression, online tests, and offline tests

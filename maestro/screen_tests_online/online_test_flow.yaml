@@ -1,4 +1,4 @@
-appId: com.newsflash.app
+appId: com.globedaily.app
 ---
 # Online Test Flow: Runs all screen tests that require internet connection
 # Tests all main features with network available

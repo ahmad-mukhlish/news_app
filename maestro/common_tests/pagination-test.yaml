@@ -1,4 +1,4 @@
-appId: com.newsflash.app
+appId: com.globedaily.app
 ---
 # Pagination Test: Tests infinite scroll pagination with loading indicators
 # Verifies that more articles load when scrolling to bottom
