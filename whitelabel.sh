@@ -133,19 +133,33 @@ TMP_ICON=""
 ensure_png_file() {
   local file_path="$1"
   python3 - "$file_path" <<'PY'
-import imghdr
 import os
 import sys
 
+PNG_SIGNATURE = b"\x89PNG\r\n\x1a\n"
 path = sys.argv[1]
+
 if not os.path.isfile(path):
     print(f"[whitelabel] Icon validation failed; file missing: {path}", file=sys.stderr)
     sys.exit(1)
 
-fmt = imghdr.what(path)
-if fmt != 'png':
-    print(f"[whitelabel] Icon must be a PNG file, but detected '{fmt or 'unknown'}'", file=sys.stderr)
-    sys.exit(2)
+with open(path, "rb") as f:
+    signature = f.read(len(PNG_SIGNATURE))
+    if signature != PNG_SIGNATURE:
+        print("[whitelabel] Icon must be a PNG file, but detected unknown format", file=sys.stderr)
+        sys.exit(2)
+
+    # Basic structural sanity check: ensure file declares an IHDR chunk.
+    chunk_header = f.read(8)
+    if len(chunk_header) < 8:
+        print("[whitelabel] Icon PNG header is truncated", file=sys.stderr)
+        sys.exit(2)
+
+    chunk_length = int.from_bytes(chunk_header[:4], "big", signed=False)
+    chunk_type = chunk_header[4:]
+    if chunk_type != b"IHDR" or chunk_length != 13:
+        print("[whitelabel] Icon PNG header is malformed", file=sys.stderr)
+        sys.exit(2)
 PY
 }
 
@@ -305,8 +319,73 @@ else:
 PY
 )
 
+  local share_error_tag
+  share_error_tag=$(python3 - "$share_response" <<'PY'
+import json
+import sys
+
+try:
+    data = json.loads(sys.argv[1])
+except json.JSONDecodeError:
+    print("")
+    sys.exit(0)
+
+error = data.get('error')
+if isinstance(error, dict):
+    print(error.get('.tag', ''))
+else:
+    print('')
+PY
+)
+
   if [[ -n "$share_url" ]]; then
     echo "[whitelabel] Dropbox shared link: ${share_url/&dl=0/&dl=1}"
+  elif [[ "$share_error_tag" == "shared_link_already_exists" ]]; then
+    local list_payload existing_response existing_url
+    list_payload=$(python3 - "$remote_path" <<'PY'
+import json
+import sys
+
+remote = sys.argv[1]
+print(json.dumps({
+    "path": remote,
+    "direct_only": True
+}))
+PY
+)
+
+    existing_response=$(curl -sS -X POST https://api.dropboxapi.com/2/sharing/list_shared_links \
+      --header "Authorization: Bearer $DROPBOX_API_KEY" \
+      --header "Content-Type: application/json" \
+      --data "$list_payload")
+
+    existing_url=$(python3 - "$existing_response" <<'PY'
+import json
+import sys
+
+try:
+    data = json.loads(sys.argv[1])
+except json.JSONDecodeError:
+    print("")
+    sys.exit(0)
+
+links = data.get('links') or []
+for link in links:
+    url = link.get('url')
+    if url:
+        print(url)
+        break
+else:
+    print("")
+PY
+)
+
+    if [[ -n "$existing_url" ]]; then
+      echo "[whitelabel] Dropbox shared link: ${existing_url/&dl=0/&dl=1}"
+    else
+      echo "[whitelabel] Dropbox share response: $share_response"
+      echo "[whitelabel] Dropbox existing-link lookup response: $existing_response"
+    fi
   else
     echo "[whitelabel] Dropbox share response: $share_response"
   fi
