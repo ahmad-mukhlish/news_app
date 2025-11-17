@@ -93,6 +93,72 @@ package_rename_config:
     package_name: "$PACKAGE_NAME"
 EOF
 
+sync_app_config_defaults() {
+  local app_config="$PROJECT_ROOT/lib/app/config/app_config.dart"
+  if [[ ! -f "$app_config" ]]; then
+    echo "[whitelabel] App config file not found at $app_config; skipping"
+    return
+  fi
+
+  python3 - "$app_config" <<'PY'
+import os
+import pathlib
+import re
+import sys
+
+app_config = pathlib.Path(sys.argv[1])
+text = app_config.read_text()
+mappings = [
+    "APP_NAME",
+    "PRIMARY_COLOR",
+    "SECONDARY_COLOR",
+    "NEWS_API_KEY",
+    "NEWS_API_BASE_URL",
+    "PACKAGE_NAME",
+    "SEARCH_PAGE_LOTTIE_ANIMATION",
+    "EMPTY_NEWS_ANIMATION",
+    "ERROR_ANIMATION",
+    "COMING_SOON_ANIMATION",
+    "NOTIFICATION_CHANNEL_ID",
+    "NOTIFICATION_CHANNEL_NAME",
+    "NOTIFICATION_ICON",
+]
+
+updated_keys = []
+
+for env_key in mappings:
+    value = os.environ.get(env_key)
+    if not value:
+        continue
+
+    escaped = value.replace("\\", "\\\\").replace("'", "\\'")
+    pattern = re.compile(
+        r"(String\.fromEnvironment\(\s*'{key}',\s*defaultValue:\s*)'[^']*'".format(
+            key=re.escape(env_key)
+        ),
+        re.MULTILINE,
+    )
+
+    def repl(match, *, replacement=escaped):
+        return f"{match.group(1)}'{replacement}'"
+
+    new_text, count = pattern.subn(repl, text, count=1)
+    if count:
+        text = new_text
+        updated_keys.append(env_key)
+
+if updated_keys:
+    app_config.write_text(text)
+    for key in updated_keys:
+        print(f"[whitelabel] AppConfig default updated: {key}")
+else:
+    print("[whitelabel] No AppConfig defaults updated (missing env vars?)")
+PY
+}
+
+echo "[whitelabel] Syncing AppConfig default values"
+sync_app_config_defaults
+
 update_flutter_launcher_icons_image_path() {
   local icon_path="$1"
   local pubspec="pubspec.yaml"
