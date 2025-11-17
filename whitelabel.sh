@@ -560,7 +560,7 @@ run_with_spinner "Updating package/bundle identifiers" \
 run_with_spinner "Configuring Firebase via flutterfire CLI" \
   flutterfire configure \
     --project="$FIREBASE_PROJECT" \
-    --out="$PROJECT_ROOT/lib/firebase_options.dart" \
+    --out="lib/firebase_options.dart" \
     --platforms=android \
     --android-package-name="$PACKAGE_NAME" \
     --yes
