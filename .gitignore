@@ -46,5 +46,7 @@ app.*.map.json
 
 # Environment and sensitive files
 .env
+.env.brand_globe
+.env.brand_newsflash
 settings.local.json
 devtools_options.yaml
