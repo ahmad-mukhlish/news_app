@@ -1,4 +1,4 @@
-appId: com.newsflash.app
+appId: com.globedaily.app
 ---
 # Common Setup for Offline Tests
 # Launches app with fresh state and enables airplane mode

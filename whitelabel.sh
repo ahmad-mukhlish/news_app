@@ -30,6 +30,46 @@ set -euo pipefail
 PROJECT_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$PROJECT_ROOT"
 
+cat <<'ASCII'
+ __       __  __    __  ______  ________  ________  __         ______   _______   ________  __            ______   __    __
+|  \  _  |  \|  \  |  \|      \|        \|        \|  \       /      \ |       \ |        \|  \          /      \ |  \  |  \
+| $$ / \ | $$| $$  | $$ \$$$$$$ \$$$$$$$$| $$$$$$$$| $$      |  $$$$$$\| $$$$$$$\| $$$$$$$$| $$         |  $$$$$$\| $$  | $$
+| $$/  $\| $$| $$__| $$  | $$     | $$   | $$__    | $$      | $$__| $$| $$__/ $$| $$__    | $$         | $$___\$$| $$__| $$
+| $$  $$$\ $$| $$    $$  | $$     | $$   | $$  \   | $$      | $$    $$| $$    $$| $$  \   | $$          \$$    \ | $$    $$
+| $$ $$\$$\$$| $$$$$$$$  | $$     | $$   | $$$$$   | $$      | $$$$$$$$| $$$$$$$\| $$$$$   | $$          _\$$$$$$\| $$$$$$$$
+| $$$$  \$$$$| $$  | $$ _| $$_    | $$   | $$_____ | $$_____ | $$  | $$| $$__/ $$| $$_____ | $$_____  __|  \__| $$| $$  | $$
+| $$$    \$$$| $$  | $$|   $$ \   | $$   | $$     \| $$     \| $$  | $$| $$    $$| $$     \| $$     \|  \\$$    $$| $$  | $$
+ \$$      \$$ \$$   \$$ \$$$$$$    \$$    \$$$$$$$$ \$$$$$$$$ \$$   \$$ \$$$$$$$  \$$$$$$$$ \$$$$$$$$ \$$ \$$$$$$  \$$   \$$
+
+
+
+ASCII
+
+run_with_spinner() {
+  local message="$1"
+  shift
+  local spinner='|/-\\'
+  local i=0
+
+  "$@" &
+  local cmd_pid=$!
+
+  while kill -0 "$cmd_pid" 2>/dev/null; do
+    printf '\r[whitelabel] %s %s' "$message" "${spinner:i % ${#spinner}:1}"
+    sleep 0.2
+    ((i++))
+  done
+
+  wait "$cmd_pid"
+  local status=$?
+  if [[ $status -eq 0 ]]; then
+    printf '\r[whitelabel] %s...done\n' "$message"
+  else
+    printf '\r[whitelabel] %s...failed\n' "$message"
+  fi
+  return $status
+}
+
 ENV_FILE="${1:-$PROJECT_ROOT/.env}"
 CURRENT_ENV_FILE="$PROJECT_ROOT/.env"
 SANITIZED_ENV_FILE="$(mktemp -t whitelabel_env)"
@@ -171,6 +211,107 @@ package_rename_config:
     package_name: "$PACKAGE_NAME"
 EOF
 
+APK_OUTPUT_PATH="$PROJECT_ROOT/build/app/outputs/flutter-apk/app-release.apk"
+
+run_flutter_with_env_defines() {
+  local device_id="${FLUTTER_RUN_DEVICE_ID:-}"
+  if [[ -z "$device_id" ]]; then
+    echo "[whitelabel] Skipping flutter run (set FLUTTER_RUN_DEVICE_ID to enable)"
+    return
+  fi
+
+  run_with_spinner "Running flutter run on $device_id" \
+    bash -c "printf 'q\n' | flutter run --dart-define-from-file='$ENV_SOURCE_FILE' -d '$device_id' --release"
+}
+
+build_release_apk() {
+  run_with_spinner "Building release APK" \
+    flutter build apk --release --dart-define-from-file="$ENV_SOURCE_FILE"
+
+  if [[ ! -f "$APK_OUTPUT_PATH" ]]; then
+    echo "[whitelabel] APK not found at $APK_OUTPUT_PATH" >&2
+    exit 1
+  fi
+}
+
+dropbox_upload_file() {
+  local local_path="$1"
+  if [[ -z "${DROPBOX_API_KEY:-}" ]]; then
+    echo "[whitelabel] DROPBOX_API_KEY not configured; skipping Dropbox upload"
+    return
+  fi
+
+  if [[ ! -f "$local_path" ]]; then
+    echo "[whitelabel] Dropbox upload skipped; file not found: $local_path" >&2
+    return
+  fi
+
+  local remote_path="${DROPBOX_UPLOAD_PATH:-/whitelabel/app-release.apk}"
+  local api_arg
+  api_arg=$(python3 - "$remote_path" <<'PY'
+import json
+import sys
+
+remote = sys.argv[1]
+print(json.dumps({
+    "path": remote,
+    "mode": "overwrite",
+    "autorename": False,
+}))
+PY
+)
+
+  run_with_spinner "Uploading APK to Dropbox ($remote_path)" \
+    curl -sS -X POST https://content.dropboxapi.com/2/files/upload \
+      --header "Authorization: Bearer $DROPBOX_API_KEY" \
+      --header "Dropbox-API-Arg: $api_arg" \
+      --header "Content-Type: application/octet-stream" \
+      --data-binary "@$local_path"
+
+  local share_payload
+  share_payload=$(python3 - "$remote_path" <<'PY'
+import json
+import sys
+
+remote = sys.argv[1]
+print(json.dumps({
+    "path": remote,
+    "settings": {"requested_visibility": "public"}
+}))
+PY
+)
+
+  local share_response
+  share_response=$(curl -sS -X POST https://api.dropboxapi.com/2/sharing/create_shared_link_with_settings \
+    --header "Authorization: Bearer $DROPBOX_API_KEY" \
+    --header "Content-Type: application/json" \
+    --data "$share_payload")
+
+  local share_url
+  share_url=$(python3 - "$share_response" <<'PY'
+import json
+import sys
+
+try:
+    data = json.loads(sys.argv[1])
+except json.JSONDecodeError:
+    print("")
+    sys.exit(0)
+
+if isinstance(data, dict) and data.get('url'):
+    print(data['url'])
+else:
+    print("")
+PY
+)
+
+  if [[ -n "$share_url" ]]; then
+    echo "[whitelabel] Dropbox shared link: ${share_url/&dl=0/&dl=1}"
+  else
+    echo "[whitelabel] Dropbox share response: $share_response"
+  fi
+}
+
 sync_app_config_defaults() {
   local app_config="$PROJECT_ROOT/lib/app/config/app_config.dart"
   if [[ ! -f "$app_config" ]]; then
@@ -290,21 +431,27 @@ update_flutter_launcher_icons_image_path() {
 echo "[whitelabel] Updating flutter_launcher_icons image path"
 update_flutter_launcher_icons_image_path "$ICON_TARGET_REL"
 
-echo "[whitelabel] Running flutter pub get"
-flutter pub get
+run_with_spinner "Running flutter pub get" flutter pub get
 
-echo "[whitelabel] Updating package/bundle identifiers"
-dart run package_rename_plus --path="$TMP_CONFIG"
+run_with_spinner "Updating package/bundle identifiers" \
+  dart run package_rename_plus --path="$TMP_CONFIG"
 
-echo "[whitelabel] Configuring Firebase via flutterfire CLI"
-flutterfire configure \
-  --project="$FIREBASE_PROJECT" \
-  --platforms=android \
-  --android-package-name="$PACKAGE_NAME" \
-  --yes
+run_with_spinner "Configuring Firebase via flutterfire CLI" \
+  flutterfire configure \
+    --project="$FIREBASE_PROJECT" \
+    --out="$PROJECT_ROOT/lib/firebase_options.dart" \
+    --platforms=android \
+    --android-package-name="$PACKAGE_NAME" \
+    --yes
 
-echo "[whitelabel] Regenerating launcher icons"
-flutter pub run flutter_launcher_icons
+run_with_spinner "Regenerating launcher icons" \
+  flutter pub run flutter_launcher_icons
+
+run_flutter_with_env_defines
+
+build_release_apk
+
+dropbox_upload_file "$APK_OUTPUT_PATH"
 
 echo "[whitelabel] Updating Maestro appIds"
 if [[ -d maestro ]]; then

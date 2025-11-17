@@ -1,4 +1,4 @@
-appId: com.newsflash.app
+appId: com.globedaily.app
 ---
 # Categories Offline Test: Tests category filtering when network is unavailable
 # Verifies error handling when attempting to load categories offline

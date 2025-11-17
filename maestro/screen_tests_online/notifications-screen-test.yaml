@@ -1,4 +1,4 @@
-appId: com.newsflash.app
+appId: com.globedaily.app
 ---
 # Notifications Test: Tests notification list and interactions
 # Verifies notification display, marking as read, and navigation

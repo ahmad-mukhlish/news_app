@@ -1,4 +1,4 @@
-appId: com.newsflash.app
+appId: com.globedaily.app
 ---
 # Notifications Offline Test: Tests notifications behavior when network is unavailable
 # Mirrors the online notifications flow but ensures offline errors are surfaced

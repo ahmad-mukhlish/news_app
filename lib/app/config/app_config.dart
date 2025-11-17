@@ -2,18 +2,18 @@ class AppConfig {
   // App branding
   static const String appName = String.fromEnvironment(
     'APP_NAME',
-    defaultValue: 'News Flash',
+    defaultValue: 'Globe Daily',
   );
 
   // Light Mode Colors
   static const String primaryColor = String.fromEnvironment(
     'PRIMARY_COLOR',
-    defaultValue: '0xFFE9465F',
+    defaultValue: '0xFF0057FF',
   );
 
   static const String secondaryColor = String.fromEnvironment(
     'SECONDARY_COLOR',
-    defaultValue: '0xFFFFC27A',
+    defaultValue: '0xFFFFB703',
   );
 
 
@@ -31,32 +31,32 @@ class AppConfig {
   // App Configuration
   static const String packageName = String.fromEnvironment(
     'PACKAGE_NAME',
-    defaultValue: 'com.newsflash.app',
+    defaultValue: 'com.globedaily.app',
   );
 
   // Lottie Animations
   static const String searchPageLottieAnimation = String.fromEnvironment(
     'SEARCH_PAGE_LOTTIE_ANIMATION',
     defaultValue:
-        'https://lottie.host/86d422f5-aba6-4895-bf80-9275bd2aeba9/A5bf8ZuQSb.json',
+        'https://lottie.host/dummy-animations/search.json',
   );
 
   static const String emptyNewsAnimation = String.fromEnvironment(
     'EMPTY_NEWS_ANIMATION',
     defaultValue:
-        'https://assets-v2.lottiefiles.com/a/f0ca603e-c41e-11ee-beca-2ffe24a94aa6/SoXs4DE0l1.json',
+        'https://lottie.host/dummy-animations/empty.json',
   );
 
   static const String errorAnimation = String.fromEnvironment(
     'ERROR_ANIMATION',
     defaultValue:
-        'https://lottie.host/6a661c33-4295-4d80-8a7f-f0e81e97e5c1/bjgiyg3N21.json',
+        'https://lottie.host/dummy-animations/error.json',
   );
 
   static const String comingSoonAnimation = String.fromEnvironment(
     'COMING_SOON_ANIMATION',
     defaultValue:
-        'https://lottie.host/0b5a90ef-2d98-4735-b800-0d2dfea5140f/0FgSQHGFNk.json',
+        'https://lottie.host/dummy-animations/coming-soon.json',
   );
 
   // Notification Configuration (for white-labeling)

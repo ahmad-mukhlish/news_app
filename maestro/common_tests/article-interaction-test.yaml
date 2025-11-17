@@ -1,4 +1,4 @@
-appId: com.newsflash.app
+appId: com.globedaily.app
 ---
 # Article Interaction Test: Tests tapping and viewing news articles
 # This test is meant to be called from other flows, assumes articles are already loaded

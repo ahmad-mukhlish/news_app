@@ -1,4 +1,4 @@
-appId: com.newsflash.app
+appId: com.globedaily.app
 ---
 # Common Retry Flow for Offline Tests
 # Tests the Retry button in Error widget and verifies error persists in offline mode
