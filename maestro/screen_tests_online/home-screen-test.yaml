@@ -1,4 +1,4 @@
-appId: com.dhealth.news.news_app
+appId: com.newsflash.app
 ---
 # Home Screen Test: Tests news article loading and pagination
 # Verifies home screen displays correctly and calls pagination test

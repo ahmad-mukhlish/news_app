@@ -17,27 +17,33 @@ import 'package:flutter/foundation.dart'
 class DefaultFirebaseOptions {
   static FirebaseOptions get currentPlatform {
     if (kIsWeb) {
-      return web;
+      throw UnsupportedError(
+        'DefaultFirebaseOptions have not been configured for web - '
+            'you can reconfigure this by running the FlutterFire CLI again.',
+      );
     }
     switch (defaultTargetPlatform) {
       case TargetPlatform.android:
         return android;
       case TargetPlatform.iOS:
-        return ios;
+        throw UnsupportedError(
+          'DefaultFirebaseOptions have not been configured for ios - '
+              'you can reconfigure this by running the FlutterFire CLI again.',
+        );
       case TargetPlatform.macOS:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for macos - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
+              'you can reconfigure this by running the FlutterFire CLI again.',
         );
       case TargetPlatform.windows:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for windows - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
+              'you can reconfigure this by running the FlutterFire CLI again.',
         );
       case TargetPlatform.linux:
         throw UnsupportedError(
           'DefaultFirebaseOptions have not been configured for linux - '
-          'you can reconfigure this by running the FlutterFire CLI again.',
+              'you can reconfigure this by running the FlutterFire CLI again.',
         );
       default:
         throw UnsupportedError(
@@ -46,30 +52,12 @@ class DefaultFirebaseOptions {
     }
   }
 
-  static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCrG5cUArrEivxaG-bBgFMR0WnvVTsP95s',
-    appId: '1:744655155722:web:a8a910e924b8679c1665f3',
-    messagingSenderId: '744655155722',
-    projectId: 'dhealth-news-app',
-    authDomain: 'dhealth-news-app.firebaseapp.com',
-    storageBucket: 'dhealth-news-app.firebasestorage.app',
-    measurementId: 'G-W1WHL60MGB',
-  );
-
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyDjtTuGyabPQon-68bBSdmVkJgoutoZTmg',
-    appId: '1:744655155722:android:66ab3666af2b09391665f3',
-    messagingSenderId: '744655155722',
-    projectId: 'dhealth-news-app',
-    storageBucket: 'dhealth-news-app.firebasestorage.app',
+    apiKey: 'AIzaSyCOjkA-bAm4-n7KQ-blESLuoSYHZhSJ9GQ',
+    appId: '1:737427710992:android:834832813dab9b5350d695',
+    messagingSenderId: '737427710992',
+    projectId: 'news-flash-a3985',
+    storageBucket: 'news-flash-a3985.firebasestorage.app',
   );
 
-  static const FirebaseOptions ios = FirebaseOptions(
-    apiKey: 'AIzaSyASCzN-YhOl6OCH15xedZxrVIOH5rBs-0g',
-    appId: '1:744655155722:ios:b7d7649c88c99a9c1665f3',
-    messagingSenderId: '744655155722',
-    projectId: 'dhealth-news-app',
-    storageBucket: 'dhealth-news-app.firebasestorage.app',
-    iosBundleId: 'com.dhealth.news.newsApp',
-  );
 }

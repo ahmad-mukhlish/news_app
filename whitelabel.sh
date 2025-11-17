@@ -7,15 +7,11 @@
 # without requiring any manual edits. Provide a .env-style file (defaults to
 # ./.env) with at least the variables below:
 #   APP_NAME       – Display name shown on the launcher and installer.
-#   PACKAGE_NAME   – Android/iOS bundle identifier; also used for Maestro appId.
+#   PACKAGE_NAME   – Android bundle identifier; also used for Maestro appId.
 #   APP_ICON_PATH  – Optional override pointing to a PNG icon; falls back to
 #                    assets/icon/icon.png when omitted.
-#   GOOGLE_SERVICES_JSON_PATH      – Optional android/app/google-services.json
-#                                    source (default: assets/config/google-services.json).
-#   IOS_GOOGLE_SERVICE_INFO_PATH   – Optional ios/Runner/GoogleService-Info.plist
-#                                    source (default: assets/config/GoogleService-Info.plist).
-#   FIREBASE_OPTIONS_PATH          – Optional lib/firebase_options.dart source
-#                                    (default: assets/config/firebase_options.dart).
+#   FIREBASE_PROJECT       – Firebase project ID used to generate config via
+#                             flutterfire configure.
 #
 # Workflow overview:
 #   1. Load the requested environment file and verify required variables.
@@ -46,7 +42,7 @@ set -a
 source "$ENV_FILE"
 set +a
 
-REQUIRED_VARS=(APP_NAME PACKAGE_NAME)
+REQUIRED_VARS=(APP_NAME PACKAGE_NAME FIREBASE_PROJECT)
 for var in "${REQUIRED_VARS[@]}"; do
   value="${!var:-}"
   if [[ -z "$value" ]]; then
@@ -77,9 +73,7 @@ echo "[whitelabel] Using env file: $ENV_FILE"
 echo "[whitelabel] App name........: $APP_NAME"
 echo "[whitelabel] Package name....: $PACKAGE_NAME"
 echo "[whitelabel] Icon path.......: $ICON_TARGET_REL"
-echo "[whitelabel] Android google-services.json source....: ${GOOGLE_SERVICES_JSON_PATH:-assets/config/google-services.json}"
-echo "[whitelabel] iOS GoogleService-Info.plist source....: ${IOS_GOOGLE_SERVICE_INFO_PATH:-assets/config/GoogleService-Info.plist}"
-echo "[whitelabel] Firebase options Dart source...........: ${FIREBASE_OPTIONS_PATH:-assets/config/firebase_options.dart}"
+echo "[whitelabel] Firebase project.................: $FIREBASE_PROJECT"
 
 TMP_CONFIG="$(mktemp -t package_rename_config)"
 trap 'rm -f "$TMP_CONFIG"' EXIT
@@ -90,36 +84,6 @@ package_rename_config:
     app_name: "$APP_NAME"
     package_name: "$PACKAGE_NAME"
 EOF
-
-copy_config_file() {
-  local source_rel="$1"
-  local target_rel="$2"
-  local label="$3"
-
-  local source_abs="$source_rel"
-  if [[ ! "$source_abs" = /* ]]; then
-    source_abs="$PROJECT_ROOT/$source_abs"
-  fi
-
-  local target_abs="$PROJECT_ROOT/$target_rel"
-
-  if [[ ! -f "$source_abs" ]]; then
-    echo "[whitelabel] $label source not found at $source_rel" >&2
-    exit 1
-  fi
-
-  mkdir -p "$(dirname "$target_abs")"
-  if [[ -f "$target_abs" ]] && cmp -s "$source_abs" "$target_abs"; then
-    echo "[whitelabel] $label already up to date ($target_rel)"
-  else
-    cp "$source_abs" "$target_abs"
-    echo "[whitelabel] $label copied to $target_rel"
-  fi
-}
-
-ANDROID_GOOGLE_SERVICES_REL="${GOOGLE_SERVICES_JSON_PATH:-assets/config/google-services.json}"
-IOS_GOOGLE_SERVICE_INFO_REL="${IOS_GOOGLE_SERVICE_INFO_PATH:-assets/config/GoogleService-Info.plist}"
-FIREBASE_OPTIONS_REL="${FIREBASE_OPTIONS_PATH:-assets/config/firebase_options.dart}"
 
 update_flutter_launcher_icons_image_path() {
   local icon_path="$1"
@@ -171,11 +135,6 @@ update_flutter_launcher_icons_image_path() {
   mv "$tmp" "$pubspec"
 }
 
-echo "[whitelabel] Syncing Firebase config files"
-copy_config_file "$ANDROID_GOOGLE_SERVICES_REL" "android/app/google-services.json" "Android google-services.json"
-copy_config_file "$IOS_GOOGLE_SERVICE_INFO_REL" "ios/Runner/GoogleService-Info.plist" "iOS GoogleService-Info.plist"
-copy_config_file "$FIREBASE_OPTIONS_REL" "lib/firebase_options.dart" "Firebase options Dart file"
-
 echo "[whitelabel] Updating flutter_launcher_icons image path"
 update_flutter_launcher_icons_image_path "$ICON_TARGET_REL"
 
@@ -184,6 +143,13 @@ flutter pub get
 
 echo "[whitelabel] Updating package/bundle identifiers"
 dart run package_rename_plus --path="$TMP_CONFIG"
+
+echo "[whitelabel] Configuring Firebase via flutterfire CLI"
+flutterfire configure \
+  --project="$FIREBASE_PROJECT" \
+  --platforms=android \
+  --android-package-name="$PACKAGE_NAME" \
+  --yes
 
 echo "[whitelabel] Regenerating launcher icons"
 flutter pub run flutter_launcher_icons

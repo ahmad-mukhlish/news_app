@@ -1,4 +1,4 @@
-appId: com.dhealth.news.news_app
+appId: com.newsflash.app
 ---
 # Common Setup for Offline Tests
 # Launches app with fresh state and enables airplane mode

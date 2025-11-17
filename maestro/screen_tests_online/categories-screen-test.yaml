@@ -1,4 +1,4 @@
-appId: com.dhealth.news.news_app
+appId: com.newsflash.app
 ---
 # Categories Flow Test: Tests category filtering functionality
 # Verifies category chips, selection, and filtered news loading

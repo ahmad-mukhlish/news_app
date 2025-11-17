@@ -1,4 +1,4 @@
-appId: com.dhealth.news.news_app
+appId: com.newsflash.app
 ---
 # Pagination Test: Tests infinite scroll pagination with loading indicators
 # Verifies that more articles load when scrolling to bottom

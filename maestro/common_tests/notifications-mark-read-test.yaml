@@ -1,4 +1,4 @@
-appId: com.dhealth.news.news_app
+appId: com.newsflash.app
 ---
 # Test Mark as Read Functionality
 # Tests marking individual notifications as read and marking all as read

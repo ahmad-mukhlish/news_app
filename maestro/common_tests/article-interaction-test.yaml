@@ -1,4 +1,4 @@
-appId: com.dhealth.news.news_app
+appId: com.newsflash.app
 ---
 # Article Interaction Test: Tests tapping and viewing news articles
 # This test is meant to be called from other flows, assumes articles are already loaded

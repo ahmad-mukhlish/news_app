@@ -1,4 +1,4 @@
-appId: com.dhealth.news.news_app
+appId: com.newsflash.app
 ---
 # Categories Offline Test: Tests category filtering when network is unavailable
 # Verifies error handling when attempting to load categories offline

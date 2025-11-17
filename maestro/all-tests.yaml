@@ -1,4 +1,4 @@
-appId: com.dhealth.news.news_app
+appId: com.newsflash.app
 ---
 # Master flow to run all tests
 # Runs navigation regression, online tests, and offline tests

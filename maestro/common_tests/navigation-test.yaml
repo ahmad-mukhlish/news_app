@@ -1,4 +1,4 @@
-appId: com.dhealth.news.news_app
+appId: com.newsflash.app
 ---
 # Navigation Test: Comprehensive bottom navigation testing
 # Tests all 5 navigation tabs and verifies proper screen switching

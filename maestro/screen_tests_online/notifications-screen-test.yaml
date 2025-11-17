@@ -1,4 +1,4 @@
-appId: com.dhealth.news.news_app
+appId: com.newsflash.app
 ---
 # Notifications Test: Tests notification list and interactions
 # Verifies notification display, marking as read, and navigation
