@@ -86,6 +86,10 @@
   gap: 0.75rem;
 }
 
+.colorControl input[type="text"] {
+  flex: 1;
+}
+
 .label {
   font-size: 0.95rem;
   font-weight: 600;
@@ -121,31 +125,63 @@
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
 }
 
-.colorPreview {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-size: 0.85rem;
-  color: #475569;
-  background: #eef2ff;
-  padding: 0.4rem 0.8rem;
-  border-radius: 999px;
-}
 
-.colorSwatch {
-  width: 1.5rem;
-  height: 1.5rem;
-  border-radius: 0.75rem;
-  border: 1px solid #cbd5f5;
-}
-
-.colorValue {
-  font-family: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular;
-  font-size: 0.8rem;
-}
 .helper {
   font-size: 0.8rem;
   color: #94a3b8;
+}
+
+.iconUpload {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.iconUploadLabel {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 1rem;
+  gap: 0.35rem;
+  border-radius: 999px;
+  font-weight: 600;
+  color: #4338ca;
+  background: #eef2ff;
+  border: 1px dashed #c7d2fe;
+  cursor: pointer;
+}
+
+.iconUploadInput {
+  display: none;
+}
+
+.iconUploadMessage {
+  font-size: 0.85rem;
+}
+
+.iconPreview {
+  width: 72px;
+  height: 72px;
+  border-radius: 1rem;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.25rem;
+}
+
+.iconPreviewImage {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  border-radius: 0.75rem;
+}
+
+.loadStatus {
+  margin-top: 0.4rem;
+  font-size: 0.85rem;
 }
 
 .outputHeader {
@@ -172,6 +208,8 @@
   font-size: 0.9rem;
   padding: 1.25rem;
   resize: none;
+  overflow: auto;
+  white-space: pre;
 }
 
 .actions {
@@ -191,6 +229,14 @@
   transition: transform 0.15s ease;
 }
 
+.primaryButton:disabled,
+.secondaryButton:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  box-shadow: none;
+  transform: none;
+}
+
 .primaryButton {
   background: linear-gradient(135deg, #4338ca, #6366f1);
   color: white;
@@ -206,6 +252,58 @@
 .secondaryButton:hover {
   transform: translateY(-1px);
 }
+
+.runStatusBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+}
+
+.runStatus {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #334155;
+}
+
+.runStatusSuccess {
+  color: #16a34a;
+}
+
+.runStatusError {
+  color: #dc2626;
+}
+
+.runLog {
+  background: #0f172a;
+  color: #e2e8f0;
+  border-radius: 0.9rem;
+  padding: 0.85rem;
+  font-family: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular;
+  font-size: 0.8rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.whatsappSection {
+  margin-top: 0.75rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.whatsappLink {
+  font-family: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular;
+  font-size: 0.8rem;
+  padding: 0.35rem 0.6rem;
+  border-radius: 0.5rem;
+  background: #eef2ff;
+  color: #312e81;
+  word-break: break-all;
+}
+
 
 @media (max-width: 768px) {
   .output {

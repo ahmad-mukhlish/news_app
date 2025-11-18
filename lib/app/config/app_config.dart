@@ -2,18 +2,18 @@ class AppConfig {
   // App branding
   static const String appName = String.fromEnvironment(
     'APP_NAME',
-    defaultValue: 'Globe Daily',
+    defaultValue: 'Breaking News',
   );
 
   // Light Mode Colors
   static const String primaryColor = String.fromEnvironment(
     'PRIMARY_COLOR',
-    defaultValue: '0xFF0057FF',
+    defaultValue: '0xFF0D1164',
   );
 
   static const String secondaryColor = String.fromEnvironment(
     'SECONDARY_COLOR',
-    defaultValue: '0xFFFFB703',
+    defaultValue: '0xFFF78D60',
   );
 
 
