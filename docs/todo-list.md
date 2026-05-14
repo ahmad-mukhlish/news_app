@@ -37,16 +37,16 @@ Legend: ✅ Done · ⬜ To do · ⚠️ Important note
 
 ## 3 — OneSignal Dashboard — Android (FCM)
 
-This is required for Android push to deliver.
+This is required for Android push to deliver. OneSignal now uses the **FCM v1 API** (Service Account JSON), not the old Server Key.
 
 | # | Task | Status |
 |---|------|--------|
-| 3.1 | Open Firebase Console → your project → **Project Settings → Cloud Messaging** | ⬜ |
-| 3.2 | Copy the **Server Key** (also called Server API Key) | ⬜ |
+| 3.1 | Firebase Console → your project → **⚙️ Project Settings → Service Accounts** tab | ⬜ |
+| 3.2 | Click **"Generate new private key"** → **"Generate key"** → a `.json` file downloads | ⬜ |
 | 3.3 | OneSignal Dashboard → **Settings → Push & In-App → Google Android (FCM)** | ⬜ |
-| 3.4 | Paste the Server Key → **Save** | ⬜ |
+| 3.4 | Click **"Select file"** and upload the downloaded `.json` file → **Save & Continue** | ⬜ |
 
-> ⚠️ The FCM Server Key from Firebase Console must be pasted into OneSignal dashboard. This is separate from `google-services.json`. Without this, Android push will **not** deliver.
+> ⚠️ Do **not** commit the downloaded `.json` file to git — it contains private Firebase credentials.
 
 ---
 
