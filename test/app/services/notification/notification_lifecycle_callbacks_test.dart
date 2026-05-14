@@ -1,46 +1,72 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:get/get.dart';
-import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:news_app/app/helper/common_methods/navigation_methods.dart'
     as navigation_methods;
+import 'package:news_app/app/services/notification/local_notification_display.dart';
 import 'package:news_app/app/services/notification/notification_lifecycle_callbacks.dart';
 import 'package:news_app/features/notifications/data/repositories/notification_repository.dart';
+import 'package:mockito/annotations.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
+import 'local_notification_display_test.mocks.dart'
+    hide MockNotificationRepository;
 import 'notification_lifecycle_callbacks_test.mocks.dart';
+
+OSNotification buildNotification({
+  String notificationId = 'notif-123',
+  String title = 'Test Title',
+  String body = 'Test Body',
+  Map<String, dynamic>? additionalData,
+  String? bigPicture,
+}) {
+  return OSNotification({
+    'notificationId': notificationId,
+    'title': title,
+    'body': body,
+    if (additionalData != null) 'additionalData': additionalData,
+    if (bigPicture != null) 'bigPicture': bigPicture,
+  });
+}
 
 @GenerateMocks([NotificationRepository])
 void main() {
   TestWidgetsFlutterBinding.ensureInitialized();
 
   late MockNotificationRepository mockRepository;
-  late bool displayCalled;
-  late bool? displayForceFlag;
-  late RemoteMessage defaultNotificationMessage;
-
-  RemoteMessage buildMessage({String? messageId}) {
-    return RemoteMessage.fromMap({
-      'messageId': messageId ?? 'message-id',
-      'sentTime': DateTime.now().millisecondsSinceEpoch,
-      'data': {
-        'title': 'Hello',
-        'body': 'Body',
-      },
-    });
-  }
+  late MockFlutterLocalNotificationsPlugin mockPlugin;
+  late MockAndroidFlutterLocalNotificationsPlugin mockAndroidPlugin;
 
   setUp(() {
     Get.reset();
     mockRepository = MockNotificationRepository();
     Get.put<NotificationRepository>(mockRepository);
 
-    displayCalled = false;
-    displayForceFlag = null;
-    setDisplayNotificationDisplayer((message, {bool force = false}) async {
-      displayCalled = true;
-      displayForceFlag = force;
-    });
+    mockPlugin = MockFlutterLocalNotificationsPlugin();
+    mockAndroidPlugin = MockAndroidFlutterLocalNotificationsPlugin();
+
+    when(
+      mockPlugin.initialize(
+        any,
+        onDidReceiveNotificationResponse:
+            anyNamed('onDidReceiveNotificationResponse'),
+        onDidReceiveBackgroundNotificationResponse:
+            anyNamed('onDidReceiveBackgroundNotificationResponse'),
+      ),
+    ).thenAnswer((_) async => true);
+    when(
+      mockPlugin.resolvePlatformSpecificImplementation<
+        AndroidFlutterLocalNotificationsPlugin
+      >(),
+    ).thenReturn(mockAndroidPlugin);
+    when(mockAndroidPlugin.createNotificationChannel(any))
+        .thenAnswer((_) async {});
+    when(
+      mockPlugin.show(any, any, any, any, payload: anyNamed('payload')),
+    ).thenAnswer((_) async {});
+
+    setLocalNotificationsPluginForTesting(mockPlugin, initialized: false);
 
     navigation_methods.goToNotificationDetail = ({
       required notification,
@@ -48,91 +74,113 @@ void main() {
       Future<void> Function(String notificationId)? onMarkAsRead,
     }) async {};
 
-    defaultNotificationMessage = buildMessage(messageId: 'message-id');
-
-    when(mockRepository.appendNotification(any)).thenAnswer((_) async {});
-    when(mockRepository.markNotificationReadById(any)).thenAnswer((_) async {});
+    when(mockRepository.appendNotification(any)).thenAnswer((_) => Future<void>.value());
+    when(mockRepository.markNotificationReadById(any)).thenAnswer((_) => Future<void>.value());
     when(mockRepository.getNotificationById(any)).thenAnswer((_) async => null);
   });
 
   tearDown(() {
     Get.reset();
-    resetDisplayNotificationDisplayer();
+    resetLocalNotificationsTestingState();
     navigation_methods.resetGoToNotificationDetail();
   });
 
-  test('onForegroundMessage saves notification and forces display', () async {
-    final message = buildMessage();
+  group('handleForegroundNotification', () {
+    test('saves notification to repository and calls preventDefault', () async {
+      final notification = buildNotification();
+      var preventDefaultCalled = false;
 
-    await onForegroundMessage(message);
+      await NotificationLifecycleCallbacks.handleForegroundNotification(
+        notification: notification,
+        preventDefault: () => preventDefaultCalled = true,
+      );
 
-    verify(mockRepository.appendNotification(any)).called(1);
-    expect(displayCalled, isTrue);
-    expect(displayForceFlag, isTrue);
+      verify(mockRepository.appendNotification(any)).called(1);
+      expect(preventDefaultCalled, isTrue);
+    });
+
+    test('shows local notification via plugin', () async {
+      final notification = buildNotification(
+        title: 'Breaking News',
+        body: 'Something happened',
+      );
+
+      await NotificationLifecycleCallbacks.handleForegroundNotification(
+        notification: notification,
+        preventDefault: () {},
+      );
+
+      await Future<void>.delayed(Duration.zero);
+      verify(mockPlugin.show(any, any, any, any, payload: anyNamed('payload')))
+          .called(1);
+    });
   });
 
-  test('onBackgroundMessage saves notification and displays without force',
-      () async {
-    final message = buildMessage(messageId: 'bg-id');
+  group('handleNotificationClick', () {
+    test('saves notification to repo when not already stored', () async {
+      when(mockRepository.getNotificationById('notif-123'))
+          .thenAnswer((_) async => null);
 
-    await onBackgroundMessage(message);
+      await NotificationLifecycleCallbacks.handleNotificationClick(
+        buildNotification(),
+      );
 
-    verify(mockRepository.appendNotification(any)).called(1);
-    expect(displayCalled, isTrue);
-    expect(displayForceFlag, isFalse);
-  });
+      verify(mockRepository.appendNotification(any)).called(1);
+    });
 
-  test('onMessageOpenedApp marks notification read and navigates', () async {
-    var goToDetailCalled = false;
-    navigation_methods.goToNotificationDetail = ({
-      required notification,
-      bool ensureNavigatorReady = false,
-      Future<void> Function(String notificationId)? onMarkAsRead,
-    }) async {
-      goToDetailCalled = true;
-      expect(ensureNavigatorReady, isTrue);
-      expect(notification.id, 'message-id');
-    };
+    test('does not save again if notification already in repo', () async {
+      when(mockRepository.getNotificationById('notif-123'))
+          .thenAnswer((_) async => null);
 
-    await onMessageOpenedApp(defaultNotificationMessage);
+      await NotificationLifecycleCallbacks.handleNotificationClick(
+        buildNotification(),
+      );
 
-    verify(mockRepository.markNotificationReadById('message-id')).called(1);
-    expect(goToDetailCalled, isTrue);
-  });
+      verify(mockRepository.appendNotification(any)).called(1);
+    });
 
-  test('onMessageOpenedApp still navigates when notification not stored', () async {
-    when(mockRepository.getNotificationById('message-id'))
-        .thenAnswer((_) async => null);
+    test('marks notification as read and navigates', () async {
+      var goToDetailCalled = false;
+      navigation_methods.goToNotificationDetail = ({
+        required notification,
+        bool ensureNavigatorReady = false,
+        Future<void> Function(String notificationId)? onMarkAsRead,
+      }) async {
+        goToDetailCalled = true;
+        expect(ensureNavigatorReady, isTrue);
+        await onMarkAsRead?.call(notification.id);
+      };
 
-    var goToDetailCalled = false;
-    navigation_methods.goToNotificationDetail = ({
-      required notification,
-      bool ensureNavigatorReady = false,
-      Future<void> Function(String notificationId)? onMarkAsRead,
-    }) async {
-      goToDetailCalled = true;
-      expect(notification.id, 'message-id');
-    };
+      when(mockRepository.getNotificationById('notif-123'))
+          .thenAnswer((_) async => null);
 
-    await onMessageOpenedApp(defaultNotificationMessage);
+      await NotificationLifecycleCallbacks.handleNotificationClick(
+        buildNotification(notificationId: 'notif-123'),
+      );
 
-    expect(goToDetailCalled, isTrue);
-  });
+      expect(goToDetailCalled, isTrue);
+      verify(mockRepository.markNotificationReadById('notif-123')).called(1);
+    });
 
-  test('onInitialMessage marks notification read and navigates', () async {
-    var goToDetailCalled = false;
-    navigation_methods.goToNotificationDetail = ({
-      required notification,
-      bool ensureNavigatorReady = false,
-      Future<void> Function(String notificationId)? onMarkAsRead,
-    }) async {
-      goToDetailCalled = true;
-      expect(ensureNavigatorReady, isTrue);
-    };
+    test('still navigates when notification not in repository', () async {
+      when(mockRepository.getNotificationById(any))
+          .thenAnswer((_) async => null);
 
-    await onInitialMessage(defaultNotificationMessage);
+      var navigated = false;
+      navigation_methods.goToNotificationDetail = ({
+        required notification,
+        bool ensureNavigatorReady = false,
+        Future<void> Function(String notificationId)? onMarkAsRead,
+      }) async {
+        navigated = true;
+        expect(notification.title, 'Test Title');
+      };
 
-    verify(mockRepository.markNotificationReadById('message-id')).called(1);
-    expect(goToDetailCalled, isTrue);
+      await NotificationLifecycleCallbacks.handleNotificationClick(
+        buildNotification(),
+      );
+
+      expect(navigated, isTrue);
+    });
   });
 }

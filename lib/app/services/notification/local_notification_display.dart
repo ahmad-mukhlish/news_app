@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'dart:developer' as developer;
 
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 import '../../config/app_config.dart';
 import '../../data/notification/mappers/push_notification_mapper.dart';
@@ -69,17 +69,9 @@ Future<void> _ensureLocalNotificationsInitialized() async {
   _localNotificationsInitialized = true;
 }
 
-Future<void> displayLocalNotification(
-  RemoteMessage message, {
-  bool force = false,
-}) async {
-  final notification = message.notification;
-  final hasNotificationPayload = notification != null;
-
-  // When not forced, let the system notification handle background display.
-  if (!force && hasNotificationPayload) return;
-
-  final notificationEntity = PushNotificationMapper.fromRemoteMessage(message);
+Future<void> displayLocalNotification(OSNotification notification) async {
+  final notificationEntity =
+      PushNotificationMapper.fromOneSignalNotification(notification);
   final title = notificationEntity.title.isEmpty
       ? AppConfig.appName
       : notificationEntity.title;
@@ -90,7 +82,7 @@ Future<void> displayLocalNotification(
   await _ensureLocalNotificationsInitialized();
 
   await _localNotificationsPlugin.show(
-    message.hashCode,
+    notification.hashCode,
     title,
     body,
     NotificationDetails(
@@ -98,7 +90,7 @@ Future<void> displayLocalNotification(
         _defaultAndroidChannel.id,
         _defaultAndroidChannel.name,
         channelDescription: _defaultAndroidChannel.description,
-        icon: notification?.android?.smallIcon ?? AppConfig.notificationIcon,
+        icon: AppConfig.notificationIcon,
         importance: Importance.max,
         priority: Priority.high,
         ticker: 'News update',

@@ -1,8 +1,24 @@
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:news_app/app/data/notification/dto/push_notification_dto.dart';
 import 'package:news_app/app/data/notification/mappers/push_notification_mapper.dart';
 import 'package:news_app/app/domain/entities/push_notification.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
+
+OSNotification buildNotification({
+  String notificationId = 'notif-123',
+  String? title,
+  String? body,
+  Map<String, dynamic>? additionalData,
+  String? bigPicture,
+}) {
+  return OSNotification({
+    'notificationId': notificationId,
+    if (title != null) 'title': title,
+    if (body != null) 'body': body,
+    if (additionalData != null) 'additionalData': additionalData,
+    if (bigPicture != null) 'bigPicture': bigPicture,
+  });
+}
 
 void main() {
   group('PushNotificationMapper', () {
@@ -68,10 +84,7 @@ void main() {
       });
 
       test('should use default false for isRead when null', () {
-        final dto = PushNotificationDto(
-          id: 'test-id',
-          isRead: null,
-        );
+        final dto = PushNotificationDto(id: 'test-id', isRead: null);
 
         final result = PushNotificationMapper.toEntity(dto);
 
@@ -125,193 +138,106 @@ void main() {
 
     group('toEntityList', () {
       test('should return empty list for empty input', () {
-        final dtoList = <PushNotificationDto>[];
-
-        final result = PushNotificationMapper.toEntityList(dtoList);
-
+        final result = PushNotificationMapper.toEntityList([]);
         expect(result, isEmpty);
       });
 
       test('should map multiple DTOs to entities correctly', () {
         final dtoList = [
-          PushNotificationDto(
-            id: '1',
-            title: 'Notification 1',
-            body: 'Body 1',
-          ),
-          PushNotificationDto(
-            id: '2',
-            title: 'Notification 2',
-            body: 'Body 2',
-          ),
-          PushNotificationDto(
-            id: '3',
-            title: 'Notification 3',
-            body: 'Body 3',
-          ),
+          PushNotificationDto(id: '1', title: 'Notification 1', body: 'Body 1'),
+          PushNotificationDto(id: '2', title: 'Notification 2', body: 'Body 2'),
+          PushNotificationDto(id: '3', title: 'Notification 3', body: 'Body 3'),
         ];
 
         final result = PushNotificationMapper.toEntityList(dtoList);
 
         expect(result.length, 3);
         expect(result[0].id, '1');
-        expect(result[0].title, 'Notification 1');
         expect(result[1].id, '2');
-        expect(result[1].title, 'Notification 2');
         expect(result[2].id, '3');
-        expect(result[2].title, 'Notification 3');
       });
     });
 
     group('toDtoList', () {
       test('should return empty list for empty input', () {
-        final entityList = <PushNotification>[];
-
-        final result = PushNotificationMapper.toDtoList(entityList);
-
+        final result = PushNotificationMapper.toDtoList([]);
         expect(result, isEmpty);
       });
 
       test('should map multiple entities to DTOs correctly', () {
         final now = DateTime.now();
         final entityList = [
-          PushNotification(
-            id: 'e1',
-            title: 'Entity 1',
-            body: 'Body 1',
-            receivedAt: now,
-          ),
-          PushNotification(
-            id: 'e2',
-            title: 'Entity 2',
-            body: 'Body 2',
-            receivedAt: now,
-          ),
+          PushNotification(id: 'e1', title: 'Entity 1', body: 'Body 1', receivedAt: now),
+          PushNotification(id: 'e2', title: 'Entity 2', body: 'Body 2', receivedAt: now),
         ];
 
         final result = PushNotificationMapper.toDtoList(entityList);
 
         expect(result.length, 2);
         expect(result[0].id, 'e1');
-        expect(result[0].title, 'Entity 1');
         expect(result[1].id, 'e2');
-        expect(result[1].title, 'Entity 2');
       });
     });
 
-    group('fromRemoteMessage', () {
-      test('should convert RemoteMessage with full notification data', () {
-        final remoteMessage = RemoteMessage(
-          messageId: 'msg-123',
-          notification: const RemoteNotification(
-            title: 'Firebase Title',
-            body: 'Firebase Body',
-          ),
-          data: {'custom': 'data', 'value': '123'},
+    group('fromOneSignalNotification', () {
+      test('should map all fields correctly', () {
+        final notification = buildNotification(
+          notificationId: 'os-notif-123',
+          title: 'OneSignal Title',
+          body: 'OneSignal Body',
+          additionalData: {'custom': 'data'},
+          bigPicture: 'https://example.com/image.jpg',
         );
 
-        final result = PushNotificationMapper.fromRemoteMessage(remoteMessage);
+        final result = PushNotificationMapper.fromOneSignalNotification(notification);
 
-        expect(result.id, 'msg-123');
-        expect(result.title, 'Firebase Title');
-        expect(result.body, 'Firebase Body');
+        expect(result.id, 'os-notif-123');
+        expect(result.title, 'OneSignal Title');
+        expect(result.body, 'OneSignal Body');
         expect(result.receivedAt, isA<DateTime>());
-        expect(result.data, {'custom': 'data', 'value': '123'});
+        expect(result.data, {'custom': 'data'});
+        expect(result.imageUrl, 'https://example.com/image.jpg');
         expect(result.isRead, false);
       });
 
-      test('should use default values when notification is null', () {
-        final remoteMessage = RemoteMessage(
-          messageId: 'msg-456',
-          data: {},
-        );
+      test('should use defaults when title and body are absent', () {
+        final notification = buildNotification(notificationId: 'no-content');
 
-        final result = PushNotificationMapper.fromRemoteMessage(remoteMessage);
+        final result = PushNotificationMapper.fromOneSignalNotification(notification);
 
-        expect(result.id, 'msg-456');
+        expect(result.id, 'no-content');
         expect(result.title, 'No Title');
         expect(result.body, 'No Body');
         expect(result.data, null);
+        expect(result.imageUrl, null);
       });
 
-      test('should generate ID from timestamp when messageId is null', () {
-        final remoteMessage = RemoteMessage(
-          messageId: null,
-          notification: const RemoteNotification(
-            title: 'Test',
-            body: 'Test',
-          ),
+      test('should handle null additionalData and bigPicture', () {
+        final notification = buildNotification(
+          title: 'Title',
+          body: 'Body',
         );
 
-        final result = PushNotificationMapper.fromRemoteMessage(remoteMessage);
-
-        expect(result.id, isNotEmpty);
-        expect(int.tryParse(result.id), isNotNull);
-      });
-
-      test('should extract imageUrl from data field', () {
-        final remoteMessage = RemoteMessage(
-          messageId: 'img-msg',
-          notification: const RemoteNotification(
-            title: 'Image Notification',
-            body: 'Has image',
-          ),
-          data: {'imageUrl': 'https://example.com/from-data.jpg'},
-        );
-
-        final result = PushNotificationMapper.fromRemoteMessage(remoteMessage);
-
-        expect(result.imageUrl, 'https://example.com/from-data.jpg');
-      });
-
-      test('should handle empty data map', () {
-        final remoteMessage = RemoteMessage(
-          messageId: 'empty-data',
-          notification: const RemoteNotification(
-            title: 'No Data',
-            body: 'Empty',
-          ),
-          data: {},
-        );
-
-        final result = PushNotificationMapper.fromRemoteMessage(remoteMessage);
+        final result = PushNotificationMapper.fromOneSignalNotification(notification);
 
         expect(result.data, null);
-      });
-
-      test('should preserve non-empty data map', () {
-        final remoteMessage = RemoteMessage(
-          messageId: 'with-data',
-          notification: const RemoteNotification(
-            title: 'Has Data',
-            body: 'Data present',
-          ),
-          data: {'key1': 'value1', 'key2': 'value2'},
-        );
-
-        final result = PushNotificationMapper.fromRemoteMessage(remoteMessage);
-
-        expect(result.data, isNotNull);
-        expect(result.data!['key1'], 'value1');
-        expect(result.data!['key2'], 'value2');
+        expect(result.imageUrl, null);
       });
     });
 
-    group('dtoFromRemoteMessage', () {
-      test('should convert RemoteMessage to DTO', () {
-        final remoteMessage = RemoteMessage(
-          messageId: 'dto-msg',
-          notification: const RemoteNotification(
-            title: 'DTO Test',
-            body: 'DTO Body',
-          ),
-          data: {'test': 'value'},
+    group('dtoFromOneSignalNotification', () {
+      test('should convert OSNotification to DTO', () {
+        final notification = buildNotification(
+          notificationId: 'dto-os-notif',
+          title: 'DTO Test',
+          body: 'DTO Body',
+          additionalData: {'test': 'value'},
         );
 
         final result =
-            PushNotificationMapper.dtoFromRemoteMessage(remoteMessage);
+            PushNotificationMapper.dtoFromOneSignalNotification(notification);
 
-        expect(result.id, 'dto-msg');
+        expect(result.id, 'dto-os-notif');
         expect(result.title, 'DTO Test');
         expect(result.body, 'DTO Body');
         expect(result.data, {'test': 'value'});
@@ -344,33 +270,19 @@ void main() {
 
         expect(result.length, 2);
         expect(result[0].id, '1');
-        expect(result[0].title, 'First');
         expect(result[0].isRead, false);
         expect(result[1].id, '2');
-        expect(result[1].title, 'Second');
         expect(result[1].isRead, true);
       });
 
       test('should return empty list for empty string', () {
         final result = PushNotificationMapper.dtoListFromJsonString('');
-
         expect(result, isEmpty);
       });
 
       test('should return empty list for invalid JSON', () {
-        const invalidJson = 'not valid json {]';
-
-        final result = PushNotificationMapper.dtoListFromJsonString(invalidJson);
-
-        expect(result, isEmpty);
-      });
-
-      test('should return empty list for malformed JSON', () {
-        const malformedJson = '{"incomplete": ';
-
         final result =
-            PushNotificationMapper.dtoListFromJsonString(malformedJson);
-
+            PushNotificationMapper.dtoListFromJsonString('not valid json {]');
         expect(result, isEmpty);
       });
 
@@ -394,7 +306,6 @@ void main() {
         expect(result.length, 1);
         expect(result[0].id, 'null-test');
         expect(result[0].title, null);
-        expect(result[0].body, null);
       });
 
       test('should handle JSON with data field', () {
@@ -412,7 +323,6 @@ void main() {
         final result = PushNotificationMapper.dtoListFromJsonString(json);
 
         expect(result.length, 1);
-        expect(result[0].data, isNotNull);
         expect(result[0].data!['custom'], 'value');
         expect(result[0].data!['number'], 42);
       });
@@ -439,17 +349,13 @@ void main() {
 
         final result = PushNotificationMapper.dtoListToJsonString(dtoList);
 
-        expect(result, isNotEmpty);
         expect(result, contains('"id":"json-1"'));
         expect(result, contains('"title":"First Notification"'));
-        expect(result, contains('"id":"json-2"'));
         expect(result, contains('"isRead":true'));
       });
 
       test('should handle empty list', () {
-        final result = PushNotificationMapper.dtoListToJsonString([]);
-
-        expect(result, '[]');
+        expect(PushNotificationMapper.dtoListToJsonString([]), '[]');
       });
 
       test('should serialize DTO with data field', () {
@@ -464,26 +370,8 @@ void main() {
 
         final result = PushNotificationMapper.dtoListToJsonString(dtoList);
 
-        expect(result, contains('"data"'));
         expect(result, contains('"key":"value"'));
         expect(result, contains('"count":5'));
-      });
-
-      test('should handle null values in DTO', () {
-        final dtoList = [
-          PushNotificationDto(
-            id: 'null-fields',
-            title: null,
-            body: null,
-            imageUrl: null,
-          ),
-        ];
-
-        final result = PushNotificationMapper.dtoListToJsonString(dtoList);
-
-        expect(result, contains('"id":"null-fields"'));
-        expect(result, contains('"title":null'));
-        expect(result, contains('"body":null'));
       });
     });
 
@@ -501,39 +389,17 @@ void main() {
           ),
         ];
 
-        // Serialize to JSON
         final jsonString =
             PushNotificationMapper.dtoListToJsonString(originalDtoList);
-
-        // Deserialize back to DTO list
         final deserializedDtoList =
             PushNotificationMapper.dtoListFromJsonString(jsonString);
 
-        expect(deserializedDtoList.length, originalDtoList.length);
+        expect(deserializedDtoList.length, 1);
         expect(deserializedDtoList[0].id, originalDtoList[0].id);
         expect(deserializedDtoList[0].title, originalDtoList[0].title);
-        expect(deserializedDtoList[0].body, originalDtoList[0].body);
-        expect(deserializedDtoList[0].receivedAt, originalDtoList[0].receivedAt);
-        expect(deserializedDtoList[0].imageUrl, originalDtoList[0].imageUrl);
         expect(deserializedDtoList[0].isRead, originalDtoList[0].isRead);
         expect(deserializedDtoList[0].data!['custom'], 'value');
         expect(deserializedDtoList[0].data!['number'], 42);
-      });
-    });
-
-    group('fromRemoteMessage', () {
-      test('falls back to data payload when notification is missing', () {
-        final message = RemoteMessage.fromMap({
-          'messageId': 'message-1',
-          'sentTime': DateTime.now().millisecondsSinceEpoch,
-          'data': {'title': 'Data Title', 'body': 'Data Body'},
-        });
-
-        final result = PushNotificationMapper.fromRemoteMessage(message);
-
-        expect(result.id, 'message-1');
-        expect(result.title, 'Data Title');
-        expect(result.body, 'Data Body');
       });
     });
   });

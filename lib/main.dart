@@ -1,4 +1,3 @@
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -8,7 +7,6 @@ import 'app/config/flavors.dart';
 import 'app/services/network/api_service.dart';
 import 'app/services/notification/notification_service.dart';
 import 'app/services/storage/local_storage_service.dart';
-import 'firebase_options.dart';
 
 
 Future<void> main() async {
@@ -21,10 +19,6 @@ Future<void> main() async {
 }
 
 Future<void> initServicesAndDependencies() async {
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
-
   await Get.putAsync<ApiService>(() => ApiService().init(), permanent: true);
 
   final prefs = await SharedPreferences.getInstance();
@@ -34,7 +28,6 @@ Future<void> initServicesAndDependencies() async {
   );
 
   await Get.putAsync<NotificationService>(() => NotificationService().init(), permanent: true);
-
 }
 
 void setFlavorFromEnvironment() {

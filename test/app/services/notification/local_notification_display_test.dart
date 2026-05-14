@@ -1,6 +1,5 @@
 import 'dart:convert';
 
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:get/get.dart';
@@ -11,8 +10,23 @@ import 'package:news_app/app/helper/common_methods/navigation_methods.dart'
     as navigation_methods;
 import 'package:news_app/app/services/notification/local_notification_display.dart';
 import 'package:news_app/features/notifications/data/repositories/notification_repository.dart';
+import 'package:onesignal_flutter/onesignal_flutter.dart';
 
 import 'local_notification_display_test.mocks.dart';
+
+OSNotification buildNotification({
+  String notificationId = '123',
+  String? title,
+  String? body,
+  Map<String, dynamic>? additionalData,
+}) {
+  return OSNotification({
+    'notificationId': notificationId,
+    if (title != null) 'title': title,
+    if (body != null) 'body': body,
+    if (additionalData != null) 'additionalData': additionalData,
+  });
+}
 
 @GenerateMocks([
   FlutterLocalNotificationsPlugin,
@@ -25,18 +39,6 @@ void main() {
   late MockFlutterLocalNotificationsPlugin mockNotificationsPlugin;
   late MockAndroidFlutterLocalNotificationsPlugin mockAndroidPlugin;
   late MockNotificationRepository mockNotificationRepository;
-
-  RemoteMessage buildMessage({
-    Map<String, Object?>? notification,
-    Map<String, Object?>? data,
-  }) {
-    return RemoteMessage.fromMap({
-      'messageId': '123',
-      'sentTime': DateTime.now().millisecondsSinceEpoch,
-      'data': data ?? <String, dynamic>{},
-      if (notification != null) 'notification': notification,
-    });
-  }
 
   setUp(() {
     Get.testMode = true;
@@ -86,38 +88,14 @@ void main() {
     navigation_methods.resetGoToNotificationDetail();
   });
 
-  test(
-    'does not display when not forced and notification payload exists',
-    () async {
-      final message = buildMessage(notification: {
-        'title': 'System Title',
-        'body': 'System Body',
-      });
-
-      await displayLocalNotification(message);
-
-      verifyNever(
-        mockNotificationsPlugin.show(
-          any,
-          any,
-          any,
-          any,
-          payload: anyNamed('payload'),
-        ),
-      );
-    },
-  );
-
-  test('displays when forced and uses data payload fallback', () async {
-    final message = buildMessage(
-      data: {
-        'title': 'Data Title',
-        'body': 'Data Body',
-        'extra': 'value',
-      },
+  test('initializes plugin on first call and shows notification', () async {
+    final notification = buildNotification(
+      title: 'Breaking News',
+      body: 'Something happened',
+      additionalData: {'extra': 'value'},
     );
 
-    await displayLocalNotification(message, force: true);
+    await displayLocalNotification(notification);
 
     verify(
       mockNotificationsPlugin.initialize(
@@ -140,12 +118,53 @@ void main() {
       ),
     ).captured;
 
-    expect(captured[0], 'Data Title');
-    expect(captured[1], 'Data Body');
+    expect(captured[0], 'Breaking News');
+    expect(captured[1], 'Something happened');
+
     final payload = captured[2] as String;
     final decoded = jsonDecode(payload) as Map<String, dynamic>;
     expect(decoded['notificationId'], '123');
     expect(decoded['data'], containsPair('extra', 'value'));
+  });
+
+  test('does not show notification when title and body are both empty', () async {
+    final notification = buildNotification();
+
+    await displayLocalNotification(notification);
+
+    verifyNever(
+      mockNotificationsPlugin.show(
+        any,
+        any,
+        any,
+        any,
+        payload: anyNamed('payload'),
+      ),
+    );
+  });
+
+  test('skips re-initialization on subsequent calls', () async {
+    setLocalNotificationsPluginForTesting(
+      mockNotificationsPlugin,
+      initialized: true,
+    );
+    final notification = buildNotification(title: 'Title', body: 'Body');
+
+    await displayLocalNotification(notification);
+
+    verifyNever(
+      mockNotificationsPlugin.initialize(
+        any,
+        onDidReceiveNotificationResponse:
+            anyNamed('onDidReceiveNotificationResponse'),
+        onDidReceiveBackgroundNotificationResponse:
+            anyNamed('onDidReceiveBackgroundNotificationResponse'),
+      ),
+    );
+    verify(
+      mockNotificationsPlugin.show(any, any, any, any,
+          payload: anyNamed('payload')),
+    ).called(1);
   });
 
   test('handleLocalNotificationResponse navigates using stored notification',
