@@ -14,9 +14,9 @@ class NotificationService extends GetxService {
   Future<NotificationService> init() async {
     OneSignal.Debug.setLogLevel(OSLogLevel.verbose);
     OneSignal.initialize('69ff7590-652a-476a-966b-2403cdf554d1');
-    await OneSignal.Notifications.requestPermission(false);
-
     NotificationLifecycleCallbacks.register();
+
+    await OneSignal.Notifications.requestPermission(false);
 
     _oneSignalId = await OneSignal.User.getOnesignalId();
     OneSignal.User.pushSubscription.addObserver((state) {
