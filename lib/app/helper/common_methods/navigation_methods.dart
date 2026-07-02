@@ -10,6 +10,7 @@ import '../../../features/main/presentation/get/main_controller.dart';
 import '../../../features/notifications/presentation/get/notifications_binding.dart';
 import '../../../features/notifications/presentation/get/notifications_controller.dart';
 import '../../../features/notifications/presentation/views/screen/notification_detail_screen.dart';
+import '../../services/analytics_service.dart';
 
 /// Pushes the notification detail screen while handling optional read state
 /// updates and navigator readiness checks.
@@ -18,11 +19,12 @@ import '../../../features/notifications/presentation/views/screen/notification_d
 /// [onMarkAsRead] if provided. When [ensureNavigatorReady] is true, the method
 /// waits for a navigator before attempting navigation (needed for background
 /// callbacks).
-typedef GoToNotificationDetailFn = Future<void> Function({
-  required PushNotification notification,
-  bool ensureNavigatorReady,
-  Future<void> Function(String notificationId)? onMarkAsRead,
-});
+typedef GoToNotificationDetailFn =
+    Future<void> Function({
+      required PushNotification notification,
+      bool ensureNavigatorReady,
+      Future<void> Function(String notificationId)? onMarkAsRead,
+    });
 
 @visibleForTesting
 GoToNotificationDetailFn goToNotificationDetail = _goToNotificationDetail;
@@ -83,10 +85,21 @@ Future<void> _goToNotificationDetail({
     }
   }
 
-  final formattedDate =
-      DateFormat('MMM d, yyyy • h:mm a').format(updatedNotification.receivedAt);
+  final formattedDate = DateFormat(
+    'MMM d, yyyy • h:mm a',
+  ).format(updatedNotification.receivedAt);
 
   _ensureNotificationsTabSelected();
+
+  unawaited(
+    AnalyticsService.logEventIfReady(
+      name: 'news_notification_detail_view',
+      parameters: {
+        'message_id': updatedNotification.id,
+        'has_image': updatedNotification.imageUrl != null ? 1 : 0,
+      },
+    ),
+  );
 
   Get.to(
     () => NotificationDetailScreen(

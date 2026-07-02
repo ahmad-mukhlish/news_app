@@ -3,13 +3,22 @@ import 'dart:developer' as developer;
 
 import 'package:get/get.dart';
 
+import '../../../../app/services/analytics_service.dart';
 import '../../../notifications/data/repositories/notification_repository.dart';
 
 class MainController extends GetxController {
   MainController({required NotificationRepository notificationRepository})
-      : _notificationRepository = notificationRepository;
+    : _notificationRepository = notificationRepository;
 
   static const int notificationsTabIndex = 3;
+  static const List<String> _tabNames = [
+    'home',
+    'search',
+    'categories',
+    'notifications',
+    'profile',
+  ];
+
   final RxInt selectedIndex = 0.obs;
   final NotificationRepository _notificationRepository;
 
@@ -21,6 +30,7 @@ class MainController extends GetxController {
 
   void changePage(int index) {
     selectedIndex.value = index;
+    unawaited(_logTabSelected(index));
   }
 
   void goToNotificationsTab() {
@@ -42,5 +52,15 @@ class MainController extends GetxController {
         name: runtimeType.toString(),
       );
     }
+  }
+
+  Future<void> _logTabSelected(int index) async {
+    final isKnownTab = index >= 0 && index < _tabNames.length;
+    if (!isKnownTab) return;
+
+    await AnalyticsService.logEventIfReady(
+      name: 'news_tab_selected',
+      parameters: {'tab_index': index, 'tab_name': _tabNames[index]},
+    );
   }
 }

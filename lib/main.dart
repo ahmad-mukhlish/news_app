@@ -6,10 +6,10 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'app/config/app.dart';
 import 'app/config/flavors.dart';
 import 'app/services/network/api_service.dart';
+import 'app/services/analytics_service.dart';
 import 'app/services/notification/notification_service.dart';
 import 'app/services/storage/local_storage_service.dart';
 import 'firebase_options.dart';
-
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,8 +21,11 @@ Future<void> main() async {
 }
 
 Future<void> initServicesAndDependencies() async {
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  await Get.putAsync<AnalyticsService>(
+    () => AnalyticsService().init(),
+    permanent: true,
   );
 
   await Get.putAsync<ApiService>(() => ApiService().init(), permanent: true);
@@ -33,8 +36,10 @@ Future<void> initServicesAndDependencies() async {
     permanent: true,
   );
 
-  await Get.putAsync<NotificationService>(() => NotificationService().init(), permanent: true);
-
+  await Get.putAsync<NotificationService>(
+    () => NotificationService().init(),
+    permanent: true,
+  );
 }
 
 void setFlavorFromEnvironment() {

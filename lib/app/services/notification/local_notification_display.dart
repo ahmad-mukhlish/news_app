@@ -9,6 +9,7 @@ import '../../config/app_config.dart';
 import '../../data/notification/mappers/push_notification_mapper.dart';
 import '../../domain/entities/push_notification.dart';
 import '../../helper/common_methods/navigation_methods.dart';
+import '../analytics_service.dart';
 import 'notification_repository_provider.dart';
 
 FlutterLocalNotificationsPlugin _localNotificationsPlugin =
@@ -148,7 +149,8 @@ PushNotification _notificationFromPayload(Map<String, dynamic> payload) {
       : DateTime.now();
 
   return PushNotification(
-    id: payload['notificationId']?.toString() ??
+    id:
+        payload['notificationId']?.toString() ??
         DateTime.now().millisecondsSinceEpoch.toString(),
     title: payload['title']?.toString() ?? AppConfig.appName,
     body: payload['body']?.toString() ?? '',
@@ -171,12 +173,21 @@ Future<void> handleLocalNotificationResponse(
 
   try {
     final repository = await ensureNotificationRepositoryInitialized();
-    final storedNotificationDto =
-        await repository.getNotificationById(fallbackNotification.id);
+    final storedNotificationDto = await repository.getNotificationById(
+      fallbackNotification.id,
+    );
 
     final resolvedNotification = storedNotificationDto != null
         ? PushNotificationMapper.toEntity(storedNotificationDto)
         : fallbackNotification;
+
+    await AnalyticsService.logEventIfReady(
+      name: 'news_notification_opened',
+      parameters: {
+        'source': 'local_notification',
+        'message_id': resolvedNotification.id,
+      },
+    );
 
     await navigateToNotificationDetail(
       notification: resolvedNotification,

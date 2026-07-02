@@ -8,13 +8,12 @@ import '../../../app/data/notification/mappers/push_notification_mapper.dart';
 import '../../../app/domain/entities/push_notification.dart';
 import '../../../features/notifications/data/repositories/notification_repository.dart';
 import '../../helper/common_methods/navigation_methods.dart';
+import '../analytics_service.dart';
 import 'local_notification_display.dart';
 import 'notification_repository_provider.dart';
 
-typedef LocalNotificationDisplayer = Future<void> Function(
-  RemoteMessage message, {
-  bool force,
-});
+typedef LocalNotificationDisplayer =
+    Future<void> Function(RemoteMessage message, {bool force});
 
 @visibleForTesting
 LocalNotificationDisplayer displayNotification = displayLocalNotification;
@@ -72,6 +71,14 @@ Future<void> onForegroundMessage(RemoteMessage message) async {
   final dto = PushNotificationMapper.dtoFromRemoteMessage(message);
   await repository.appendNotification(dto);
 
+  await AnalyticsService.logEventIfReady(
+    name: 'news_notification_received',
+    parameters: _notificationAnalyticsParameters(
+      message: message,
+      source: 'foreground',
+    ),
+  );
+
   // Show local notification
   unawaited(displayNotification(message, force: true));
 }
@@ -94,6 +101,14 @@ Future<void> onMessageOpenedApp(RemoteMessage message) async {
   if (notificationId != null) {
     await repository.markNotificationReadById(notificationId);
   }
+
+  await AnalyticsService.logEventIfReady(
+    name: 'news_notification_opened',
+    parameters: _notificationAnalyticsParameters(
+      message: message,
+      source: 'background',
+    ),
+  );
 
   final notification = await _resolveNotificationEntity(repository, message);
 
@@ -145,10 +160,33 @@ Future<void> onInitialMessage(RemoteMessage message) async {
     await repository.markNotificationReadById(notificationId);
   }
 
+  await AnalyticsService.logEventIfReady(
+    name: 'news_notification_opened',
+    parameters: _notificationAnalyticsParameters(
+      message: message,
+      source: 'terminated',
+    ),
+  );
+
   final notification = await _resolveNotificationEntity(repository, message);
 
   await navigateToNotificationDetail(
     notification: notification,
     ensureNavigatorReady: true,
   );
+}
+
+Map<String, Object> _notificationAnalyticsParameters({
+  required RemoteMessage message,
+  required String source,
+}) {
+  final parameters = <String, Object>{
+    'source': source,
+    'has_notification': message.notification != null ? 1 : 0,
+  };
+
+  final messageId = message.messageId;
+  if (messageId != null) parameters['message_id'] = messageId;
+
+  return parameters;
 }

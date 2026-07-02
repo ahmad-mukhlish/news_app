@@ -3,6 +3,7 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 import '../../features/main/presentation/get/main_binding.dart';
 import '../../features/main/presentation/views/screen/main_screen.dart';
 import '../helper/extensions/color_extension.dart';
+import '../services/analytics_service.dart';
 import 'app_config.dart';
 import 'flavors.dart';
 
@@ -24,6 +25,7 @@ class App extends StatelessWidget {
       ),
       home: const MainScreen(),
       initialBinding: MainBinding(),
+      navigatorObservers: AnalyticsService.navigatorObservers,
     );
   }
 }

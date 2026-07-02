@@ -62,7 +62,12 @@ class TestFirebaseMessagingPlatform extends FirebaseMessagingPlatform {
   Future<String?> getAPNSToken() async => null;
 
   @override
-  Future<String?> getToken({String? vapidKey}) async => null;
+  Future<String?> getToken({
+    String? vapidKey,
+    String? serviceWorkerScriptPath,
+  }) async {
+    return null;
+  }
 
   @override
   Future<NotificationSettings> getNotificationSettings() async =>
@@ -122,11 +127,13 @@ void main() {
       mockMessaging = MockFirebaseMessaging();
       tokenRefreshController = StreamController<String>.broadcast();
 
-      when(mockMessaging.getNotificationSettings())
-          .thenAnswer((_) async => _defaultSettings);
+      when(
+        mockMessaging.getNotificationSettings(),
+      ).thenAnswer((_) async => _defaultSettings);
       when(mockMessaging.getToken()).thenAnswer((_) async => 'initial-token');
-      when(mockMessaging.onTokenRefresh)
-          .thenAnswer((_) => tokenRefreshController.stream);
+      when(
+        mockMessaging.onTokenRefresh,
+      ).thenAnswer((_) => tokenRefreshController.stream);
       when(mockMessaging.getInitialMessage()).thenAnswer((_) async => null);
 
       service = NotificationService(messaging: mockMessaging);
@@ -136,23 +143,25 @@ void main() {
       await tokenRefreshController.close();
     });
 
-    test('init fetches token, subscribes to refresh and registers background handler',
-        () async {
-      final result = await service.init();
+    test(
+      'init fetches token, subscribes to refresh and registers background handler',
+      () async {
+        final result = await service.init();
 
-      expect(result, same(service));
-      expect(service.fcmToken, 'initial-token');
-      expect(fakePlatform.backgroundHandler, isNotNull);
+        expect(result, same(service));
+        expect(service.fcmToken, 'initial-token');
+        expect(fakePlatform.backgroundHandler, isNotNull);
 
-      tokenRefreshController.add('new-token');
-      await Future<void>.delayed(Duration.zero);
-      expect(service.fcmToken, 'new-token');
+        tokenRefreshController.add('new-token');
+        await Future<void>.delayed(Duration.zero);
+        expect(service.fcmToken, 'new-token');
 
-      verify(mockMessaging.getNotificationSettings()).called(1);
-      verify(mockMessaging.getToken()).called(1);
-      verify(mockMessaging.onTokenRefresh).called(1);
-      verify(mockMessaging.getInitialMessage()).called(1);
-    });
+        verify(mockMessaging.getNotificationSettings()).called(1);
+        verify(mockMessaging.getToken()).called(1);
+        verify(mockMessaging.onTokenRefresh).called(1);
+        verify(mockMessaging.getInitialMessage()).called(1);
+      },
+    );
 
     test('init completes even when initial token retrieval fails', () async {
       when(mockMessaging.getToken()).thenThrow(Exception('network-error'));

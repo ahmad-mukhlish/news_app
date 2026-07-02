@@ -109,9 +109,15 @@ class MockFirebaseMessaging extends _i1.Mock implements _i4.FirebaseMessaging {
           as _i5.Future<String?>);
 
   @override
-  _i5.Future<String?> getToken({String? vapidKey}) =>
+  _i5.Future<String?> getToken({
+    String? vapidKey,
+    String? serviceWorkerScriptPath,
+  }) =>
       (super.noSuchMethod(
-            Invocation.method(#getToken, [], {#vapidKey: vapidKey}),
+            Invocation.method(#getToken, [], {
+              #vapidKey: vapidKey,
+              #serviceWorkerScriptPath: serviceWorkerScriptPath,
+            }),
             returnValue: _i5.Future<String?>.value(),
           )
           as _i5.Future<String?>);
