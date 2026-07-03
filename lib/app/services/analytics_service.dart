@@ -4,6 +4,8 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
+import 'posthog_service.dart';
+
 class AnalyticsService extends GetxService {
   AnalyticsService({FirebaseAnalytics? analytics})
     : _analytics = analytics ?? FirebaseAnalytics.instance,
@@ -26,9 +28,14 @@ class AnalyticsService extends GetxService {
     required String name,
     Map<String, Object>? parameters,
   }) async {
-    if (!Get.isRegistered<AnalyticsService>()) return;
+    if (Get.isRegistered<AnalyticsService>()) {
+      await to.logEvent(name: name, parameters: parameters);
+    }
 
-    await to.logEvent(name: name, parameters: parameters);
+    // PostHog spike: fan the identical event out to PostHog so its exact,
+    // same day counts can be compared against Firebase's next day counts on
+    // the same traffic. Remove this line to end the spike.
+    await PostHogService.captureIfReady(name: name, properties: parameters);
   }
 
   Future<AnalyticsService> init() async {

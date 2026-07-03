@@ -46,6 +46,11 @@ dependencies:
   firebase_core: 4.10.0
   firebase_analytics: 12.4.2
   firebase_messaging: 16.3.0
+  # PostHog spike: product analytics SDK, dual logged next to Firebase.
+  # ^4.0.0 guarantees the Dart side Posthog().setup() init used in
+  # posthog_service.dart. If pub resolves a newer major, the same setup() and
+  # capture(eventName:) API still applies; adjust the constraint if needed.
+  posthog_flutter: ^4.0.0
   shared_preferences: ^2.3.5
   flutter_local_notifications: ^19.5.0
   flutter_launcher_icons: ^0.14.4
@@ -64,6 +69,10 @@ dev_dependencies:
   mockito: ^5.4.4
   build_runner: ^2.4.13
   url_launcher_platform_interface: ^2.3.2
+
+dependency_overrides:
+  firebase_core_platform_interface: 7.0.1
+  firebase_core_web: 3.8.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

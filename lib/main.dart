@@ -7,6 +7,7 @@ import 'app/config/app.dart';
 import 'app/config/flavors.dart';
 import 'app/services/network/api_service.dart';
 import 'app/services/analytics_service.dart';
+import 'app/services/posthog_service.dart';
 import 'app/services/notification/notification_service.dart';
 import 'app/services/storage/local_storage_service.dart';
 import 'firebase_options.dart';
@@ -22,6 +23,13 @@ Future<void> main() async {
 
 Future<void> initServicesAndDependencies() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+
+  // PostHog spike: register PostHog before AnalyticsService so it is ready to
+  // receive the fanned out events (see AnalyticsService.logEventIfReady).
+  await Get.putAsync<PostHogService>(
+    () => PostHogService().init(),
+    permanent: true,
+  );
 
   await Get.putAsync<AnalyticsService>(
     () => AnalyticsService().init(),
